@@ -1,156 +1,435 @@
-<script>
-  (function(_0x5a2d8e,_0x3f721a){var _0x4b9112=_0x1c8b;while(!![]){try{var _0x27f54c=-parseInt(_0x4b9112(0x19f))/0x1+parseInt(_0x4b9112(0x1a2))/0x2*(-parseInt(_0x4b9112(0x1a8))/0x3)+parseInt(_0x4b9112(0x1a0))/0x4+-parseInt(_0x4b9112(0x19a))/0x5*(-parseInt(_0x4b9112(0x1a6))/0x6)+parseInt(_0x4b9112(0x19d))/0x7+-parseInt(_0x4b9112(0x1a7))/0x8*(-parseInt(_0x4b9112(0x1a3))/0x9)+-parseInt(_0x4b9112(0x19e))/0xa;if(_0x27f54c===_0x3f721a)break;else _0x5a2d8e['push'](_0x5a2d8e['shift']());}catch(_0x12c4ab){_0x5a2d8e['push'](_0x5a2d8e['shift']());}}}(_0x38bf,0x4e29f));function _0x1c8b(_0x44c921,_0x323a67){_0x44c921=_0x44c921-0x197;var _0x38bf79=_0x38bf[_0x44c921];return _0x38bf79;}function _0x38bf(){var _0x2287f3=['425121SgPqJp','4552433mYfAnx','11538350KstlsR','2492582QYgLIs','4146313YJmRzB','482939mYvDqV','1629858RAnGbd','6fBwZtJ','template_qvj0msk','http://eser-all-default-rtdb.firebaseio.com','eser-all','eser-all.appspot.com','741870576674','1:741870576674:web:2a5094bd05f44f0b98d67b','Sam\x20FTP','http://172.16.50.4/','ftp1','Crazy\x20HD','http://crazyhd.com/','ftp2','Ctg\x20Movies','https://ctgmovies.com/','ftp3','Ghuri\x20FTP','http://103.96.104.6//','ftp4','ICC\x20FTP','http://10.16.100.244/dashboard.php?session=c2c3e6c0aa01b1c155cec1fbab1bc6c47883390af1b4cb470ee461ff53665061','ftp5','Live\x20TV\x201','http://172.28.28.54/','tv1','Live\x20TV\x202','http://172.19.178.180/','tv2','NID\x20/\x20ভোটার\x20আবেদন','http://services.nidw.gov.bd','fa-id-card','জন্ম\x20নিবন্ধন\x20ও\x20সংশোধন','http://bdris.gov.bd','fa-certificate','পাসপোর্টের\x20আবেদন','http://epassport.gov.bd','fa-passport','ভূমি\x20তথ্য\x20বাতায়ন','https://dlrms-stg.land.gov.bd/','fa-landmark','পুলিশ\x20ক্লিয়ারেন্স\x20আবেদন','http://pcc.police.gov.bd','fa-user-shield','টিন\x20(e-TIN)\x20সার্টিফিকেট','http://incometax.gov.bd','fa-file-invoice-dollar','Nu\x20Result','http://103.113.200.8/','fa-graduation-cap','Bord\x20Result','https://www.educationboardresults.gov.bd/v2/home','বাংলাদেশ\x20রেলওয়ে\x20টিকিট','https://eticket.railway.gov.bd/','fa-train','Shohoz\x20Bus\x20Ticket','https://www.shohoz.com/bus-tickets','fa-bus','ftp-all-section','tv-all-section','gov-section','edu-section','ticket-section','contact-section','fa-folder-open','fa-tv','status-','status-badge\x20offline','Offline','status-badge\x20online','Online','light-mode','_0x_tg','themeIcon','fa-moon','fa-sun','emailModal','emailStatus','emailForm','senderEmail','emailSubject','emailMessage','sendBtn','service_oyptt6l','userInputEmail','userInputPass','loginError','GoogleAuthProvider','userLoginModal','mainDashboard','btnLogout','particles-js','k3Gz4cI70F4UTep3c','AIzaSyDB4r_a5gPtKhlzM0qqmYHBb6HA_I2SmHQ','eser-all.firebaseapp.com'];_0x38bf=function(){return _0x2287f3;};return _0x38bf();}
-
-  (function(){
-    var _0x10a2=_0x1c8b;
-    emailjs['init']({publicKey:_0x10a2(0x197)});
-    firebase['initializeApp']({
-      apiKey:_0x10a2(0x198),authDomain:_0x10a2(0x199),databaseURL:_0x10a2(0x1a9),
-      projectId:_0x10a2(0x1aa),storageBucket:_0x10a2(0x1ab),messagingSenderId:_0x10a2(0x1ac),appId:_0x10a2(0x1ad)
-    });
-    var _0x4d12=firebase['auth']();
-
-    var _0x2a14=[
-      {id:_0x10a2(0x1b0),title:_0x10a2(0x1ae),url:_0x10a2(0x1af)},
-      {id:_0x10a2(0x1b3),title:_0x10a2(0x1b1),url:_0x10a2(0x1b2)},
-      {id:_0x10a2(0x1b6),title:_0x10a2(0x1b4),url:_0x10a2(0x1b5)},
-      {id:_0x10a2(0x1b9),title:_0x10a2(0x1b7),url:_0x10a2(0x1b8)},
-      {id:_0x10a2(0x1bc),title:_0x10a2(0x1ba),url:_0x10a2(0x1bb)}
-    ];
-    var _0x5c88=[
-      {id:_0x10a2(0x1bf),title:_0x10a2(0x1bd),url:_0x10a2(0x1be)},
-      {id:_0x10a2(0x1c2),title:_0x10a2(0x1c0),url:_0x10a2(0x1c1)}
-    ];
-    var _0x39ef=[
-      {title:_0x10a2(0x1c3),url:_0x10a2(0x1c4),icon:_0x10a2(0x1c5)},
-      {title:_0x10a2(0x1c6),url:_0x10a2(0x1c7),icon:_0x10a2(0x1c8)},
-      {title:_0x10a2(0x1c9),url:_0x10a2(0x1ca),icon:_0x10a2(0x1cb)},
-      {title:_0x10a2(0x1cc),url:_0x10a2(0x1cd),icon:_0x10a2(0x1ce)},
-      {title:_0x10a2(0x1cf),url:_0x10a2(0x1d0),icon:_0x10a2(0x1d1)},
-      {title:_0x10a2(0x1d2),url:_0x10a2(0x1d3),icon:_0x10a2(0x1d4)}
-    ];
-    var _0x1e3f=[
-      {title:_0x10a2(0x1d5),url:_0x10a2(0x1d6),icon:_0x10a2(0x1d7)},
-      {title:_0x10a2(0x1d8),url:_0x10a2(0x1d9),icon:_0x10a2(0x1d7)}
-    ];
-    var _0x4b78=[
-      {title:_0x10a2(0x1da),url:_0x10a2(0x1db),icon:_0x10a2(0x1dc)},
-      {title:_0x10a2(0x1dd),url:_0x10a2(0x1de),icon:_0x10a2(0x1df)},
-      {title: 'SSC Bord challenge 2026', url: 'https://rescrutiny.eduboardresults.gov.bd/', icon: 'fa-certificate'}
-    ];
-
-    function _0x21a4(_0x3e18,_0x4a12,_0x12bc,_0x5821=null){
-      var _0xb12c=_0x10a2;
-      let _0x31a2=_0x5821?'<div\x20class=\x22status-badge\x20checking\x22\x20id=\x22status-'+_0x5821+'\x22><i\x20class=\x22fas\x20fa-spinner\x20fa-spin\x22></i></div>':'';
-      return '<div\x20class=\x22link-card\x22\x20onclick=\x22window.open(\x27'+_0x4a12+'\x27,\x20\x27_blank\x27)\x22>'+_0x31a2+'<i\x20class=\x22fas\x20'+_0x12bc+'\x20main-icon\x22></i><div\x20class=\x22card-title\x22>'+_0x3e18+'</div></div>';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ESER-ALL Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --text-color: #f8fafc;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --card-hover: rgba(255, 255, 255, 0.2);
+      --modal-bg: #1e293b;
+      --modal-border: #334155;
+      --input-bg: #0f172a;
+      --input-border: #475569;
+      --footer-bg: rgba(15, 23, 42, 0.6);
+      --icon-color: #38bdf8;
+      --bg-overlay: rgba(15, 23, 42, 0.75);
     }
 
-    function _0x3e90(){
-      var _0x8e2b=_0x10a2;
-      var _0x1a=document['getElementById'](_0x8e2b(0x1e0)),_0x2b=document['getElementById'](_0x8e2b(0x1e1)),
-          _0x3c=document['getElementById'](_0x8e2b(0x1e2)),_0x4d=document['getElementById'](_0x8e2b(0x1e3)),
-          _0x5e=document['getElementById'](_0x8e2b(0x1e4)),_0x6f=document['getElementById'](_0x8e2b(0x1e5));
-
-      _0x1a['innerHTML']=_0x2b['innerHTML']=_0x3c['innerHTML']=_0x4d['innerHTML']=_0x5e['innerHTML']=_0x6f['innerHTML']='';
-
-      _0x2a14['forEach'](_0x1b=>{_0x1a['innerHTML']+=_0x21a4(_0x1b['title'],_0x1b['url'],_0x8e2b(0x1e6),_0x1b['id']);});
-      _0x5c88['forEach'](_0x1b=>{_0x2b['innerHTML']+=_0x21a4(_0x1b['title'],_0x1b['url'],_0x8e2b(0x1e7),_0x1b['id']);});
-      _0x39ef['forEach'](_0x1b=>{_0x3c['innerHTML']+=_0x21a4(_0x1b['title'],_0x1b['url'],_0x1b['icon']);});
-      _0x1e3f['forEach'](_0x1b=>{_0x4d['innerHTML']+=_0x21a4(_0x1b['title'],_0x1b['url'],_0x1b['icon']);});
-      _0x4b78['forEach'](_0x1b=>{_0x5e['innerHTML']+=_0x21a4(_0x1b['title'],_0x1b['url'],_0x1b['icon']);});
-
-      _0x6f['innerHTML']='<div\x20class=\x22link-card\x22\x20id=\x22_0x_opm\x22><i\x20class=\x22fas\x20fa-paper-plane\x20main-icon\x22></i><div\x20class=\x22card-title\x22>ইমেইল\x20পাঠান\x20(Send\x20Mail)</div></div>';
-
-      document['getElementById']('_0x_opm')['onclick']=function(){
-        var _0x4c=a0_0x_chk;
-        document['getElementById'](_0x8e2b(0x1ee))['style']['display']='flex';
-        document['getElementById'](_0x8e2b(0x1ef))['style']['display']='none';
-        document['getElementById'](_0x8e2b(0x1f0))['reset']();
-      };
-
-      _0x2a14['concat'](_0x5c88)['forEach'](_0x1b=>{
-        let _0x2f=document['getElementById'](_0x8e2b(0x1e8)+_0x1b['id']);
-        if(!_0x2f)return;
-        let _0x3e=new Image();
-        let _0x4f=setTimeout(()=>{_0x2f['className']=_0x8e2b(0x1e9);_0x2f['innerHTML']=_0x8e2b(0x1ea);},0xbb8);
-        _0x3e['onload']=_0x3e['onerror']=()=>{clearTimeout(_0x4f);_0x2f['className']=_0x8e2b(0x1eb);_0x2f['innerHTML']=_0x8e2b(0x1ec);};
-        _0x3e['src']=_0x1b['url']+'/favicon.ico?'+new Date()['getTime']();
-      });
+    [data-theme="light"] {
+      --bg-color: #e0f2fe;
+      --text-color: #0c4a6e;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(56, 189, 248, 0.3);
+      --card-hover: #ffffff;
+      --modal-bg: #ffffff;
+      --modal-border: #bae6fd;
+      --input-bg: #f0f9ff;
+      --input-border: #7dd3fc;
+      --footer-bg: rgba(224, 242, 254, 0.85);
+      --icon-color: #0284c7;
+      --bg-overlay: rgba(224, 242, 254, 0.45);
     }
 
-    document['getElementById'](_0x10a2(0x1ed))['onclick']=function(){
-      var _0x9e=_0x10a2;
-      document['body']['classList']['toggle'](_0x9e(0x1ed));
-      var _0x2d=document['getElementById'](_0x9e(0x1ee));
-      _0x2d['classList']['toggle'](_0x9e(0x1ef));_0x2d['classList']['toggle'](_0x9e(0x1f0));
-    };
+    [data-theme="light"] body {
+      animation: skyColorShift 18s infinite alternate ease-in-out;
+    }
 
-    document['getElementById']('_0x_clm')['onclick']=function(){
-      document['getElementById'](_0x10a2(0x1ee))['style']['display']='none';
-    };
+    @keyframes skyColorShift {
+      0% { background-color: #e0f2fe; }
+      33% { background-color: #bae6fd; }
+      66% { background-color: #e0f7fa; }
+      100% { background-color: #f0f9ff; }
+    }
 
-    document['getElementById'](_0x10a2(0x1f0))['onsubmit']=function(_0x2e){
-      var _0x7f=_0x10a2;
-      _0x2e['preventDefault']();
-      var _0x1a=document['getElementById'](_0x7f(0x1f4)),_0x2b=document['getElementById'](_0x7f(0x1ef));
-      var _0x3c=document['getElementById'](_0x7f(0x1f1))['value'],
-          _0x4d=document['getElementById'](_0x7f(0x1f2))['value'],
-          _0x5e=document['getElementById'](_0x7f(0x1f3))['value'];
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { min-height: 100%; font-family: 'Segoe UI', sans-serif; }
+    
+    body {
+      margin: 0; padding: 0;
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex; flex-direction: column; justify-content: space-between;
+      transition: background 0.5s ease, color 0.5s ease;
+      position: relative;
+    }
 
-      _0x1a['disabled']=!0x0;
-      _0x1a['innerHTML']='<i\x20class=\x22fas\x20fa-spinner\x20fa-spin\x22></i>\x20Sending...';
+    .bg-video-container {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      overflow: hidden; z-index: 0;
+    }
 
-      emailjs['send'](_0x7f(0x1f5),_0x7f(0x1a5),{
-        'from_email':_0x3c,'user_email':_0x3c,'from_name':_0x3c,'subject':_0x4d,'message':_0x5e,'reply_to':_0x3c
-      })['then'](function(){
-        _0x2b['style']['color']='#4CAF50';_0x2b['innerText']='Email\x20sent\x20successfully!';_0x2b['style']['display']='block';
-        _0x1a['disabled']=!0x1;_0x1a['innerHTML']='<i\x20class=\x22fas\x20fa-paper-plane\x22></i>\x20Send\x20Mail';
-        setTimeout(()=>{document['getElementById'](_0x7f(0x1ee))['style']['display']='none';},0x7d0);
-      },function(_0x1d){
-        _0x2b['style']['color']='#f44336';_0x2b['innerText']='Failed:\x20'+(_0x1d['text']||_0x1d['message']||'Error');
-        _0x2b['style']['display']='block';_0x1a['disabled']=!0x1;_0x1a['innerHTML']='<i\x20class=\x22fas\x20fa-paper-plane\x22></i>\x20Send\x20Mail';
-      });
-    };
+    .bg-video-container video {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: brightness(0.85) contrast(1.05);
+    }
 
-    document['getElementById']('_0x_lgb')['onclick']=function(){
-      var _0x2c=_0x10a2;
-      var _0x1a=document['getElementById'](_0x2c(0x1f6))['value'],_0x2b=document['getElementById'](_0x2c(0x1f7))['value'],_0x3c=document['getElementById'](_0x2c(0x1f8));
-      _0x4d12['signInWithEmailAndPassword'](_0x1a,_0x2b)['then'](()=>{_0x3c['style']['display']='none';})['catch'](_0x1e=>{_0x3c['innerText']=_0x1e['message'];_0x3c['style']['display']='block';});
-    };
+    .bg-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-overlay); transition: background 0.5s ease;
+    }
+    
+    .theme-toggle-btn {
+      position: fixed; top: 20px; right: 20px; z-index: 1001;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      color: var(--text-color); padding: 10px 16px; border-radius: 50px;
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      font-weight: bold; backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2); transition: all 0.3s ease;
+    }
+    .theme-toggle-btn:hover { background: var(--card-hover); transform: scale(1.03); }
 
-    document['getElementById']('_0x_ggb')['onclick']=function(){
-      var _0x5f=_0x10a2;
-      _0x4d12['signInWithPopup'](new firebase['auth'][_0x5f(0x1f9)]())['catch'](_0x2d=>{
-        var _0x1c=document['getElementById'](_0x5f(0x1f8));
-        _0x1c['innerText']=_0x2d['message'];_0x1c['style']['display']='block';
-      });
-    };
+    .dashboard { position: relative; z-index: 1; padding: 30px 15px 10px; text-align: center; }
+    .main-header { font-size: 32px; font-weight: 800; margin-bottom: 25px; margin-top: 10px; letter-spacing: 0.5px; }
+    .section-title { font-size: 22px; margin: 25px 0 15px; display: flex; justify-content: center; align-items: center; gap: 10px; color: var(--text-color); }
+    .section-title i { color: var(--icon-color); }
 
-    document['getElementById'](_0x10a2(0x1fc))['onclick']=function(){
-      _0x4d12['signOut']();
-    };
+    .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; max-width: 950px; margin: 0 auto; }
+    .inline-grid { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px; max-width: 950px; margin: 0 auto 20px auto; }
+    
+    .compact-card { padding: 10px 14px; min-height: auto; flex: 1 1 120px; max-width: 200px; }
+    .compact-card i.main-icon { font-size: 28px !important; margin-bottom: 5px; }
+    .compact-card div { font-size: 13px; font-weight: 600; }
+    
+    .link-card {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 16px; background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 14px; color: var(--text-color); backdrop-filter: blur(10px);
+      font-size: 15px; font-weight: 600; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+      position: relative; min-height: 100px; cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .link-card i.main-icon { font-size: 32px; margin-bottom: 8px; color: var(--icon-color); transition: transform 0.2s ease; }
+    .link-card:hover { transform: translateY(-4px); background: var(--card-hover); box-shadow: 0 12px 20px rgba(2, 132, 199, 0.2); }
+    .link-card:hover i.main-icon { transform: scale(1.1); }
 
-    _0x4d12['onAuthStateChanged'](_0x3a=>{
-      var _0x1e=_0x10a2;
-      if(_0x3a){
-        document['getElementById'](_0x1e(0x1fa))['style']['display']='none';
-        document['getElementById'](_0x1e(0x1fb))['style']['display']='block';
-        document['getElementById'](_0x1e(0x1fc))['style']['display']='block';
-        _0x3e90();
-      }else{
-        document['getElementById'](_0x1e(0x1fa))['style']['display']='flex';
-        document['getElementById'](_0x1e(0x1fb))['style']['display']='none';
-        document['getElementById'](_0x1e(0x1fc))['style']['display']='none';
+    .status-badge {
+      position: absolute; top: 8px; right: 8px; font-size: 11px; padding: 2px 6px; border-radius: 10px;
+      font-weight: bold; display: flex; align-items: center; gap: 4px;
+    }
+    .status-badge.online { background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 1px solid #4CAF50; }
+    .status-badge.offline { background: rgba(244, 67, 54, 0.2); color: #f44336; border: 1px solid #f44336; }
+    .status-badge.checking { background: rgba(255, 193, 7, 0.2); color: #ffc107; border: 1px solid #ffc107; }
+
+    .user-login-modal { 
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+      background: rgba(15, 23, 42, 0.95); display: flex; justify-content: center; 
+      align-items: center; z-index: 999; 
+    }
+    .modal-content { 
+      background: var(--modal-bg); color: var(--text-color); padding: 28px; 
+      border-radius: 16px; width: 330px; border: 1px solid var(--modal-border); 
+      text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); 
+    }
+    .modal-content input { 
+      width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--input-border); 
+      background: var(--input-bg); color: var(--text-color); border-radius: 8px; outline: none; 
+    }
+    .modal-content button { 
+      padding: 12px; margin-top: 5px; cursor: pointer; border: none; 
+      border-radius: 8px; font-weight: bold; background: #0284c7; color: white; width: 100%; 
+    }
+
+    .logout-btn { 
+      position: fixed; left: 20px; bottom: 20px; padding: 10px 18px; border-radius: 20px; 
+      border: none; background: #e11d48; color: white; font-size: 14px; font-weight: bold; 
+      cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3); 
+    }
+    
+    .developer-footer { 
+      position: relative; z-index: 1; text-align: center; padding: 15px 10px; 
+      font-size: 14px; background: var(--footer-bg); margin-top: 30px; backdrop-filter: blur(8px); 
+    }
+    .developer-footer span { font-weight: bold; color: var(--icon-color); }
+  </style>
+</head>
+
+<body oncontextmenu="return false;">
+
+  <div class="bg-video-container">
+    <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1506744038136-46273834b3fb">
+      <source src="https://assets.mixkit.co/videos/preview/mixkit-timelapse-of-clouds-and-mountains-2408-large.mp4" type="video/mp4">
+    </video>
+    <div class="bg-overlay"></div>
+  </div>
+
+  <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">
+    <i class="fas fa-moon" id="themeIcon"></i>
+    <span id="themeText">Dark Sky</span>
+  </button>
+
+  <div class="user-login-modal" id="userLoginModal">
+    <div class="modal-content" id="loginBox">
+      <h3 style="margin-bottom: 15px;"><i class="fas fa-shield-alt" style="color: var(--icon-color);"></i> Secure Login</h3>
+      <input type="email" id="userInputEmail" placeholder="Email Address" autocomplete="off">
+      <input type="password" id="userInputPass" placeholder="Password" autocomplete="off">
+      <button onclick="checkUserLogin()">Login</button>
+      <div id="loginError" style="color: #f44336; font-size: 12px; margin-top: 10px; display: none;"></div>
+    </div>
+  </div>
+
+  <div class="dashboard" id="mainDashboard" style="display: none;">
+    <div class="main-header">ESER-ALL Portal</div>
+
+    <div class="section-title"><i class="fas fa-server"></i> FTP Servers</div>
+    <div class="inline-grid" id="ftp-all-section"></div>
+
+    <div class="section-title"><i class="fas fa-tv"></i> Live TV</div>
+    <div class="inline-grid" id="tv-all-section"></div>
+
+    <div class="section-title"><i class="fas fa-landmark"></i> Government Services</div>
+    <div class="link-grid" id="gov-section"></div>
+
+    <div class="section-title"><i class="fas fa-graduation-cap"></i> Education & Admissions</div>
+    <div class="link-grid" id="edu-section"></div>
+
+    <!-- New Section Added -->
+    <div class="section-title"><i class="fas fa-ticket-alt"></i> Online Ticket</div>
+    <div class="link-grid" id="ticket-section"></div>
+  </div>
+
+  <button class="logout-btn" id="btnLogout" style="display: none;" onclick="userLogout()">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </button>
+
+  <footer class="developer-footer">
+    Developed by <span>Antu</span>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if (e.keyCode === 123 || 
+         (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || 
+         (e.ctrlKey && e.keyCode === 85)) {
+        e.preventDefault();
+        return false;
       }
     });
 
-    particlesJS(_0x10a2(0x1fd),{
-      'particles':{
-        'number':{'value':0xb4,'density':{'enable':!0x0,'value_area':0x320}},
-        'color':{'value':'#ffffff'},'shape':{'type':'circle'},'opacity':{'value':0.8,'random':!0x0},
-        'size':{'value':0x4,'random':!0x0},'line_linked':{'enable':!0x0,'distance':0x8c,'color':'#ffffff','opacity':0.6,'width':1.5},
-        'move':{'enable':!0x0,'speed':0x3}
-      },'interactivity':{'events':{'onhover':{'enable':!0x0,'mode':'grab'}}},'retina_detect':!0x0
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeUI(savedTheme);
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeUI(newTheme);
+    }
+
+    function updateThemeUI(theme) {
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      if (theme === 'light') {
+        icon.className = 'fas fa-sun';
+        text.innerText = 'Sky Light';
+      } else {
+        icon.className = 'fas fa-moon';
+        text.innerText = 'Night Sky';
+      }
+    }
+    initTheme();
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDB4r_a5gPtKhlzM0qqmYHBb6HA_I2SmHQ",
+      authDomain: "eser-all.firebaseapp.com",
+      databaseURL: "https://eser-all-default-rtdb.firebaseio.com",
+      projectId: "eser-all",
+      storageBucket: "eser-all.firebasestorage.app",
+      messagingSenderId: "741870576674",
+      appId: "1:741870576674:web:2a5094bd05f44f0b98d67b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    const FTP_API_HOST = '10.10.10.10';
+    const FTP2_API_HOST = '172.16.50.4'; 
+    const FTP3_API_HOST = '172.19.178.179';
+    const FTP4_API_HOST = '10.16.100.244';
+    const TV_API_HOST = '172.28.28.54';
+    const TV2_API_HOST = '172.19.178.180';
+
+    function checkUserLogin() {
+      const email = document.getElementById('userInputEmail').value.trim();
+      const pass = document.getElementById('userInputPass').value.trim();
+      const errorDiv = document.getElementById('loginError');
+
+      if (!email || !pass) {
+        errorDiv.innerText = "Please enter both email & password.";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      auth.signInWithEmailAndPassword(email, pass)
+        .then(() => {
+          errorDiv.style.display = "none";
+          showDashboard();
+        })
+        .catch((error) => {
+          errorDiv.innerText = "Invalid Login Credentials!";
+          errorDiv.style.display = "block";
+        });
+    }
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        showDashboard();
+      } else {
+        document.getElementById('userLoginModal').style.display = 'flex';
+        document.getElementById('mainDashboard').style.display = 'none';
+        document.getElementById('btnLogout').style.display = 'none';
+      }
     });
-  })();
-</script>
+
+    function showDashboard() {
+      document.getElementById('userLoginModal').style.display = 'none';
+      document.getElementById('mainDashboard').style.display = 'block';
+      document.getElementById('btnLogout').style.display = 'block';
+      renderLinks();
+    }
+
+    function userLogout() {
+      auth.signOut().then(() => {
+        location.reload();
+      });
+    }
+
+    let ftpLinks = [{ title: "FTP Server 1", url: `http://${FTP_API_HOST}/` }];
+    let ftp2Links = [{ title: "FTP Server 2", url: `http://${FTP2_API_HOST}/` }];
+    let ftp3Links = [{ title: "FTP Server 3", url: `http://${FTP3_API_HOST}/` }];
+    let ftp4Links = [{ title: "FTP Server 4", url: `http://${FTP4_API_HOST}/` }];
+    
+    let tvLinks = [{ title: "Live TV 1", url: `http://${TV_API_HOST}/` }];
+    let tv2Links = [{ title: "Live TV 2", url: `http://${TV2_API_HOST}/` }];
+    let tv3Links = [{ title: "Live TV 3", url: "https://toffeelive.com" }];
+    let tv4Links = [{ title: "Live TV 4", url: "https://www.jagobd.com/" }];
+
+    let govLinks = [
+      { title: "NID / ভোটার আবেদন", url: "http://services.nidw.gov.bd" },
+      { title: "জন্ম নিবন্ধন ও সংশোধন", url: "http://bdris.gov.bd" },
+      { title: "পাসপোর্টের আবেদন", url: "http://epassport.gov.bd" }
+    ];
+
+    let eduLinks = [
+      { title: "JSC/JDC/SSC/DAKHIL/HSC/ALIM", url: "https://www.educationboardresults.gov.bd/v2/home" },
+      { title: "ঢাকা বিশ্ববিদ্যালয়", url: "http://duadmission.eis.du.ac.bd" },
+      { title: "জাতীয় বিশ্ববিদ্যালয় রেজাল্ট", url: "http://results.nu.ac.bd/" }
+    ];
+
+    // New Ticket Array Added
+    let ticketLinks = [
+      { title: "Railway Ticket", url: "https://eticket.railway.gov.bd/" },
+      { title: "Biman Ticket", url: "https://gozayaan.com/?utm_promotion=true&utm_term&utm_campaign=Performance%20Max_Flight_ROAS&utm_source=adwords&utm_medium=ppc&hsa_acc=8659916254&hsa_cam=22853979343&hsa_grp&hsa_ad&hsa_src=x&hsa_tgt&hsa_kw&hsa_mt&hsa_net=adwords&hsa_ver=3&gad_source=1&gad_campaignid=22844330052&gbraid=0AAAAACrTFuEv8csNeaKU3IERtAss9k32S&gclid=CjwKCAjw1bvTBhBbEiwAzbP8L5tRSD76ChcFauA8Gm6WKE7tGn0qxQSOIOpI843a4BKU_uwFYrgYKxoCfzwQAvD_BwE" }
+    ];
+
+    function renderLinks() {
+      const ftpAllContainer = document.getElementById('ftp-all-section');
+      const tvAllContainer = document.getElementById('tv-all-section');
+      const govc = document.getElementById('gov-section');
+      const educ = document.getElementById('edu-section');
+      const ticketc = document.getElementById('ticket-section');
+      
+      ftpAllContainer.innerHTML = ''; 
+      tvAllContainer.innerHTML = ''; 
+      govc.innerHTML = ''; 
+      educ.innerHTML = '';
+      if (ticketc) ticketc.innerHTML = '';
+      
+      let cardIdIndex = 0;
+
+      ftpLinks.concat(ftp2Links, ftp3Links, ftp4Links).forEach((l) => { 
+        cardIdIndex++;
+        ftpAllContainer.innerHTML += genCard(l.title, l.url, 'ftp', true, `card-${cardIdIndex}`);
+        checkServerPing(l.url, `card-${cardIdIndex}`);
+      });
+
+      tvLinks.concat(tv2Links, tv3Links, tv4Links).forEach((l) => { 
+        cardIdIndex++;
+        tvAllContainer.innerHTML += genCard(l.title, l.url, 'tv', true, `card-${cardIdIndex}`);
+        checkServerPing(l.url, `card-${cardIdIndex}`);
+      });
+
+      govLinks.forEach((l) => { 
+        govc.innerHTML += genCard(l.title, l.url, 'gov', false); 
+      });
+
+      eduLinks.forEach((l) => { 
+        educ.innerHTML += genCard(l.title, l.url, 'edu', false); 
+      });
+
+      ticketLinks.forEach((l) => {
+        ticketc.innerHTML += genCard(l.title, l.url, 'ticket', false);
+      });
+    }
+
+    function genCard(title, url, type, isCompact = false, id = '') {
+      let iconClass = 'fas fa-globe';
+      if (type === 'ftp') iconClass = 'fas fa-server';
+      if (type === 'tv') iconClass = 'fas fa-tv';
+      if (type === 'gov') iconClass = 'fas fa-landmark';
+      if (type === 'edu') iconClass = 'fas fa-graduation-cap';
+      
+      // Icon mapping for tickets
+      if (type === 'ticket') {
+        if (title.toLowerCase().includes('railway')) {
+          iconClass = 'fas fa-train';
+        } else if (title.toLowerCase().includes('biman')) {
+          iconClass = 'fas fa-plane';
+        } else {
+          iconClass = 'fas fa-ticket-alt';
+        }
+      }
+      
+      const compactClass = isCompact ? 'compact-card' : '';
+      const statusBadge = (type === 'ftp' || type === 'tv') 
+        ? `<div class="status-badge checking" id="badge-${id}"><i class="fas fa-circle-notch fa-spin"></i> Testing</div>` 
+        : '';
+
+      return `
+        <div class="link-card ${compactClass}" id="${id}" onclick="window.open('${url}', '_blank')">
+          ${statusBadge}
+          <i class="${iconClass} main-icon"></i>
+          <div>${title}</div>
+        </div>
+      `;
+    }
+
+    function checkServerPing(url, cardId) {
+      const badge = document.getElementById(`badge-${cardId}`);
+      if (!badge) return;
+
+      const img = new Image();
+      const timer = setTimeout(() => {
+        badge.className = 'status-badge offline';
+        badge.innerHTML = '<i class="fas fa-wifi"></i> Offline';
+      }, 3500);
+
+      img.onload = function() {
+        clearTimeout(timer);
+        badge.className = 'status-badge online';
+        badge.innerHTML = '<i class="fas fa-wifi"></i> Online';
+      };
+
+      img.onerror = function() {
+        clearTimeout(timer);
+        badge.className = 'status-badge online';
+        badge.innerHTML = '<i class="fas fa-wifi"></i> Online';
+      };
+
+      img.src = url + 'favicon.ico?' + new Date().getTime();
+    }
+  </script>
+</body>
+</html>
