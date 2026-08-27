@@ -19,7 +19,6 @@
       --modal-border: #334155;
       --input-bg: #0f172a;
       --input-border: #475569;
-      --footer-bg: rgba(15, 23, 42, 0.6);
       --icon-color: #38bdf8;
       --bg-overlay: rgba(15, 23, 42, 0.75);
     }
@@ -34,7 +33,6 @@
       --modal-border: #bae6fd;
       --input-bg: #f0f9ff;
       --input-border: #7dd3fc;
-      --footer-bg: rgba(224, 242, 254, 0.85);
       --icon-color: #0284c7;
       --bg-overlay: rgba(224, 242, 254, 0.45);
     }
@@ -87,24 +85,10 @@
     }
     .theme-toggle-btn:hover { background: var(--card-hover); transform: scale(1.03); }
 
-    .dashboard { position: relative; z-index: 1; padding: 30px 15px 10px; text-align: center; }
+    .dashboard { position: relative; z-index: 1; padding: 30px 15px 40px; text-align: center; }
     .main-header { font-size: 32px; font-weight: 800; margin-bottom: 25px; margin-top: 10px; letter-spacing: 0.5px; }
     .section-title { font-size: 22px; margin: 25px 0 15px; display: flex; justify-content: center; align-items: center; gap: 10px; color: var(--text-color); }
     .section-title i { color: var(--icon-color); }
-
-    .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; max-width: 950px; margin: 0 auto; }
-    
-    .link-card {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 16px; background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 14px; color: var(--text-color); backdrop-filter: blur(10px);
-      font-size: 15px; font-weight: 600; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-      position: relative; min-height: 100px; cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .link-card i.main-icon { font-size: 32px; margin-bottom: 8px; color: var(--icon-color); transition: transform 0.2s ease; }
-    .link-card:hover { transform: translateY(-4px); background: var(--card-hover); box-shadow: 0 12px 20px rgba(2, 132, 199, 0.2); }
-    .link-card:hover i.main-icon { transform: scale(1.1); }
 
     /* Interactive Excel & Upload Container */
     .worksheet-section {
@@ -158,7 +142,7 @@
 
     .excel-container iframe {
       width: 100%;
-      height: 500px;
+      height: 600px;
       border: none;
       display: block;
     }
@@ -166,7 +150,7 @@
     /* Table Preview Styling */
     .table-wrapper {
       max-height: 350px;
-      overflow-auto: auto;
+      overflow: auto;
       margin-top: 15px;
       border-radius: 8px;
       background: rgba(0, 0, 0, 0.2);
@@ -211,12 +195,6 @@
       border: none; background: #e11d48; color: white; font-size: 14px; font-weight: bold; 
       cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3); 
     }
-    
-    .developer-footer { 
-      position: relative; z-index: 1; text-align: center; padding: 15px 10px; 
-      font-size: 14px; background: var(--footer-bg); margin-top: 30px; backdrop-filter: blur(8px); 
-    }
-    .developer-footer span { font-weight: bold; color: var(--icon-color); }
   </style>
 </head>
 
@@ -273,24 +251,11 @@
         <iframe src="https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit?usp=sharing"></iframe>
       </div>
     </div>
-
-    <div class="section-title"><i class="fas fa-landmark"></i> Government Services</div>
-    <div class="link-grid" id="gov-section"></div>
-
-    <div class="section-title"><i class="fas fa-graduation-cap"></i> Education & Admissions</div>
-    <div class="link-grid" id="edu-section"></div>
-
-    <div class="section-title"><i class="fas fa-ticket-alt"></i> Online Ticket</div>
-    <div class="link-grid" id="ticket-section"></div>
   </div>
 
   <button class="logout-btn" id="btnLogout" style="display: none;" onclick="userLogout()">
     <i class="fas fa-sign-out-alt"></i> Logout
   </button>
-
-  <footer class="developer-footer">
-    Developed by <span>Antu</span>
-  </footer>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -381,7 +346,6 @@
       document.getElementById('userLoginModal').style.display = 'none';
       document.getElementById('mainDashboard').style.display = 'block';
       document.getElementById('btnLogout').style.display = 'block';
-      renderLinks();
     }
 
     function userLogout() {
@@ -413,68 +377,6 @@
         if (table) table.classList.add('parsed-table');
       };
       reader.readAsArrayBuffer(file);
-    }
-
-    let govLinks = [
-      { title: "NID / ভোটার আবেদন", url: "http://services.nidw.gov.bd" },
-      { title: "জন্ম নিবন্ধন ও সংশোধন", url: "http://bdris.gov.bd" },
-      { title: "পাসপোর্টের আবেদন", url: "http://epassport.gov.bd" }
-    ];
-
-    let eduLinks = [
-      { title: "JSC/JDC/SSC/DAKHIL/HSC/ALIM", url: "https://www.educationboardresults.gov.bd/v2/home" },
-      { title: "ঢাকা বিশ্ববিদ্যালয়", url: "http://duadmission.eis.du.ac.bd" },
-      { title: "জাতীয় বিশ্ববিদ্যালয় রেজাল্ট", url: "http://results.nu.ac.bd/" }
-    ];
-
-    let ticketLinks = [
-      { title: "Railway Ticket", url: "https://eticket.railway.gov.bd/" },
-      { title: "Biman Ticket", url: "https://gozayaan.com/" }
-    ];
-
-    function renderLinks() {
-      const govc = document.getElementById('gov-section');
-      const educ = document.getElementById('edu-section');
-      const ticketc = document.getElementById('ticket-section');
-      
-      govc.innerHTML = ''; 
-      educ.innerHTML = '';
-      if (ticketc) ticketc.innerHTML = '';
-
-      govLinks.forEach((l) => { 
-        govc.innerHTML += genCard(l.title, l.url, 'gov'); 
-      });
-
-      eduLinks.forEach((l) => { 
-        educ.innerHTML += genCard(l.title, l.url, 'edu'); 
-      });
-
-      ticketLinks.forEach((l) => {
-        ticketc.innerHTML += genCard(l.title, l.url, 'ticket');
-      });
-    }
-
-    function genCard(title, url, type) {
-      let iconClass = 'fas fa-globe';
-      if (type === 'gov') iconClass = 'fas fa-landmark';
-      if (type === 'edu') iconClass = 'fas fa-graduation-cap';
-      
-      if (type === 'ticket') {
-        if (title.toLowerCase().includes('railway')) {
-          iconClass = 'fas fa-train';
-        } else if (title.toLowerCase().includes('biman')) {
-          iconClass = 'fas fa-plane';
-        } else {
-          iconClass = 'fas fa-ticket-alt';
-        }
-      }
-
-      return `
-        <div class="link-card" onclick="window.open('${url}', '_blank')">
-          <i class="${iconClass} main-icon"></i>
-          <div>${title}</div>
-        </div>
-      `;
     }
   </script>
 </body>
