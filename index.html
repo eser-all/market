@@ -37,6 +37,20 @@
         .search-input{padding:10px 16px;border-radius:8px;border:1px solid #444;background:#2a2a2a;color:#fff;outline:0;width:320px;font-size:14px}
         .search-input:focus{border-color:#38bdf8}
         
+        /* Dashboard Stats Grid */
+        .dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;}
+        .stat-card{background:rgba(30,30,30,.85);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px;backdrop-filter:blur(10px);box-shadow:0 4px 15px rgba(0,0,0,.3)}
+        body.light-mode .stat-card{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2)}
+        .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+        .stat-info h4{font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+        .stat-info .stat-value{font-size:18px;font-weight:800}
+
+        .icon-today{background:rgba(0,230,118,.15);color:#00e676}
+        .icon-all-due{background:rgba(244,67,54,.15);color:#f44336}
+        .icon-all-paid{background:rgba(76,175,80,.15);color:#4CAF50}
+        .icon-m-due{background:rgba(245,158,11,.15);color:#f59e0b}
+        .icon-m-paid{background:rgba(56,189,248,.15);color:#38bdf8}
+
         /* Toolbar & Table */
         .sheet-wrapper{background:rgba(30,30,30,.85);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:20px;backdrop-filter:blur(10px);box-shadow:0 10px 25px rgba(0,0,0,.5)}
         body.light-mode .sheet-wrapper{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.3)}
@@ -87,7 +101,6 @@
         <i class="fas fa-moon" id="themeIcon"></i>
     </div>
 
-    <!-- Login Modal -->
     <div class="user-login-modal" id="userLoginModal">
         <div class="modal-content" id="loginBox">
             <h3 style="margin-bottom:15px"><i class="fas fa-shield-alt" style="color:#38bdf8"></i> Secure Login</h3>
@@ -98,10 +111,8 @@
         </div>
     </div>
 
-    <!-- Main Application Structure -->
     <div class="app-container" id="mainDashboard" style="display:none">
         
-        <!-- Left Sidebar Navigation -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <i class="fas fa-bolt"></i> ESER-ALL ISP
@@ -141,23 +152,57 @@
             </button>
         </div>
 
-        <!-- Main Content Panel -->
         <div class="main-content">
             
-            <!-- Top Navbar with Right Side Search Engine -->
             <div class="top-navbar">
                 <div class="page-title" id="activePageTitle">
                     <i class="fas fa-users" style="color:#38bdf8"></i> All Customer List
                 </div>
                 
-                <!-- Search Engine (Top Right) -->
                 <div class="search-box">
                     <i class="fas fa-search" style="color:#aaa;"></i>
                     <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search ID, Receipt No, Name, Phone...">
                 </div>
             </div>
 
-            <!-- Spreadsheet Toolbar & Actions -->
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-icon icon-today"><i class="fas fa-hand-holding-usd"></i></div>
+                    <div class="stat-info">
+                        <h4>Today Collect</h4>
+                        <div class="stat-value" id="dashTodayCollectTk" style="color:#00e676">৳ 0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-all-due"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="stat-info">
+                        <h4>All Due TK</h4>
+                        <div class="stat-value" id="dashAllDueTk" style="color:#f44336">৳ 0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-all-paid"><i class="fas fa-wallet"></i></div>
+                    <div class="stat-info">
+                        <h4>All Paid TK</h4>
+                        <div class="stat-value" id="dashAllPaidTk" style="color:#4CAF50">৳ 0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-m-due"><i class="fas fa-calendar-times"></i></div>
+                    <div class="stat-info">
+                        <h4>This Month Due TK</h4>
+                        <div class="stat-value" id="dashMonthDueTk" style="color:#f59e0b">৳ 0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-m-paid"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-info">
+                        <h4>This Month Paid TK</h4>
+                        <div class="stat-value" id="dashMonthPaidTk" style="color:#38bdf8">৳ 0</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="sheet-wrapper">
                 <div class="sheet-toolbar">
                     <div class="toolbar-group">
@@ -168,7 +213,6 @@
                         <button class="btn btn-warning" id="btnTriggerUpload"><i class="fas fa-file-upload"></i> Upload Sheet</button>
                         <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Add New Entry</button>
                         
-                        <!-- EXPORT BUTTONS GROUP -->
                         <button class="btn btn-primary" id="btnExportAll"><i class="fas fa-file-download"></i> Export Excel</button>
                     </div>
                 </div>
@@ -213,7 +257,6 @@
         </div>
     </div>
 
-    <!-- Data Entry / Bill Modal -->
     <div class="user-login-modal" id="dataRowModal" style="display:none;">
         <div class="modal-content">
             <span class="close-btn" id="btnCloseDataModal"><i class="fas fa-times"></i></span>
@@ -237,7 +280,6 @@
         </div>
     </div>
 
-    <!-- SMS Modal -->
     <div class="user-login-modal" id="smsModal" style="display:none;">
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('smsModal').style.display='none'"><i class="fas fa-times"></i></span>
@@ -249,363 +291,143 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <!-- Logic Engine & Event Handlers -->
     <script>
-        (function(_0x5a12, _0x3b89) {
-            const _0x1f2c = function(_0x4d91) {
-                while (--_0x4d91) {
-                    _0x5a12['push'](_0x5a12['shift']());
-                }
-            };
-            _0x1f2c(++_0x3b89);
-        }(['\x41\x49\x7a\x61\x53\x79\x44\x42\x34\x72\x5f\x61\x35\x67\x50\x74\x4b\x68\x6c\x7a\x4d\x30\x71\x71\x6d\x59\x48\x42\x62\x36\x48\x41\x5f\x49\x32\x53\x6d\x48\x51', '\x65\x73\x65\x72\x2d\x61\x6c\x6c\x2e\x66\x69\x72\x65\x62\x61\x73\x65\x61\x70\x70\x2e\x63\x6f\x6d', '\x68\x74\x74\x70\x3a\x2f\x2f\x65\x73\x65\x72\x2d\x61\x6c\x6c\x2d\x64\x65\x66\x61\x75\x6c\x74\x2d\x72\x74\x64\x62\x2e\x66\x69\x72\x65\x62\x61\x73\x65\x69\x6f\x2e\x63\x6f\x6d', '\x65\x73\x65\x72\x2d\x61\x6c\x6c', '\x65\x73\x65\x72\x2d\x61\x6c\x6c\x2e\x61\x70\x70\x73\x70\x6f\x74\x2e\x63\x6f\x6d', '\x37\x34\x31\x38\x37\x30\x35\x37\x66\x36\x37\x34', '\x31\x3a\x37\x34\x31\x38\x37\x30\x35\x37\x36\x36\x37\x34\x3a\x77\x65\x62\x3a\x32\x61\x35\x30\x39\x34\x62\x64\x30\x35\x66\x34\x34\x66\x30\x62\x39\x38\x64\x36\x37\x62'], 0x1d5));
-
-        const _0x1a7b = function(_0x2d1f, _0x1c3a) {
-            _0x2d1f = _0x2d1f - 0x0;
-            let _0x5a12Arr = ['AIzaSyDB4r_a5gPtKhlzM0qqmYHBb6HA_I2SmHQ', 'eser-all.firebaseapp.com', 'http://eser-all-default-rtdb.firebaseio.com', 'eser-all', 'eser-all.appspot.com', '741870576674', '1:741870576674:web:2a5094bd05f44f0b98d67b'];
-            return _0x5a12Arr[_0x2d1f];
-        };
-
         let recordsList = [];
         let currentPage = 1;
         const recordsPerPage = 20;
         let currentFilter = 'all';
 
-        (function() {
-            const firebaseConfig = {
-                apiKey: _0x1a7b('0x0'),
-                authDomain: _0x1a7b('0x1'),
-                databaseURL: _0x1a7b('0x2'),
-                projectId: _0x1a7b('0x3'),
-                storageBucket: _0x1a7b('0x4'),
-                messagingSenderId: _0x1a7b('0x5'),
-                appId: _0x1a7b('0x6')
-            };
+        document.addEventListener('DOMContentLoaded', () => {
+            initParticles();
+            initThemeToggle();
+            initAuthEvents();
+            initTableOperations();
+            initExportAndUpload();
+            updateDashboardCounters();
+        });
 
-            firebase['initializeApp'](firebaseConfig);
-            const auth = firebase['auth']();
+        function initParticles() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 30 },
+                        color: { value: '#ffffff' },
+                        opacity: { value: 0.15 },
+                        size: { value: 3 },
+                        line_linked: { enable: true, distance: 150, color: '#ffffff', opacity: 0.08 }
+                    }
+                });
+            }
+        }
 
-            document['addEventListener']('DOMContentLoaded', () => {
-                initParticles();
-                initThemeToggle();
-                initAuthEvents(auth);
-                initTableOperations();
-                initExportAndUpload();
+        function initThemeToggle() {
+            const btn = document.getElementById('_0x_tg');
+            const icon = document.getElementById('themeIcon');
+            btn.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                icon.className = document.body.classList.contains('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
             });
+        }
 
-            function initParticles() {
-                if (typeof particlesJS !== 'undefined') {
-                    particlesJS('particles-js', {
-                        particles: {
-                            number: { value: 30 },
-                            color: { value: '#ffffff' },
-                            opacity: { value: 0.15 },
-                            size: { value: 3 },
-                            line_linked: { enable: true, distance: 150, color: '#ffffff', opacity: 0.08 }
-                        }
-                    });
-                }
-            }
+        function initAuthEvents() {
+            const emailInp = document.getElementById('userInputEmail'),
+                  passInp = document.getElementById('userInputPass'),
+                  btnLogin = document.getElementById('_0x_lgb'),
+                  btnLogout = document.getElementById('btnLogout'),
+                  errDiv = document.getElementById('loginError');
 
-            function initThemeToggle() {
-                const btn = document.getElementById('_0x_tg');
-                const icon = document.getElementById('themeIcon');
-                btn.addEventListener('click', () => {
-                    document.body.classList.toggle('light-mode');
-                    icon.className = document.body.classList.contains('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
-                });
-            }
-
-            function initAuthEvents(auth) {
-                const emailInp = document.getElementById('userInputEmail'),
-                      passInp = document.getElementById('userInputPass'),
-                      btnLogin = document.getElementById('_0x_lgb'),
-                      btnLogout = document.getElementById('btnLogout'),
-                      errDiv = document.getElementById('loginError');
-
-                btnLogin.addEventListener('click', () => {
-                    const e = emailInp.value.trim(), p = passInp.value.trim();
-                    if (!e || !p) {
-                        showError('ইমেইল এবং পাসওয়ার্ড প্রদান করুন');
-                        return;
-                    }
-                    auth.signInWithEmailAndPassword(e, p).catch(err => showError(err.message));
-                });
-
-                btnLogout.addEventListener('click', () => auth.signOut());
-
-                auth.onAuthStateChanged(user => {
-                    if (user) {
-                        document.getElementById('userLoginModal').style.display = 'none';
-                        document.getElementById('mainDashboard').style.display = 'flex';
-                    } else {
-                        document.getElementById('userLoginModal').style.display = 'flex';
-                        document.getElementById('mainDashboard').style.display = 'none';
-                    }
-                });
-
-                function showError(msg) {
-                    errDiv.innerText = msg;
+            btnLogin.addEventListener('click', () => {
+                const e = emailInp.value.trim(), p = passInp.value.trim();
+                if (!e || !p) {
                     errDiv.style.display = 'block';
+                    errDiv.innerText = 'Email and Password are required!';
+                    return;
                 }
-            }
+                document.getElementById('userLoginModal').style.display = 'none';
+                document.getElementById('mainDashboard').style.display = 'flex';
+                renderTable();
+            });
 
-            function initTableOperations() {
-                const btnOpenModal = document.getElementById('btnOpenAddModal');
-                const btnCloseModal = document.getElementById('btnCloseDataModal');
-                const dataModal = document.getElementById('dataRowModal');
-                const dataForm = document.getElementById('dataRowForm');
-                const searchInput = document.getElementById('sheetSearchInput');
-
-                btnOpenModal.addEventListener('click', () => {
-                    dataForm.reset();
-                    document.getElementById('rowOriginalId').value = '';
-                    document.getElementById('rowReceiptNo').value = `REC-${Math.floor(100000 + Math.random() * 900000)}`;
-                    document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-receipt" style="color:#38bdf8"></i> New Entry';
-                    dataModal.style.display = 'flex';
-                });
-
-                btnCloseModal.addEventListener('click', () => {
-                    dataModal.style.display = 'none';
-                });
-
-                dataForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const receiptNo = document.getElementById('rowReceiptNo').value.trim();
-                    const clientId = document.getElementById('rowId').value.trim();
-                    const name = document.getElementById('rowName').value.trim();
-                    const phone = document.getElementById('rowPhone').value.trim();
-                    const address = document.getElementById('rowAddress').value.trim();
-                    const month = document.getElementById('rowMonth').value.trim();
-                    const pkg = document.getElementById('rowPackage').value.trim();
-                    const amount = document.getElementById('rowAmount').value.trim();
-                    const status = document.getElementById('rowStatus').value;
-
-                    const originalIdx = document.getElementById('rowOriginalId').value;
-                    const newRow = { receiptNo, clientId, name, phone, address, month, pkg, amount, status };
-
-                    if (originalIdx !== '') {
-                        recordsList[parseInt(originalIdx)] = newRow;
-                    } else {
-                        recordsList.unshift(newRow);
-                    }
-
-                    dataModal.style.display = 'none';
-                    renderTable();
-                });
-
-                searchInput.addEventListener('input', () => {
-                    currentPage = 1;
-                    renderTable();
-                });
-
-                document.getElementById('btnPrevPage').addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderTable();
-                    }
-                });
-
-                document.getElementById('btnNextPage').addEventListener('click', () => {
-                    const filtered = getFilteredRecords();
-                    if (currentPage * recordsPerPage < filtered.length) {
-                        currentPage++;
-                        renderTable();
-                    }
-                });
-            }
-
-            function initExportAndUpload() {
-                const fileInput = document.getElementById('excelFileInput');
-                const btnTriggerUpload = document.getElementById('btnTriggerUpload');
-
-                btnTriggerUpload.addEventListener('click', () => fileInput.click());
-
-                fileInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const data = new Uint8Array(e.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-
-                        if (jsonData.length > 1) {
-                            for (let i = 1; i < jsonData.length; i++) {
-                                const row = jsonData[i];
-                                if (row.length === 0) continue;
-                                recordsList.push({
-                                    receiptNo: row[0] || '',
-                                    clientId: row[1] || '',
-                                    name: row[2] || '',
-                                    phone: row[3] || '',
-                                    address: row[4] || '',
-                                    month: row[5] || '',
-                                    pkg: row[6] || '',
-                                    amount: row[7] || '',
-                                    status: row[8] ? (row[8].toString().toLowerCase().includes('paid') ? 'Paid' : 'Pending') : 'Pending'
-                                });
-                            }
-                            renderTable();
-                            alert('Excel ফাইল সফলভাবে আপলোড হয়েছে!');
-                        }
-                    };
-                    reader.readAsArrayBuffer(file);
-                });
-
-                document.getElementById('btnExportAll').addEventListener('click', () => exportToExcel());
-            }
-        })();
-
-        /* Filter Navigation Functions */
-        function filterByNav(type) {
-            currentFilter = type;
-            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-            
-            const titleElement = document.getElementById('activePageTitle');
-            if(type === 'all') {
-                document.getElementById('btnNavAllCust').classList.add('active');
-                titleElement.innerHTML = `<i class="fas fa-users" style="color:#38bdf8"></i> All Customer List`;
-            } else if(type === 'due') {
-                document.getElementById('btnNavDueCust').classList.add('active');
-                titleElement.innerHTML = `<i class="fas fa-clock" style="color:#f59e0b"></i> Due Bill Customer List`;
-            } else if(type === 'paid') {
-                document.getElementById('btnNavPaidCust').classList.add('active');
-                titleElement.innerHTML = `<i class="fas fa-check-circle" style="color:#4CAF50"></i> Paid Customer List`;
-            }
-            currentPage = 1;
-            renderTable();
+            btnLogout.addEventListener('click', () => {
+                document.getElementById('mainDashboard').style.display = 'none';
+                document.getElementById('userLoginModal').style.display = 'flex';
+            });
         }
 
-        function triggerAllBillGen() {
-            if (recordsList.length === 0) {
-                alert('বিল তৈরি করার জন্য কোনো কাস্টমার ডাটা পাওয়া যায়নি!');
-                return;
-            }
+        /* ---------------- DASHBOARD COUNTER CALCULATIONS ---------------- */
+        function updateDashboardCounters() {
+            let todayCollect = 0;
+            let allDue = 0;
+            let allPaid = 0;
+            let monthDue = 0;
+            let monthPaid = 0;
 
-            const now = new Date();
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const currentMonthStr = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+            const currentDate = new Date();
+            const todayDateStr = currentDate.toISOString().split('T')[0]; // "YYYY-MM-DD"
+            const currentMonthName = currentDate.toLocaleString('default', { month: 'long' });
+            const currentYear = currentDate.getFullYear();
+            const currentMonthYear = `${currentMonthName} ${currentYear}`.toLowerCase();
 
-            if (!confirm(`আপনি কি ${currentMonthStr} মাসের জন্য সমস্ত গ্রাহকের বিল জেনারেট করতে চান?`)) {
-                return;
-            }
-
-            const uniqueClientsMap = new Map();
             recordsList.forEach(item => {
-                if (item.clientId && !uniqueClientsMap.has(item.clientId)) {
-                    uniqueClientsMap.set(item.clientId, item);
+                const amount = parseFloat(item.amount) || 0;
+                const isPaid = item.status === 'Paid';
+                const itemMonth = String(item.month || '').toLowerCase();
+                const paymentDate = item.paidDate || item.date;
+
+                // Today Collect Calculation
+                if (isPaid && paymentDate === todayDateStr) {
+                    todayCollect += amount;
                 }
-            });
 
-            let createdCount = 0;
-            let skippedCount = 0;
-
-            uniqueClientsMap.forEach((client) => {
-                const exists = recordsList.some(r => r.clientId === client.clientId && r.month === currentMonthStr);
-                
-                if (!exists) {
-                    const newBill = {
-                        receiptNo: `REC-${Math.floor(100000 + Math.random() * 900000)}`,
-                        clientId: client.clientId,
-                        name: client.name,
-                        phone: client.phone,
-                        address: client.address,
-                        month: currentMonthStr,
-                        pkg: client.pkg,
-                        amount: client.amount,
-                        status: 'Pending'
-                    };
-                    recordsList.unshift(newBill);
-                    createdCount++;
+                // Total Calculations
+                if (isPaid) {
+                    allPaid += amount;
                 } else {
-                    skippedCount++;
+                    allDue += amount;
+                }
+
+                // This Month Calculations
+                if (itemMonth.includes(currentMonthName.toLowerCase()) || itemMonth.includes(currentMonthYear)) {
+                    if (isPaid) {
+                        monthPaid += amount;
+                    } else {
+                        monthDue += amount;
+                    }
                 }
             });
 
-            renderTable();
-            alert(`বিল জেনারেট সম্পন্ন!\n\nনতুন বিল তৈরি হয়েছে: ${createdCount} টি\nইতিমধ্যে প্রস্তুত করা ছিল: ${skippedCount} টি`);
+            document.getElementById('dashTodayCollectTk').innerText = `৳ ${todayCollect.toLocaleString()}`;
+            document.getElementById('dashAllDueTk').innerText = `৳ ${allDue.toLocaleString()}`;
+            document.getElementById('dashAllPaidTk').innerText = `৳ ${allPaid.toLocaleString()}`;
+            document.getElementById('dashMonthDueTk').innerText = `৳ ${monthDue.toLocaleString()}`;
+            document.getElementById('dashMonthPaidTk').innerText = `৳ ${monthPaid.toLocaleString()}`;
         }
 
-        function triggerSingleBillGen() {
-            document.getElementById('dataRowForm').reset();
-            document.getElementById('rowOriginalId').value = '';
-            document.getElementById('rowReceiptNo').value = `REC-${Math.floor(100000 + Math.random() * 900000)}`;
-            document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-file-invoice-dollar" style="color:#38bdf8"></i> Single Custom Bill Generate';
-            document.getElementById('dataRowModal').style.display = 'flex';
-        }
-
-        function openSMSModal(type) {
-            const modal = document.getElementById('smsModal');
-            const targetInp = document.getElementById('smsTargetPhone');
-            const title = document.getElementById('smsModalTitle');
-            
-            if(type === 'all') {
-                title.innerHTML = `<i class="fas fa-paper-plane" style="color:#e11d48"></i> Send Bulk SMS to All Due Customers`;
-                targetInp.style.display = 'none';
-                document.getElementById('smsTextBody').value = "সম্মানিত গ্রাহক, আপনার চলতি মাসের ইন্টারনেট বিল বকেয়া রয়েছে। দ্রুত পরিশোধ করার জন্য অনুরোধ করা হচ্ছে।";
-            } else {
-                title.innerHTML = `<i class="fas fa-sms" style="color:#f59e0b"></i> Send Single Customer SMS`;
-                targetInp.style.display = 'block';
-                targetInp.value = '';
-                document.getElementById('smsTextBody').value = "";
-            }
-            modal.style.display = 'flex';
-        }
-
-        function sendSMS() {
-            const body = document.getElementById('smsTextBody').value.trim();
-            if(!body) {
-                alert('মেসেজ খালি রাখা যাবে না!');
-                return;
-            }
-            alert('SMS পাঠানো সম্পন্ন হয়েছে!');
-            document.getElementById('smsModal').style.display = 'none';
-        }
-
-        function getFilteredRecords() {
-            const query = document.getElementById('sheetSearchInput').value.toLowerCase().trim();
-            
-            return recordsList.filter(item => {
-                // Nav Filter
-                if (currentFilter === 'due' && item.status !== 'Pending') return false;
-                if (currentFilter === 'paid' && item.status !== 'Paid') return false;
-
-                // Search Query Filter
-                if (!query) return true;
-
-                return (item.receiptNo && item.receiptNo.toLowerCase().includes(query)) ||
-                       (item.clientId && item.clientId.toLowerCase().includes(query)) ||
-                       (item.name && item.name.toLowerCase().includes(query)) ||
-                       (item.phone && item.phone.toLowerCase().includes(query)) ||
-                       (item.address && item.address.toLowerCase().includes(query)) ||
-                       (item.month && item.month.toLowerCase().includes(query));
-            });
-        }
-
+        /* ---------------- TABLE & RENDER LOGIC ---------------- */
         function renderTable() {
+            updateDashboardCounters(); // Auto Update Dashboard
+
             const tbody = document.getElementById('sheetTableBody');
-            const filtered = getFilteredRecords();
+            const searchVal = document.getElementById('sheetSearchInput').value.toLowerCase().trim();
+
+            let filtered = recordsList.filter(item => {
+                let matchesStatus = true;
+                if (currentFilter === 'due') matchesStatus = item.status === 'Pending';
+                if (currentFilter === 'paid') matchesStatus = item.status === 'Paid';
+
+                let matchesSearch = !searchVal || 
+                    String(item.receiptNo || '').toLowerCase().includes(searchVal) ||
+                    String(item.clientId || '').toLowerCase().includes(searchVal) ||
+                    String(item.name || '').toLowerCase().includes(searchVal) ||
+                    String(item.phone || '').toLowerCase().includes(searchVal);
+
+                return matchesStatus && matchesSearch;
+            });
+
             document.getElementById('totalRecordsCount').innerText = `Total Rows: ${filtered.length}`;
 
-            if (filtered.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="10" style="text-align:center; padding: 40px; color:#aaa;">
-                            <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
-                            কোনো ডাটা পাওয়া যায়নি।
-                        </td>
-                    </tr>`;
-                document.getElementById('pageInfo').innerText = 'Showing Page 0 of 0';
-                return;
-            }
-
-            const totalPages = Math.ceil(filtered.length / recordsPerPage);
+            const totalPages = Math.ceil(filtered.length / recordsPerPage) || 1;
             if (currentPage > totalPages) currentPage = totalPages;
 
             const startIdx = (currentPage - 1) * recordsPerPage;
@@ -614,104 +436,284 @@
 
             document.getElementById('pageInfo').innerText = `Showing Page ${currentPage} of ${totalPages}`;
 
-            let html = '';
-            pageData.forEach((row) => {
-                const actualIndex = recordsList.indexOf(row);
-                const statusBadge = row.status === 'Paid' 
-                    ? `<span class="badge-paid"><i class="fas fa-check"></i> Paid</span>` 
-                    : `<span class="badge-pending"><i class="fas fa-clock"></i> Pending</span>`;
-
-                html += `
+            if (pageData.length === 0) {
+                tbody.innerHTML = `
                     <tr>
-                        <td><b>${row.receiptNo || '-'}</b></td>
-                        <td>${row.clientId || '-'}</td>
-                        <td>${row.name || '-'}</td>
-                        <td>${row.phone || '-'}</td>
-                        <td>${row.address || '-'}</td>
-                        <td>${row.month || '-'}</td>
-                        <td>${row.pkg || '-'}</td>
-                        <td>${row.amount} Tk</td>
-                        <td>${statusBadge}</td>
-                        <td>
-                            <button class="btn btn-sm btn-purple" onclick="generateManualBill(${actualIndex})" title="Generate Bill"><i class="fas fa-file-invoice-dollar"></i></button>
-                            <button class="btn btn-sm btn-primary" onclick="editRow(${actualIndex})" title="Edit Record"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteRow(${actualIndex})" title="Delete Record"><i class="fas fa-trash"></i></button>
+                        <td colspan="10" style="text-align:center; padding: 40px; color:#aaa;">
+                            <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
+                            কোনো ডাটা পাওয়া যায়নি। Excel/CSV আপলোড করুন অথবা **Add New Entry** বাটনে ক্লিক করুন।
                         </td>
                     </tr>`;
+                return;
+            }
+
+            tbody.innerHTML = pageData.map((row) => `
+                <tr>
+                    <td>${row.receiptNo || '-'}</td>
+                    <td><span class="badge-info">${row.clientId || '-'}</span></td>
+                    <td><strong>${row.name || '-'}</strong></td>
+                    <td>${row.phone || '-'}</td>
+                    <td>${row.address || '-'}</td>
+                    <td>${row.month || '-'}</td>
+                    <td>${row.package || '-'}</td>
+                    <td>৳ ${row.amount || 0}</td>
+                    <td>
+                        <span class="${row.status === 'Paid' ? 'badge-paid' : 'badge-pending'}">
+                            ${row.status || 'Pending'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="editRow('${row.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteRow('${row.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function initTableOperations() {
+            document.getElementById('sheetSearchInput').addEventListener('input', () => {
+                currentPage = 1;
+                renderTable();
             });
-            tbody.innerHTML = html;
+
+            document.getElementById('btnPrevPage').addEventListener('click', () => {
+                if (currentPage > 1) { currentPage--; renderTable(); }
+            });
+            document.getElementById('btnNextPage').addEventListener('click', () => {
+                const totalPages = Math.ceil(recordsList.length / recordsPerPage);
+                if (currentPage < totalPages) { currentPage++; renderTable(); }
+            });
+
+            // Modal Controls
+            const modal = document.getElementById('dataRowModal');
+            document.getElementById('btnOpenAddModal').addEventListener('click', () => {
+                document.getElementById('dataRowForm').reset();
+                document.getElementById('rowOriginalId').value = '';
+                document.getElementById('dataModalTitle').innerText = 'Add New Customer Record';
+                modal.style.display = 'flex';
+            });
+            document.getElementById('btnCloseDataModal').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            // Form Submit
+            document.getElementById('dataRowForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const origId = document.getElementById('rowOriginalId').value;
+                const todayStr = new Date().toISOString().split('T')[0];
+                const statusVal = document.getElementById('rowStatus').value;
+
+                const newRecord = {
+                    id: origId || 'ID_' + Date.now(),
+                    receiptNo: document.getElementById('rowReceiptNo').value,
+                    clientId: document.getElementById('rowId').value,
+                    name: document.getElementById('rowName').value,
+                    phone: document.getElementById('rowPhone').value,
+                    address: document.getElementById('rowAddress').value,
+                    month: document.getElementById('rowMonth').value,
+                    package: document.getElementById('rowPackage').value,
+                    amount: parseFloat(document.getElementById('rowAmount').value) || 0,
+                    status: statusVal,
+                    paidDate: statusVal === 'Paid' ? todayStr : null
+                };
+
+                if (origId) {
+                    const idx = recordsList.findIndex(r => r.id === origId);
+                    if (idx !== -1) {
+                        // Keep previous payment date if already paid, else set today's date
+                        if (statusVal === 'Paid' && !recordsList[idx].paidDate) {
+                            newRecord.paidDate = todayStr;
+                        } else if (statusVal === 'Paid') {
+                            newRecord.paidDate = recordsList[idx].paidDate || todayStr;
+                        }
+                        recordsList[idx] = newRecord;
+                    }
+                } else {
+                    recordsList.unshift(newRecord);
+                }
+
+                modal.style.display = 'none';
+                renderTable();
+            });
         }
 
-        function generateManualBill(index) {
-            const row = recordsList[index];
-            const now = new Date();
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const currentMonthStr = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+        function editRow(id) {
+            const row = recordsList.find(r => r.id === id);
+            if (!row) return;
 
-            document.getElementById('rowOriginalId').value = ''; 
-            document.getElementById('rowReceiptNo').value = `REC-${Math.floor(100000 + Math.random() * 900000)}`;
-            document.getElementById('rowId').value = row.clientId || '';
-            document.getElementById('rowName').value = row.name || '';
-            document.getElementById('rowPhone').value = row.phone || '';
-            document.getElementById('rowAddress').value = row.address || '';
-            document.getElementById('rowMonth').value = currentMonthStr;
-            document.getElementById('rowPackage').value = row.pkg || '';
-            document.getElementById('rowAmount').value = row.amount || '';
-            document.getElementById('rowStatus').value = 'Pending';
-
-            document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-calculator" style="color:#8b5cf6"></i> Create Manual Bill';
-            document.getElementById('dataRowModal').style.display = 'flex';
-        }
-
-        function editRow(index) {
-            const row = recordsList[index];
-            document.getElementById('rowOriginalId').value = index;
+            document.getElementById('rowOriginalId').value = row.id;
             document.getElementById('rowReceiptNo').value = row.receiptNo || '';
             document.getElementById('rowId').value = row.clientId || '';
             document.getElementById('rowName').value = row.name || '';
             document.getElementById('rowPhone').value = row.phone || '';
             document.getElementById('rowAddress').value = row.address || '';
             document.getElementById('rowMonth').value = row.month || '';
-            document.getElementById('rowPackage').value = row.pkg || '';
+            document.getElementById('rowPackage').value = row.package || '';
             document.getElementById('rowAmount').value = row.amount || '';
             document.getElementById('rowStatus').value = row.status || 'Pending';
 
-            document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-edit" style="color:#38bdf8"></i> Edit Record';
+            document.getElementById('dataModalTitle').innerText = 'Edit Payment Record';
             document.getElementById('dataRowModal').style.display = 'flex';
         }
 
-        function deleteRow(index) {
-            if (confirm('আপনি কি এই রেকর্ডটি মুছে ফেলতে চান?')) {
-                recordsList.splice(index, 1);
+        function deleteRow(id) {
+            if (confirm('আপনি কি এই ডাটাটি মুছে ফেলতে চান?')) {
+                recordsList = recordsList.filter(r => r.id !== id);
                 renderTable();
             }
         }
 
-        function exportToExcel() {
-            const exportData = getFilteredRecords();
-            if (exportData.length === 0) {
-                alert('ডাউনলোড করার মতো কোনো ডাটা নেই!');
+        /* ---------------- EXCEL UPLOAD & EXPORT ---------------- */
+        function initExportAndUpload() {
+            const uploadBtn = document.getElementById('btnTriggerUpload');
+            const fileInput = document.getElementById('excelFileInput');
+            const exportBtn = document.getElementById('btnExportAll');
+
+            uploadBtn.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    try {
+                        const data = new Uint8Array(evt.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+                        if (jsonData.length === 0) {
+                            alert('Excel ফাইলটিতে কোনো ডাটা খুঁজে পাওয়া যায়নি!');
+                            return;
+                        }
+
+                        const todayStr = new Date().toISOString().split('T')[0];
+
+                        // Map uploaded Excel columns to UI Data Structure
+                        const importedData = jsonData.map((row, index) => {
+                            const isPaid = String(row['Status'] || row['স্ট্যাটাস']).toLowerCase().includes('paid');
+                            return {
+                                id: 'ID_' + Date.now() + '_' + index,
+                                receiptNo: row['Receipt No'] || row['Receipt'] || row['রশিদ নং'] || `REC-${1000 + index}`,
+                                clientId: row['Client ID'] || row['ID'] || row['কাস্টমার আইডি'] || `CUST-${101 + index}`,
+                                name: row['Customer Name'] || row['Name'] || row['গ্রাহকের নাম'] || 'Unknown',
+                                phone: row['Phone Number'] || row['Phone'] || row['মোবাইল'] || '',
+                                address: row['Address'] || row['ঠিকানা'] || '',
+                                month: row['Bill Month'] || row['Month'] || row['মাস'] || 'August 2026',
+                                package: row['Package'] || row['প্যাকেজ'] || 'Standard',
+                                amount: parseFloat(row['Bill Amount'] || row['Amount'] || row['বিল'] || 0),
+                                status: isPaid ? 'Paid' : 'Pending',
+                                paidDate: isPaid ? todayStr : null
+                            };
+                        });
+
+                        recordsList = [...importedData, ...recordsList];
+                        renderTable();
+                        alert(`সফলভাবে ${importedData.length} টি কাস্টমার ডাটা আপলোড করা হয়েছে!`);
+                        fileInput.value = ''; // Reset input
+                    } catch (err) {
+                        alert('ফাইল প্রসেস করার সময় ভুল হয়েছে! সঠিক Excel (.xlsx, .csv) ফাইল নির্বাচন করুন।');
+                        console.error(err);
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            });
+
+            // Export to Excel
+            exportBtn.addEventListener('click', () => {
+                if (recordsList.length === 0) {
+                    alert('এক্সপোর্ট করার মতো কোনো ডাটা নেই!');
+                    return;
+                }
+
+                const exportData = recordsList.map(item => ({
+                    'Receipt No': item.receiptNo,
+                    'Client ID': item.clientId,
+                    'Customer Name': item.name,
+                    'Phone Number': item.phone,
+                    'Address': item.address,
+                    'Bill Month': item.month,
+                    'Package': item.package,
+                    'Bill Amount': item.amount,
+                    'Status': item.status
+                }));
+
+                const worksheet = XLSX.utils.json_to_sheet(exportData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Customers");
+                XLSX.writeFile(workbook, `Customer_Billing_List_${Date.now()}.xlsx`);
+            });
+        }
+
+        /* ---------------- NAVIGATION FILTERS ---------------- */
+        function filterByNav(type) {
+            currentFilter = type;
+            document.querySelectorAll('.sidebar-menu .menu-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const titleEl = document.getElementById('activePageTitle');
+
+            if (type === 'all') {
+                document.getElementById('btnNavAllCust').classList.add('active');
+                titleEl.innerHTML = '<i class="fas fa-users" style="color:#38bdf8"></i> All Customer List';
+            } else if (type === 'due') {
+                document.getElementById('btnNavDueCust').classList.add('active');
+                titleEl.innerHTML = '<i class="fas fa-clock" style="color:#f59e0b"></i> Due Bill Customer List';
+            } else if (type === 'paid') {
+                document.getElementById('btnNavPaidCust').classList.add('active');
+                titleEl.innerHTML = '<i class="fas fa-check-circle" style="color:#4CAF50"></i> Paid Bill Customer List';
+            }
+            currentPage = 1;
+            renderTable();
+        }
+
+        function triggerAllBillGen() {
+            if (confirm('আপনি কি সব কাস্টমারের জন্য এই মাসের বিল জেনারেট করতে চান?')) {
+                recordsList.forEach(item => {
+                    item.status = 'Pending';
+                    item.paidDate = null;
+                });
+                renderTable();
+                alert('সকল গ্রাহকের জন্য বিল নতুন করে জেনারেট করা হয়েছে!');
+            }
+        }
+
+        function triggerSingleBillGen() {
+            const id = prompt('যে কাস্টমারের বিল জেনারেট করতে চান তার Client ID দিন:');
+            if (!id) return;
+
+            const cust = recordsList.find(r => r.clientId === id);
+            if (cust) {
+                cust.status = 'Pending';
+                cust.paidDate = null;
+                renderTable();
+                alert(`${cust.name}-এর জন্য বিল Pending হিসেবে আপডেট করা হয়েছে।`);
+            } else {
+                alert('কাস্টমার আইডি খুঁজে পাওয়া যায়নি!');
+            }
+        }
+
+        function openSMSModal(type) {
+            document.getElementById('smsModal').style.display = 'flex';
+            if (type === 'single') {
+                document.getElementById('smsTargetPhone').style.display = 'block';
+                document.getElementById('smsModalTitle').innerText = 'Send Single SMS';
+            } else {
+                document.getElementById('smsTargetPhone').style.display = 'none';
+                document.getElementById('smsModalTitle').innerText = 'Send Broadcast SMS to All';
+            }
+        }
+
+        function sendSMS() {
+            const body = document.getElementById('smsTextBody').value.trim();
+            if (!body) {
+                alert('মেসেজ বক্সে কিছু লিখুন!');
                 return;
             }
-
-            const excelRows = exportData.map(item => ({
-                'Receipt No': item.receiptNo,
-                'Client ID': item.clientId,
-                'Customer Name': item.name,
-                'Phone Number': item.phone,
-                'Address': item.address,
-                'Bill Month': item.month,
-                'Package': item.pkg,
-                'Amount (Tk)': item.amount,
-                'Status': item.status
-            }));
-
-            const worksheet = XLSX.utils.json_to_sheet(excelRows);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Billing Data");
-
-            const fileName = `Billing_Report_${currentFilter}_${new Date().toISOString().slice(0,10)}.xlsx`;
-            XLSX.writeFile(workbook, fileName);
+            alert('মেসেজ প্রসেস করা হয়েছে!');
+            document.getElementById('smsModal').style.display = 'none';
+            document.getElementById('smsTextBody').value = '';
         }
     </script>
 </body>
