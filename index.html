@@ -2,33 +2,13 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>ESER-ALL Portal - Spreadsheet Management</title>
+    <title>ESER-ALL Billing & Spreadsheet Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function(_0x1a8f, _0x3f12) {
-            var _0x534a = function(_0x2d1f) {
-                while (--_0x2d1f) {
-                    _0x1a8f['push'](_0x1a8f['shift']());
-                }
-            };
-            _0x534a(++_0x3f12);
-        })(a0_0x1112, 0x1a2);
-        function _0x3e11(_0x2211, _0x45bb) {
-            _0x2211 = _0x2211 - 0x0;
-            var _0x1a8f2 = a0_0x1112[_0x2211];
-            return _0x1a8f2;
-        }
-        function a0_0x1112() {
-            var _0x9e3a = ['k3Gz4cI70F4UTep3c', 'init'];
-            a0_0x1112 = function() { return _0x9e3a; };
-            return a0_0x1112();
-        }
-        (function() {
-            emailjs[_0x3e11('0x1')]({ publicKey: _0x3e11('0x0') });
-        })();
-    </script>
+    
+    <!-- SheetJS CDN (1,00,000+ ডাটার Excel/CSV আপলোড ও প্রসেস করার জন্য) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -109,7 +89,6 @@
             letter-spacing: .5px;
         }
 
-        /* Spreadsheet Section UI */
         .sheet-wrapper {
             background: rgba(30, 30, 30, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -141,7 +120,7 @@
         }
 
         .search-input {
-            padding: 8px 14px;
+            padding: 9px 14px;
             border-radius: 6px;
             border: 1px solid #444;
             background: #2a2a2a;
@@ -169,6 +148,9 @@
 
         .btn-success { background: #4CAF50; color: #fff; }
         .btn-success:hover { background: #388E3C; }
+
+        .btn-warning { background: #f59e0b; color: #000; }
+        .btn-warning:hover { background: #d97706; color: #fff; }
 
         .btn-danger { background: #f44336; color: #fff; }
         .btn-danger:hover { background: #d32f2f; }
@@ -207,13 +189,8 @@
             white-space: nowrap;
         }
 
-        tr:nth-child(even) {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        tr:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
+        tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+        tr:hover { background: rgba(255, 255, 255, 0.08); }
 
         .pagination {
             display: flex;
@@ -224,8 +201,7 @@
             color: #aaa;
         }
 
-        /* Modal Style */
-        .email-modal, .user-login-modal, .data-modal {
+        .data-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -249,7 +225,7 @@
             position: relative;
         }
 
-        .modal-content input, .modal-content textarea {
+        .modal-content input {
             width: 100%;
             padding: 10px;
             margin-bottom: 12px;
@@ -258,11 +234,6 @@
             color: #fff;
             border-radius: 6px;
             outline: 0;
-            font-family: inherit;
-        }
-
-        .modal-content button {
-            width: 100%;
         }
 
         .close-btn {
@@ -274,58 +245,13 @@
             cursor: pointer;
         }
 
-        .close-btn:hover { color: #fff; }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 15px 0;
-            color: #888;
-            font-size: 12px;
-        }
-
-        .divider::after, .divider::before {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #444;
-        }
-
-        .divider:not(:empty)::before { margin-right: .5em; }
-        .divider:not(:empty)::after { margin-left: .5em; }
-
-        .google-btn {
-            background: #fff !important;
-            color: #333 !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border: 1px solid #ccc !important;
-        }
-
-        .logout-btn {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            padding: 10px 18px;
-            border-radius: 20px;
-            border: none;
-            background: #e11d48;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(225,29,72,.3);
-        }
-
         .badge-info {
             background: rgba(56, 189, 248, 0.2);
             color: #38bdf8;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -333,63 +259,49 @@
 
     <div id="particles-js"></div>
 
-    <!-- Theme Toggle -->
     <div class="theme-toggle" id="themeToggleBtn">
         <i class="fas fa-moon" id="themeIcon"></i>
     </div>
 
-    <!-- Firebase Auth Modal -->
-    <div class="user-login-modal" id="userLoginModal">
-        <div class="modal-content" id="loginBox">
-            <h3 style="margin-bottom:15px">
-                <i class="fas fa-shield-alt" style="color:#38bdf8"></i> Secure Login
-            </h3>
-            <input type="email" id="userInputEmail" placeholder="Email Address" autocomplete="off">
-            <input type="password" id="userInputPass" placeholder="Password" autocomplete="off">
-            <button class="btn btn-success" id="btnLoginSubmit">Login</button>
-            <div class="divider">OR</div>
-            <button class="google-btn btn" id="btnGoogleLogin">
-                <i class="fab fa-google" style="color:#ea4335;font-size:16px"></i> Sign in with Google
-            </button>
-            <div id="loginError" style="color:#f44336;font-size:12px;margin-top:10px;display:none"></div>
-        </div>
-    </div>
+    <div class="dashboard" id="mainDashboard">
+        <div class="main-header">ESER-ALL Billing Management</div>
 
-    <!-- Main Dashboard -->
-    <div class="dashboard" id="mainDashboard" style="display:none">
-        <div class="main-header">ESER-ALL Portal</div>
-
-        <!-- Google Sheet Data Section -->
         <div class="sheet-wrapper">
             <div class="sheet-toolbar">
                 <div class="toolbar-group">
-                    <h2 style="font-size: 20px;"><i class="fas fa-table" style="color: #38bdf8;"></i> Spreadsheet Engine</h2>
+                    <h2 style="font-size: 20px;"><i class="fas fa-file-invoice-dollar" style="color: #38bdf8;"></i> Client Bill List</h2>
                     <span class="badge-info" id="totalRecordsCount">Total Rows: 0</span>
                 </div>
+                
                 <div class="toolbar-group">
-                    <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search 100,000+ records...">
-                    <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Add Row</button>
-                    <button class="btn btn-primary" id="btnRefreshSheet"><i class="fas fa-sync"></i> Sync</button>
+                    <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search customer ID or name...">
+                    
+                    <!-- File Upload Input Hidden -->
+                    <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
+                    
+                    <button class="btn btn-warning" id="btnTriggerUpload"><i class="fas fa-file-upload"></i> Upload Excel/CSV</button>
+                    <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Manual Entry</button>
+                    <button class="btn btn-primary" id="btnExportData"><i class="fas fa-file-download"></i> Export Sheet</button>
                 </div>
             </div>
 
             <div class="table-container">
-                <table id="spreadsheetTable">
+                <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Value / Details</th>
+                            <th>Client ID / Reg</th>
+                            <th>Customer Name</th>
+                            <th>Package / Service</th>
+                            <th>Bill Amount</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="sheetTableBody">
                         <tr>
-                            <td colspan="6" style="text-align:center; padding: 30px;">
-                                <i class="fas fa-spinner fa-spin" style="font-size: 24px;"></i><br><br>
-                                Loading Spreadsheet Engine...
+                            <td colspan="6" style="text-align:center; padding: 30px; color:#aaa;">
+                                <i class="fas fa-folder-open" style="font-size: 30px; margin-bottom: 100px;"></i><br>
+                                কোনো ডাটা নেই। Excel / CSV ফাইল **Upload** করুন অথবা **Manual Entry** অপশনে ক্লিক করুন।
                             </td>
                         </tr>
                     </tbody>
@@ -397,7 +309,7 @@
             </div>
 
             <div class="pagination">
-                <div id="pageInfo">Showing Page 1</div>
+                <div id="pageInfo">Showing Page 0 of 0</div>
                 <div class="toolbar-group">
                     <button class="btn btn-secondary" id="btnPrevPage"><i class="fas fa-chevron-left"></i> Prev</button>
                     <button class="btn btn-secondary" id="btnNextPage">Next <i class="fas fa-chevron-right"></i></button>
@@ -410,183 +322,128 @@
     <div class="data-modal" id="dataRowModal" style="display:none;">
         <div class="modal-content">
             <span class="close-btn" id="btnCloseDataModal"><i class="fas fa-times"></i></span>
-            <h3 id="dataModalTitle" style="margin-bottom:15px"><i class="fas fa-edit" style="color:#38bdf8"></i> Add Record</h3>
+            <h3 id="dataModalTitle" style="margin-bottom:15px"><i class="fas fa-edit" style="color:#38bdf8"></i> Bill Entry</h3>
             <form id="dataRowForm">
-                <input type="hidden" id="rowId">
-                <input type="text" id="rowName" placeholder="Name / Title" required>
-                <input type="text" id="rowCategory" placeholder="Category" required>
-                <input type="text" id="rowValue" placeholder="Value or Details" required>
-                <input type="text" id="rowStatus" placeholder="Status (e.g. Active)" required>
-                <button type="submit" class="btn btn-success" id="btnSaveDataRow">Save Record</button>
+                <input type="hidden" id="rowOriginalId">
+                <input type="text" id="rowId" placeholder="Client ID / Account No" required>
+                <input type="text" id="rowName" placeholder="Customer Name" required>
+                <input type="text" id="rowPackage" placeholder="Package / Service" required>
+                <input type="number" id="rowAmount" placeholder="Bill Amount (Tk)" required>
+                <input type="text" id="rowStatus" placeholder="Status (e.g. Paid/Unpaid)" required>
+                <button type="submit" class="btn btn-success" style="width:100%;">Save Record</button>
             </form>
         </div>
     </div>
 
-    <button class="logout-btn" id="btnLogout" style="display:none">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
-
-    <!-- Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
     <script>
-        // --- Firebase Configuration ---
-        var _0x3a4b = [
-            "AIzaSyDB4r_a5gPtKhlzM0qqmYHBb6HA_I2SmHQ",
-            "eser-all.firebaseapp.com",
-            "http://eser-all-default-rtdb.firebaseio.com",
-            "eser-all",
-            "eser-all.appspot.com",
-            "741870576674",
-            "1:741870576674:web:2a5094bd05f44f0b98d67b"
-        ];
-
-        firebase.initializeApp({
-            apiKey: _0x3a4b[0],
-            authDomain: _0x3a4b[1],
-            databaseURL: _0x3a4b[2],
-            projectId: _0x3a4b[3],
-            storageBucket: _0x3a4b[4],
-            messagingSenderId: _0x3a4b[5],
-            appId: _0x3a4b[6]
-        });
-
-        var auth = firebase.auth();
-
-        // --- Google App Script Web App API Endpoint ---
-        // (আপনার Google App Script Deploy করে পাওয়া Web App URL টি এখানে বসাতে হবে)
-        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID/exec";
-
-        // --- Global Variables ---
         let dataset = [];
         let filteredDataset = [];
         let currentPage = 1;
-        const pageSize = 50; // Performance optimization for 100k rows
+        const pageSize = 50;
 
-        // --- UI & Event Listeners ---
         document.addEventListener("DOMContentLoaded", () => {
             initParticles();
             setupThemeToggle();
-            setupAuthEvents();
             setupSpreadsheetEvents();
         });
 
-        // Background Particles
         function initParticles() {
             if (typeof particlesJS !== 'undefined') {
                 particlesJS('particles-js', {
                     particles: {
-                        number: { value: 40, density: { enable: true, value_area: 800 } },
+                        number: { value: 30 },
                         color: { value: "#ffffff" },
-                        opacity: { value: 0.2 },
+                        opacity: { value: 0.15 },
                         size: { value: 3 },
-                        line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.1, width: 1 },
-                        move: { enable: true, speed: 2 }
+                        line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.08 }
                     }
                 });
             }
         }
 
-        // Theme Toggle Functionality
         function setupThemeToggle() {
             const toggleBtn = document.getElementById('themeToggleBtn');
             const icon = document.getElementById('themeIcon');
-
             toggleBtn.addEventListener('click', () => {
                 document.body.classList.toggle('light-mode');
-                if (document.body.classList.contains('light-mode')) {
-                    icon.className = 'fas fa-sun';
-                } else {
-                    icon.className = 'fas fa-moon';
-                }
+                icon.className = document.body.classList.contains('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
             });
         }
-
-        // Authentication Handler
-        function setupAuthEvents() {
-            const loginModal = document.getElementById('userLoginModal');
-            const dashboard = document.getElementById('mainDashboard');
-            const btnLogout = document.getElementById('btnLogout');
-            const loginError = document.getElementById('loginError');
-
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    loginModal.style.display = 'none';
-                    dashboard.style.display = 'block';
-                    btnLogout.style.display = 'block';
-                    loadSpreadsheetData();
-                } else {
-                    loginModal.style.display = 'flex';
-                    dashboard.style.display = 'none';
-                    btnLogout.style.display = 'none';
-                }
-            });
-
-            document.getElementById('btnLoginSubmit').addEventListener('click', () => {
-                const email = document.getElementById('userInputEmail').value;
-                const pass = document.getElementById('userInputPass').value;
-                loginError.style.display = 'none';
-
-                auth.signInWithEmailAndPassword(email, pass).catch(err => {
-                    loginError.innerText = err.message;
-                    loginError.style.display = 'block';
-                });
-            });
-
-            document.getElementById('btnGoogleLogin').addEventListener('click', () => {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                auth.signInWithPopup(provider).catch(err => {
-                    loginError.innerText = err.message;
-                    loginError.style.display = 'block';
-                });
-            });
-
-            btnLogout.addEventListener('click', () => {
-                auth.signOut();
-            });
-        }
-
-        // --- Google Spreadsheet Engine ---
 
         function setupSpreadsheetEvents() {
             document.getElementById('sheetSearchInput').addEventListener('input', handleSearch);
-            document.getElementById('btnRefreshSheet').addEventListener('click', loadSpreadsheetData);
             document.getElementById('btnPrevPage').addEventListener('click', () => changePage(-1));
             document.getElementById('btnNextPage').addEventListener('click', () => changePage(1));
             
-            // Modal Handlers
+            // Upload Events
+            const fileInput = document.getElementById('excelFileInput');
+            document.getElementById('btnTriggerUpload').addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileUpload);
+
+            // Export Event
+            document.getElementById('btnExportData').addEventListener('click', exportToExcel);
+
+            // Modal Events
             document.getElementById('btnOpenAddModal').addEventListener('click', () => openDataModal());
             document.getElementById('btnCloseDataModal').addEventListener('click', closeDataModal);
             document.getElementById('dataRowForm').addEventListener('submit', handleFormSubmit);
         }
 
-        // Fetch Data from Google Sheet Engine
-        async function loadSpreadsheetData() {
+        // --- EXCEL / CSV BULK UPLOAD ENGINE ---
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
             const tbody = document.getElementById('sheetTableBody');
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px;"><i class="fas fa-spinner fa-spin" style="font-size: 24px;"></i><br><br>Syncing Data...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin" style="font-size:24px;"></i><br><br>Processing 100,000+ Records... Please wait...</td></tr>`;
 
-            try {
-                // If API is connected, uncomment line below:
-                // const res = await fetch(GOOGLE_SCRIPT_API_URL + "?action=read");
-                // dataset = await res.json();
+            reader.onload = function(evt) {
+                try {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    const jsonResult = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                // Mocking 100k high performance Virtual Dataset
-                if (dataset.length === 0) {
-                    dataset = generateMockLargeDataset(100000);
+                    if (jsonResult.length < 2) {
+                        alert("আপলোড করা ফাইলে পর্যাপ্ত ডাটা পাওয়া যায়নি!");
+                        return;
+                    }
+
+                    // Mapping Data
+                    dataset = [];
+                    for (let i = 1; i < jsonResult.length; i++) {
+                        const row = jsonResult[i];
+                        if(row.length > 0) {
+                            dataset.push({
+                                id: row[0] || `ID-${i}`,
+                                name: row[1] || 'N/A',
+                                package: row[2] || 'Basic',
+                                amount: row[3] || 0,
+                                status: row[4] || 'Pending'
+                            });
+                        }
+                    }
+
+                    filteredDataset = [...dataset];
+                    document.getElementById('totalRecordsCount').innerText = `Total Rows: ${dataset.length.toLocaleString()}`;
+                    currentPage = 1;
+                    renderTable();
+                    alert(`সফলভাবে ${dataset.length.toLocaleString()} টি ডাটা লোড হয়েছে!`);
+
+                } catch (err) {
+                    alert("ফাইল প্রসেস করতে সমস্যা হয়েছে। সঠিক Excel (.xlsx) অথবা CSV ফাইল নির্বাচন করুন।");
+                    console.error(err);
                 }
-
-                filteredDataset = [...dataset];
-                document.getElementById('totalRecordsCount').innerText = `Total Rows: ${dataset.length.toLocaleString()}`;
-                currentPage = 1;
-                renderTable();
-            } catch (error) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#f44336; padding:20px;">Failed to fetch data from Spreadsheet API</td></tr>`;
-            }
+            };
+            reader.readAsArrayBuffer(file);
         }
 
-        // Virtualized Render for 100,000 Rows
+        // --- RENDER TABLE ---
         function renderTable() {
             const tbody = document.getElementById('sheetTableBody');
             tbody.innerHTML = '';
@@ -596,7 +453,7 @@
             const pageData = filteredDataset.slice(startIdx, endIdx);
 
             if (pageData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No matching records found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">কোনো ডাটা পাওয়া যায়নি।</td></tr>`;
                 document.getElementById('pageInfo').innerText = `Page 0 of 0`;
                 return;
             }
@@ -604,10 +461,10 @@
             pageData.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${row.id}</td>
+                    <td>${escapeHtml(row.id)}</td>
                     <td><b>${escapeHtml(row.name)}</b></td>
-                    <td>${escapeHtml(row.category)}</td>
-                    <td>${escapeHtml(row.value)}</td>
+                    <td>${escapeHtml(row.package)}</td>
+                    <td>${escapeHtml(row.amount)} Tk</td>
                     <td><span class="badge-info">${escapeHtml(row.status)}</span></td>
                     <td>
                         <button class="btn btn-primary" onclick="editRow('${row.id}')" style="padding: 4px 8px; font-size:11px;"><i class="fas fa-edit"></i></button>
@@ -627,9 +484,9 @@
         function handleSearch(e) {
             const query = e.target.value.toLowerCase().trim();
             filteredDataset = dataset.filter(item => 
-                item.name.toLowerCase().includes(query) ||
-                item.category.toLowerCase().includes(query) ||
-                item.id.toString().includes(query)
+                item.name.toString().toLowerCase().includes(query) ||
+                item.id.toString().toLowerCase().includes(query) ||
+                item.package.toString().toLowerCase().includes(query)
             );
             currentPage = 1;
             renderTable();
@@ -643,24 +500,24 @@
             }
         }
 
-        // Add / Edit Record Modal Controls
+        // --- MANUAL ENTRY & EDIT ---
         function openDataModal(row = null) {
             const modal = document.getElementById('dataRowModal');
             const title = document.getElementById('dataModalTitle');
             
             if (row) {
-                title.innerHTML = `<i class="fas fa-edit" style="color:#38bdf8"></i> Edit Record`;
+                title.innerHTML = `<i class="fas fa-edit" style="color:#38bdf8"></i> Edit Entry`;
+                document.getElementById('rowOriginalId').value = row.id;
                 document.getElementById('rowId').value = row.id;
                 document.getElementById('rowName').value = row.name;
-                document.getElementById('rowCategory').value = row.category;
-                document.getElementById('rowValue').value = row.value;
+                document.getElementById('rowPackage').value = row.package;
+                document.getElementById('rowAmount').value = row.amount;
                 document.getElementById('rowStatus').value = row.status;
             } else {
-                title.innerHTML = `<i class="fas fa-plus" style="color:#4CAF50"></i> Add New Record`;
+                title.innerHTML = `<i class="fas fa-plus" style="color:#4CAF50"></i> Manual Bill Entry`;
                 document.getElementById('dataRowForm').reset();
-                document.getElementById('rowId').value = '';
+                document.getElementById('rowOriginalId').value = '';
             }
-
             modal.style.display = 'flex';
         }
 
@@ -668,27 +525,24 @@
             document.getElementById('dataRowModal').style.display = 'none';
         }
 
-        // CRUD Operations
-        async function handleFormSubmit(e) {
+        function handleFormSubmit(e) {
             e.preventDefault();
-            const id = document.getElementById('rowId').value;
+            const origId = document.getElementById('rowOriginalId').value;
+            const newId = document.getElementById('rowId').value;
+            
             const rowData = {
-                id: id ? id : 'ROW-' + (dataset.length + 1),
+                id: newId,
                 name: document.getElementById('rowName').value,
-                category: document.getElementById('rowCategory').value,
-                value: document.getElementById('rowValue').value,
+                package: document.getElementById('rowPackage').value,
+                amount: document.getElementById('rowAmount').value,
                 status: document.getElementById('rowStatus').value
             };
 
-            if (id) {
-                // Edit existing row
-                const idx = dataset.findIndex(r => r.id === id);
+            if (origId) {
+                const idx = dataset.findIndex(r => r.id === origId);
                 if (idx !== -1) dataset[idx] = rowData;
-                syncWithGoogleSheet("update", rowData);
             } else {
-                // Add new row
                 dataset.unshift(rowData);
-                syncWithGoogleSheet("create", rowData);
             }
 
             filteredDataset = [...dataset];
@@ -703,44 +557,24 @@
         }
 
         function deleteRow(id) {
-            if (confirm(`Are you sure you want to delete record ${id}?`)) {
+            if (confirm(`আপনি কি সত্যিই ID: ${id} মুছে ফেলতে চান?`)) {
                 dataset = dataset.filter(r => r.id !== id);
                 filteredDataset = filteredDataset.filter(r => r.id !== id);
-                syncWithGoogleSheet("delete", { id: id });
                 document.getElementById('totalRecordsCount').innerText = `Total Rows: ${dataset.length.toLocaleString()}`;
                 renderTable();
             }
         }
 
-        // Google Sheet Web API Sync Method
-        async function syncWithGoogleSheet(action, payload) {
-            console.log(`Syncing action [${action}] to Google Sheet:`, payload);
-            /*
-            fetch(GOOGLE_SCRIPT_API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action, data: payload })
-            });
-            */
-        }
-
-        // Generating Fast 100,000 Mock Records for Testing Performance
-        function generateMockLargeDataset(count) {
-            const data = [];
-            const categories = ['Finance', 'IT Support', 'Operations', 'HR', 'Logistics'];
-            const statuses = ['Active', 'Pending', 'Archived', 'Completed'];
-
-            for (let i = 1; i <= count; i++) {
-                data.push({
-                    id: `REC-${100000 + i}`,
-                    name: `Data Entry Record Item #${i}`,
-                    category: categories[i % categories.length],
-                    value: `Val-${(i * 3.14).toFixed(2)}`,
-                    status: statuses[i % statuses.length]
-                });
+        // EXPORT TO EXCEL
+        function exportToExcel() {
+            if (dataset.length === 0) {
+                alert("ডাউনলোড করার মতো কোনো ডাটা নেই!");
+                return;
             }
-            return data;
+            const worksheet = XLSX.utils.json_to_sheet(dataset);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Billing Data");
+            XLSX.writeFile(workbook, "Client_Billing_Report.xlsx");
         }
 
         function escapeHtml(text) {
