@@ -1,5 +1,3 @@
-এখানে আপনার কোডের মূল লজিক সম্পূর্ণ ঠিক রেখে Obfuscation (অবফাসকেশন) কৌশল ব্যবহার করা হয়েছে।
-এই কৌশলে ভ্যারিয়েবল ও ফাংশনের নামগুলো হেক্সাডেসিমেল রূপ (_0x4f2a, _0x1b8e), স্ট্রিংগুলোকে এনকোডেড অ্যারে, এবং অবজেক্ট প্রপার্টিগুলোকে ব্র্যাকেট নোটেশনে পরিবর্তন করে দেওয়া হয়েছে। এর ফলে বাহ্যিকভাবে কোডটি কোনো মানুষের পক্ষে পড়ে বোঝা অসম্ভব, কিন্তু ব্রাউজারে এটি আগের মতোই নিখুঁতভাবে কাজ করবে।
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -10,7 +8,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%;font-family:'Segoe UI',Arial,sans-serif}body{margin:0;padding:0;background:#121212;color:#f0f0f0;transition:background .3s,color .3s;display:flex;flex-direction:column;justify-content:space-between;position:relative}body.light-mode{background:linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);background-size:400% 400%;animation:gradientBG 15s ease infinite;color:#fff}@keyframes gradientBG{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}#particles-js{position:fixed;width:100%;height:100%;z-index:0;top:0;left:0;pointer-events:none}.theme-toggle{position:fixed;left:20px;bottom:20px;width:42px;height:42px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1000}.user-login-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;justify-content:center;align-items:center;z-index:999}.modal-content{background:#1e1e1e;color:#fff;padding:24px;border-radius:10px;width:380px;border:1px solid #333;text-align:center;position:relative;max-height:90vh;overflow-y:auto}.modal-content input,.modal-content select{width:100%;padding:10px;margin-bottom:12px;border:1px solid #444;background:#2a2a2a;color:#fff;border-radius:6px;outline:0;font-family:inherit}.modal-content button{padding:10px 14px;margin-top:5px;cursor:pointer;border:none;border-radius:6px;font-weight:700;background:#4CAF50;color:#fff;width:100%}.close-btn{position:absolute;top:12px;right:15px;font-size:16px;color:#aaa;cursor:pointer}.divider{display:flex;align-items:center;text-align:center;margin:15px 0;color:#888;font-size:12px}.divider::after,.divider::before{content:'';flex:1;border-bottom:1px solid #444}.divider:not(:empty)::before{margin-right:.5em}.divider:not(:empty)::after{margin-left:.5em}.google-btn{background:#fff!important;color:#333!important;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #ccc!important}.logout-btn{position:fixed;right:20px;bottom:20px;padding:10px 18px;border-radius:20px;border:none;background:#e11d48;color:#fff;font-size:14px;font-weight:700;cursor:pointer;z-index:1000;box-shadow:0 4px 10px rgba(225,29,72,.3)}.dashboard{position:relative;z-index:1;padding:30px 20px;max-width:1500px;margin:0 auto;width:100%}.main-header{font-size:32px;font-weight:800;margin-bottom:25px;text-align:center;letter-spacing:.5px}.sheet-wrapper{background:rgba(30,30,30,.85);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:20px;backdrop-filter:blur(10px);box-shadow:0 10px 25px rgba(0,0,0,.5)}body.light-mode .sheet-wrapper{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.3)}.sheet-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}.toolbar-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.search-input{padding:9px 14px;border-radius:6px;border:1px solid #444;background:#2a2a2a;color:#fff;outline:0;width:280px;font-size:14px}.btn{padding:9px 16px;border-radius:6px;border:none;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s ease}.btn-primary{background:#38bdf8;color:#000}.btn-primary:hover{background:#0284c7;color:#fff}.btn-success{background:#4CAF50;color:#fff}.btn-success:hover{background:#388E3C}.btn-warning{background:#f59e0b;color:#000}.btn-warning:hover{background:#d97706;color:#fff}.btn-danger{background:#f44336;color:#fff}.btn-danger:hover{background:#d32f2f}.btn-secondary{background:#6b7280;color:#fff}.table-container{overflow-x:auto;max-height:600px;overflow-y:auto;border:1px solid #333;border-radius:6px}table{width:100%;border-collapse:collapse;font-size:13px;text-align:left}th{position:sticky;top:0;background:#252526;color:#38bdf8;padding:12px;font-weight:700;border-bottom:2px solid #444;z-index:10}td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}tr:nth-child(even){background:rgba(255,255,255,.02)}tr:hover{background:rgba(255,255,255,.08)}.pagination{display:flex;justify-content:space-between;align-items:center;margin-top:15px;font-size:13px;color:#aaa}.badge-info{background:rgba(56,189,248,.2);color:#38bdf8;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:700}.badge-paid{background:rgba(76,175,80,.2);color:#4CAF50;padding:4px 10px;border-radius:4px;font-weight:700}.badge-pending{background:rgba(245,158,11,.2);color:#f59e0b;padding:4px 10px;border-radius:4px;font-weight:700;border:1px solid rgba(245,158,11,.4)}.developer-footer{position:relative;z-index:1;text-align:center;padding:15px 10px;font-size:14px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);margin-top:30px}.developer-footer span{font-weight:700;color:#00e676}
+        *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%;font-family:'Segoe UI',Arial,sans-serif}body{margin:0;padding:0;background:#121212;color:#f0f0f0;transition:background .3s,color .3s;display:flex;flex-direction:column;justify-content:space-between;position:relative}body.light-mode{background:linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);background-size:400% 400%;animation:gradientBG 15s ease infinite;color:#fff}@keyframes gradientBG{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}#particles-js{position:fixed;width:100%;height:100%;z-index:0;top:0;left:0;pointer-events:none}.theme-toggle{position:fixed;left:20px;bottom:20px;width:42px;height:42px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1000}.user-login-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;justify-content:center;align-items:center;z-index:999}.modal-content{background:#1e1e1e;color:#fff;padding:24px;border-radius:10px;width:380px;border:1px solid #333;text-align:center;position:relative;max-height:90vh;overflow-y:auto}.modal-content input,.modal-content select{width:100%;padding:10px;margin-bottom:12px;border:1px solid #444;background:#2a2a2a;color:#fff;border-radius:6px;outline:0;font-family:inherit}.modal-content button{padding:10px 14px;margin-top:5px;cursor:pointer;border:none;border-radius:6px;font-weight:700;background:#4CAF50;color:#fff;width:100%}.close-btn{position:absolute;top:12px;right:15px;font-size:16px;color:#aaa;cursor:pointer}.divider{display:flex;align-items:center;text-align:center;margin:15px 0;color:#888;font-size:12px}.divider::after,.divider::before{content:'';flex:1;border-bottom:1px solid #444}.divider:not(:empty)::before{margin-right:.5em}.divider:not(:empty)::after{margin-left:.5em}.google-btn{background:#fff!important;color:#333!important;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #ccc!important}.logout-btn{position:fixed;right:20px;bottom:20px;padding:10px 18px;border-radius:20px;border:none;background:#e11d48;color:#fff;font-size:14px;font-weight:700;cursor:pointer;z-index:1000;box-shadow:0 4px 10px rgba(225,29,72,.3)}.dashboard{position:relative;z-index:1;padding:30px 20px;max-width:1500px;margin:0 auto;width:100%}.main-header{font-size:32px;font-weight:800;margin-bottom:25px;text-align:center;letter-spacing:.5px}.sheet-wrapper{background:rgba(30,30,30,.85);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:20px;backdrop-filter:blur(10px);box-shadow:0 10px 25px rgba(0,0,0,.5)}body.light-mode .sheet-wrapper{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.3)}.sheet-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}.toolbar-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.search-input{padding:9px 14px;border-radius:6px;border:1px solid #444;background:#2a2a2a;color:#fff;outline:0;width:280px;font-size:14px}.btn{padding:9px 16px;border-radius:6px;border:none;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s ease}.btn-sm{padding:5px 10px;font-size:12px}.btn-primary{background:#38bdf8;color:#000}.btn-primary:hover{background:#0284c7;color:#fff}.btn-success{background:#4CAF50;color:#fff}.btn-success:hover{background:#388E3C}.btn-warning{background:#f59e0b;color:#000}.btn-warning:hover{background:#d97706;color:#fff}.btn-danger{background:#f44336;color:#fff}.btn-danger:hover{background:#d32f2f}.btn-secondary{background:#6b7280;color:#fff}.btn-purple{background:#8b5cf6;color:#fff}.btn-purple:hover{background:#7c3aed}.table-container{overflow-x:auto;max-height:600px;overflow-y:auto;border:1px solid #333;border-radius:6px}table{width:100%;border-collapse:collapse;font-size:13px;text-align:left}th{position:sticky;top:0;background:#252526;color:#38bdf8;padding:12px;font-weight:700;border-bottom:2px solid #444;z-index:10}td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}tr:nth-child(even){background:rgba(255,255,255,.02)}tr:hover{background:rgba(255,255,255,.08)}.pagination{display:flex;justify-content:space-between;align-items:center;margin-top:15px;font-size:13px;color:#aaa}.badge-info{background:rgba(56,189,248,.2);color:#38bdf8;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:700}.badge-paid{background:rgba(76,175,80,.2);color:#4CAF50;padding:4px 10px;border-radius:4px;font-weight:700}.badge-pending{background:rgba(245,158,11,.2);color:#f59e0b;padding:4px 10px;border-radius:4px;font-weight:700;border:1px solid rgba(245,158,11,.4)}.developer-footer{position:relative;z-index:1;text-align:center;padding:15px 10px;font-size:14px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);margin-top:30px}.developer-footer span{font-weight:700;color:#00e676}
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -44,17 +42,23 @@
                     <span class="badge-info" id="totalRecordsCount">Total Rows: 0</span>
                 </div>
                 <div class="toolbar-group">
-                    <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search ID, Name, Phone, Month...">
+                    <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search ID, Receipt No, Name, Phone...">
                     <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
                     <button class="btn btn-warning" id="btnTriggerUpload"><i class="fas fa-file-upload"></i> Upload Sheet</button>
+                    <button class="btn btn-purple" id="btnGenerateMonthlyBills"><i class="fas fa-calendar-plus"></i> Generate 1st Date Bills</button>
                     <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Add Row</button>
-                    <button class="btn btn-primary" id="btnExportData"><i class="fas fa-file-download"></i> Export Excel</button>
+                    
+                    <!-- EXPORT BUTTONS GROUP -->
+                    <button class="btn btn-primary" id="btnExportAll"><i class="fas fa-file-download"></i> All Excel</button>
+                    <button class="btn btn-success" id="btnExportPaid"><i class="fas fa-check-circle"></i> Paid Excel</button>
+                    <button class="btn btn-danger" id="btnExportPending"><i class="fas fa-clock"></i> Pending Excel</button>
                 </div>
             </div>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
+                            <th>Receipt No</th>
                             <th>Client ID</th>
                             <th>Customer Name</th>
                             <th>Phone Number</th>
@@ -68,7 +72,7 @@
                     </thead>
                     <tbody id="sheetTableBody">
                         <tr>
-                            <td colspan="9" style="text-align:center; padding: 40px; color:#aaa;">
+                            <td colspan="10" style="text-align:center; padding: 40px; color:#aaa;">
                                 <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
                                 কোনো ডাটা পাওয়া যায়নি। Excel/CSV আপলোড করুন অথবা **Add Row** বাটনে ক্লিক করুন।
                             </td>
@@ -86,24 +90,26 @@
         </div>
     </div>
 
+    <!-- Modal Form with Receipt Number Input -->
     <div class="user-login-modal" id="dataRowModal" style="display:none;">
         <div class="modal-content">
             <span class="close-btn" id="btnCloseDataModal"><i class="fas fa-times"></i></span>
-            <h3 id="dataModalTitle" style="margin-bottom:15px"><i class="fas fa-edit" style="color:#38bdf8"></i> Bill Entry</h3>
+            <h3 id="dataModalTitle" style="margin-bottom:15px"><i class="fas fa-receipt" style="color:#38bdf8"></i> Money Entry / Bill</h3>
             <form id="dataRowForm">
                 <input type="hidden" id="rowOriginalId">
+                <input type="text" id="rowReceiptNo" placeholder="Receipt Number (e.g. REC-1001)" required>
                 <input type="text" id="rowId" placeholder="Client ID / Account No" required>
                 <input type="text" id="rowName" placeholder="Customer Name" required>
                 <input type="text" id="rowPhone" placeholder="Phone Number (e.g. 017xxxxxxxx)" required>
                 <input type="text" id="rowAddress" placeholder="Customer Address" required>
                 <input type="text" id="rowMonth" placeholder="Bill Month (e.g. April 2026)" required>
                 <input type="text" id="rowPackage" placeholder="Package / Service Name" required>
-                <input type="number" id="rowAmount" placeholder="Bill Amount (Tk)" required>
+                <input type="number" id="rowAmount" placeholder="Paid Amount / Bill Amount (Tk)" required>
                 <select id="rowStatus">
                     <option value="Paid">Paid</option>
                     <option value="Pending">Pending</option>
                 </select>
-                <button type="submit" class="btn btn-success" style="width:100%; margin-top:10px;">Save Record</button>
+                <button type="submit" class="btn btn-success" style="width:100%; margin-top:10px;">Save Payment Record</button>
             </form>
         </div>
     </div>
@@ -118,7 +124,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <!-- OBfuscated JavaScript Logic -->
+    <!-- Logic Engine & Event Handlers -->
     <script>
         (function(_0x5a12, _0x3b89) {
             const _0x1f2c = function(_0x4d91) {
@@ -135,8 +141,12 @@
             return _0x5a12Arr[_0x2d1f];
         };
 
+        let recordsList = [];
+        let currentPage = 1;
+        const recordsPerPage = 20;
+
         (function() {
-            const _0x4f2a = {
+            const firebaseConfig = {
                 apiKey: _0x1a7b('0x0'),
                 authDomain: _0x1a7b('0x1'),
                 databaseURL: _0x1a7b('0x2'),
@@ -146,90 +156,375 @@
                 appId: _0x1a7b('0x6')
             };
 
-            firebase['initializeApp'](_0x4f2a);
-            const _0x1b8e = firebase['auth']();
-
-            let _0x9c3d = [], _0x8e2f = [], _0x7a1b = 0x1;
-            const _0x6f4c = 0x32;
+            firebase['initializeApp'](firebaseConfig);
+            const auth = firebase['auth']();
 
             document['addEventListener']('DOMContentLoaded', () => {
-                _0x3d8a();
-                _0x2c9b();
-                _0x1e7a();
+                initParticles();
+                initThemeToggle();
+                initAuthEvents(auth);
+                initTableOperations();
+                initExportAndUpload();
             });
 
-            function _0x3d8a() {
+            function initParticles() {
                 if (typeof particlesJS !== 'undefined') {
                     particlesJS('particles-js', {
                         particles: {
-                            number: { value: 0x1e },
+                            number: { value: 30 },
                             color: { value: '#ffffff' },
                             opacity: { value: 0.15 },
-                            size: { value: 0x3 },
-                            line_linked: { enable: true, distance: 0x96, color: '#ffffff', opacity: 0.08 }
+                            size: { value: 3 },
+                            line_linked: { enable: true, distance: 150, color: '#ffffff', opacity: 0.08 }
                         }
                     });
                 }
             }
 
-            function _0x2c9b() {
-                const _0x5e1f = document['getElementById']('_0x_tg');
-                const _0x4b2c = document['getElementById']('themeIcon');
-                _0x5e1f['addEventListener']('click', () => {
-                    document['body']['classList']['toggle']('light-mode');
-                    _0x4b2c['className'] = document['body']['classList']['contains']('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
+            function initThemeToggle() {
+                const btn = document.getElementById('_0x_tg');
+                const icon = document.getElementById('themeIcon');
+                btn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    icon.className = document.body.classList.contains('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
                 });
             }
 
-            function _0x1e7a() {
-                const _0x1d4e = document['getElementById']('userInputEmail'),
-                      _0x2f3a = document['getElementById']('userInputPass'),
-                      _0x3c2b = document['getElementById']('_0x_lgb'),
-                      _0x4a1c = document['getElementById']('_0x_ggb'),
-                      _0x5b0d = document['getElementById']('btnLogout'),
-                      _0x6c9e = document['getElementById']('loginError');
+            function initAuthEvents(auth) {
+                const emailInp = document.getElementById('userInputEmail'),
+                      passInp = document.getElementById('userInputPass'),
+                      btnLogin = document.getElementById('_0x_lgb'),
+                      btnGoogle = document.getElementById('_0x_ggb'),
+                      btnLogout = document.getElementById('btnLogout'),
+                      errDiv = document.getElementById('loginError');
 
-                _0x3c2b['addEventListener']('click', () => {
-                    const _0x7f8a = _0x1d4e['value']['trim'](), _0x8e9b = _0x2f3a['value']['trim']();
-                    if (!_0x7f8a || !_0x8e9b) {
-                        _0x9a8b('\xe0\xa6\x87\xe0\xa6\xae\xe0\xa7\x87\xe0\xa6\x87\xe0\xa6\xb2\x20\xe0\xa6\x8f\xe0\xa6\xac\xe0\xa6\x82\x20\xe0\xa6\xaa\xe0\xa6\xbe\xe0\xa6\xb8\xe0\xa6\x9d\xe0\xa6\xbe\xe0\xa6\xb0\xe0\xa7\x8d\xe0\xa6\xa1\x20\xe0\xa6\xaa\xe0\xa7\x8d\xe0\xa6\xb0\xe0\xa6\xa6\xe0\xa6\xbe\xe0\xa6\xa8\x20\xe0\xa6\x95\xe0\xa6\xb0\xe0\xa7\x81\xe0\xa6\xa8');
+                btnLogin.addEventListener('click', () => {
+                    const e = emailInp.value.trim(), p = passInp.value.trim();
+                    if (!e || !p) {
+                        showError('ইমেইল এবং পাসওয়ার্ড প্রদান করুন');
                         return;
                     }
-                    _0x1b8e['signInWithEmailAndPassword'](_0x7f8a, _0x8e9b)['catch'](_0x0a1b => _0x9a8b(_0x0a1b['message']));
+                    auth.signInWithEmailAndPassword(e, p).catch(err => showError(err.message));
                 });
 
-                _0x4a1c['addEventListener']('click', () => {
-                    const _0x1b2c = new firebase['auth']['GoogleAuthProvider']();
-                    _0x1b8e['signInWithPopup'](_0x1b2c)['catch'](_0x3d4e => _0x9a8b(_0x3d4e['message']));
+                btnGoogle.addEventListener('click', () => {
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    auth.signInWithPopup(provider).catch(err => showError(err.message));
                 });
 
-                _0x5b0d['addEventListener']('click', () => _0x1b8e['signOut']());
+                btnLogout.addEventListener('click', () => auth.signOut());
 
-                _0x1b8e['onAuthStateChanged'](_0x5e6f => {
-                    if (_0x5e6f) {
-                        document['getElementById']('userLoginModal')['style']['display'] = 'none';
-                        document['getElementById']('mainDashboard')['style']['display'] = 'block';
-                        _0x5b0d['style']['display'] = 'block';
+                auth.onAuthStateChanged(user => {
+                    if (user) {
+                        document.getElementById('userLoginModal').style.display = 'none';
+                        document.getElementById('mainDashboard').style.display = 'block';
+                        btnLogout.style.display = 'block';
                     } else {
-                        document['getElementById']('userLoginModal')['style']['display'] = 'flex';
-                        document['getElementById']('mainDashboard')['style']['display'] = 'none';
-                        _0x5b0d['style']['display'] = 'none';
+                        document.getElementById('userLoginModal').style.display = 'flex';
+                        document.getElementById('mainDashboard').style.display = 'none';
+                        btnLogout.style.display = 'none';
                     }
                 });
 
-                function _0x9a8b(_0x7c8d) {
-                    _0x6c9e['innerText'] = _0x7c8d;
-                    _0x6c9e['style']['display'] = 'block';
+                function showError(msg) {
+                    errDiv.innerText = msg;
+                    errDiv.style.display = 'block';
                 }
             }
 
-            function _0x8d9e(_0x1a2b) {
-                if (!_0x1a2b) return 'Pending';
-                const _0x3c4d = String(_0x1a2b)['trim']()['toLowerCase']();
-                return (_0x3c4d === 'paid' || _0x3c4d === '\xe0\xa6\xaa\xe0\xa6\xbe\xe0\xa6\xbf\xe0\xa6\xa1') ? 'Paid' : 'Pending';
+            function initTableOperations() {
+                const btnOpenModal = document.getElementById('btnOpenAddModal');
+                const btnCloseModal = document.getElementById('btnCloseDataModal');
+                const dataModal = document.getElementById('dataRowModal');
+                const dataForm = document.getElementById('dataRowForm');
+                const searchInput = document.getElementById('sheetSearchInput');
+
+                btnOpenModal.addEventListener('click', () => {
+                    dataForm.reset();
+                    document.getElementById('rowOriginalId').value = '';
+                    document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-receipt" style="color:#38bdf8"></i> New Receipt Entry';
+                    dataModal.style.display = 'flex';
+                });
+
+                btnCloseModal.addEventListener('click', () => {
+                    dataModal.style.display = 'none';
+                });
+
+                dataForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const receiptNo = document.getElementById('rowReceiptNo').value.trim();
+                    const clientId = document.getElementById('rowId').value.trim();
+                    const name = document.getElementById('rowName').value.trim();
+                    const phone = document.getElementById('rowPhone').value.trim();
+                    const address = document.getElementById('rowAddress').value.trim();
+                    const month = document.getElementById('rowMonth').value.trim();
+                    const pkg = document.getElementById('rowPackage').value.trim();
+                    const amount = document.getElementById('rowAmount').value.trim();
+                    const status = document.getElementById('rowStatus').value;
+
+                    const originalIdx = document.getElementById('rowOriginalId').value;
+
+                    const newRow = { receiptNo, clientId, name, phone, address, month, pkg, amount, status };
+
+                    if (originalIdx !== '') {
+                        recordsList[parseInt(originalIdx)] = newRow;
+                    } else {
+                        recordsList.unshift(newRow);
+                    }
+
+                    dataModal.style.display = 'none';
+                    renderTable();
+                });
+
+                searchInput.addEventListener('input', () => {
+                    currentPage = 1;
+                    renderTable();
+                });
+
+                document.getElementById('btnPrevPage').addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderTable();
+                    }
+                });
+
+                document.getElementById('btnNextPage').addEventListener('click', () => {
+                    const filtered = getFilteredRecords();
+                    if (currentPage * recordsPerPage < filtered.length) {
+                        currentPage++;
+                        renderTable();
+                    }
+                });
+
+                // 自動 Generating 1st Date Bills Handler
+                document.getElementById('btnGenerateMonthlyBills').addEventListener('click', () => {
+                    if (recordsList.length === 0) {
+                        alert('বিল তৈরি করার জন্য কোনো কাস্টমার ডাটা পাওয়া যায়নি!');
+                        return;
+                    }
+
+                    const now = new Date();
+                    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    const currentMonthStr = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
+                    if (!confirm(`আপনি কি ${currentMonthStr} মাসের জন্য সমস্ত গ্রাহকের বিল জেনারেট করতে চান?`)) {
+                        return;
+                    }
+
+                    // Extract unique customers based on Client ID
+                    const uniqueClientsMap = new Map();
+                    recordsList.forEach(item => {
+                        if (item.clientId && !uniqueClientsMap.has(item.clientId)) {
+                            uniqueClientsMap.set(item.clientId, item);
+                        }
+                    });
+
+                    let createdCount = 0;
+                    let skippedCount = 0;
+
+                    uniqueClientsMap.forEach((client) => {
+                        // Check if current month bill already exists for this client
+                        const exists = recordsList.some(r => r.clientId === client.clientId && r.month === currentMonthStr);
+                        
+                        if (!exists) {
+                            const newBill = {
+                                receiptNo: `REC-${Math.floor(100000 + Math.random() * 900000)}`,
+                                clientId: client.clientId,
+                                name: client.name,
+                                phone: client.phone,
+                                address: client.address,
+                                month: currentMonthStr,
+                                pkg: client.pkg,
+                                amount: client.amount,
+                                status: 'Pending'
+                            };
+                            recordsList.unshift(newBill);
+                            createdCount++;
+                        } else {
+                            skippedCount++;
+                        }
+                    });
+
+                    renderTable();
+                    alert(`বিল জেনারেট সম্পন্ন!\n\nনতুন বিল তৈরি হয়েছে: ${createdCount} টি\nইতিমধ্যে প্রস্তুত করা ছিল: ${skippedCount} টি`);
+                });
+            }
+
+            function initExportAndUpload() {
+                const fileInput = document.getElementById('excelFileInput');
+                const btnTriggerUpload = document.getElementById('btnTriggerUpload');
+
+                btnTriggerUpload.addEventListener('click', () => fileInput.click());
+
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+                        if (jsonData.length > 1) {
+                            for (let i = 1; i < jsonData.length; i++) {
+                                const row = jsonData[i];
+                                if (row.length === 0) continue;
+                                recordsList.push({
+                                    receiptNo: row[0] || '',
+                                    clientId: row[1] || '',
+                                    name: row[2] || '',
+                                    phone: row[3] || '',
+                                    address: row[4] || '',
+                                    month: row[5] || '',
+                                    pkg: row[6] || '',
+                                    amount: row[7] || '',
+                                    status: row[8] ? (row[8].toString().toLowerCase().includes('paid') ? 'Paid' : 'Pending') : 'Pending'
+                                });
+                            }
+                            renderTable();
+                            alert('Excel ফাইল সফলভাবে আপলোড হয়েছে!');
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
+                });
+
+                // Export Functionality
+                document.getElementById('btnExportAll').addEventListener('click', () => exportToExcel('All'));
+                document.getElementById('btnExportPaid').addEventListener('click', () => exportToExcel('Paid'));
+                document.getElementById('btnExportPending').addEventListener('click', () => exportToExcel('Pending'));
             }
         })();
+
+        function getFilteredRecords() {
+            const query = document.getElementById('sheetSearchInput').value.toLowerCase().trim();
+            if (!query) return recordsList;
+
+            return recordsList.filter(item => 
+                (item.receiptNo && item.receiptNo.toLowerCase().includes(query)) ||
+                (item.clientId && item.clientId.toLowerCase().includes(query)) ||
+                (item.name && item.name.toLowerCase().includes(query)) ||
+                (item.phone && item.phone.toLowerCase().includes(query)) ||
+                (item.address && item.address.toLowerCase().includes(query)) ||
+                (item.month && item.month.toLowerCase().includes(query))
+            );
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('sheetTableBody');
+            const filtered = getFilteredRecords();
+            document.getElementById('totalRecordsCount').innerText = `Total Rows: ${filtered.length}`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" style="text-align:center; padding: 40px; color:#aaa;">
+                            <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
+                            কোনো ডাটা পাওয়া যায়নি।
+                        </td>
+                    </tr>`;
+                document.getElementById('pageInfo').innerText = 'Showing Page 0 of 0';
+                return;
+            }
+
+            const totalPages = Math.ceil(filtered.length / recordsPerPage);
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const startIdx = (currentPage - 1) * recordsPerPage;
+            const endIdx = startIdx + recordsPerPage;
+            const pageData = filtered.slice(startIdx, endIdx);
+
+            document.getElementById('pageInfo').innerText = `Showing Page ${currentPage} of ${totalPages}`;
+
+            let html = '';
+            pageData.forEach((row) => {
+                const actualIndex = recordsList.indexOf(row);
+                const statusBadge = row.status === 'Paid' 
+                    ? `<span class="badge-paid"><i class="fas fa-check"></i> Paid</span>` 
+                    : `<span class="badge-pending"><i class="fas fa-clock"></i> Pending</span>`;
+
+                html += `
+                    <tr>
+                        <td><b>${row.receiptNo || '-'}</b></td>
+                        <td>${row.clientId || '-'}</td>
+                        <td>${row.name || '-'}</td>
+                        <td>${row.phone || '-'}</td>
+                        <td>${row.address || '-'}</td>
+                        <td>${row.month || '-'}</td>
+                        <td>${row.pkg || '-'}</td>
+                        <td>${row.amount} Tk</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="editRow(${actualIndex})"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteRow(${actualIndex})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function editRow(index) {
+            const row = recordsList[index];
+            document.getElementById('rowOriginalId').value = index;
+            document.getElementById('rowReceiptNo').value = row.receiptNo || '';
+            document.getElementById('rowId').value = row.clientId || '';
+            document.getElementById('rowName').value = row.name || '';
+            document.getElementById('rowPhone').value = row.phone || '';
+            document.getElementById('rowAddress').value = row.address || '';
+            document.getElementById('rowMonth').value = row.month || '';
+            document.getElementById('rowPackage').value = row.pkg || '';
+            document.getElementById('rowAmount').value = row.amount || '';
+            document.getElementById('rowStatus').value = row.status || 'Paid';
+
+            document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-edit" style="color:#38bdf8"></i> Edit Record';
+            document.getElementById('dataRowModal').style.display = 'flex';
+        }
+
+        function deleteRow(index) {
+            if (confirm('আপনি কি এই রেকর্ডটি মুছে ফেলতে চান?')) {
+                recordsList.splice(index, 1);
+                renderTable();
+            }
+        }
+
+        function exportToExcel(filterType) {
+            if (recordsList.length === 0) {
+                alert('ডাউনলোড করার মতো কোনো ডাটা নেই!');
+                return;
+            }
+
+            let exportData = recordsList;
+            if (filterType === 'Paid') {
+                exportData = recordsList.filter(item => item.status === 'Paid');
+            } else if (filterType === 'Pending') {
+                exportData = recordsList.filter(item => item.status === 'Pending');
+            }
+
+            if (exportData.length === 0) {
+                alert(`কোনো ${filterType} ডাটা খুঁজে পাওয়া যায়নি!`);
+                return;
+            }
+
+            const excelRows = exportData.map(item => ({
+                'Receipt No': item.receiptNo,
+                'Client ID': item.clientId,
+                'Customer Name': item.name,
+                'Phone Number': item.phone,
+                'Address': item.address,
+                'Bill Month': item.month,
+                'Package': item.pkg,
+                'Amount (Tk)': item.amount,
+                'Status': item.status
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(excelRows);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Billing Data");
+
+            const fileName = `Billing_Report_${filterType}_${new Date().toISOString().slice(0,10)}.xlsx`;
+            XLSX.writeFile(workbook, fileName);
+        }
     </script>
 </body>
 </html>
-
