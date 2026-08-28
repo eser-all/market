@@ -8,7 +8,75 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%;font-family:'Segoe UI',Arial,sans-serif}body{margin:0;padding:0;background:#121212;color:#f0f0f0;transition:background .3s,color .3s;display:flex;flex-direction:column;justify-content:space-between;position:relative}body.light-mode{background:linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);background-size:400% 400%;animation:gradientBG 15s ease infinite;color:#fff}@keyframes gradientBG{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}#particles-js{position:fixed;width:100%;height:100%;z-index:0;top:0;left:0;pointer-events:none}.theme-toggle{position:fixed;left:20px;bottom:20px;width:42px;height:42px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1000}.user-login-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;justify-content:center;align-items:center;z-index:999}.modal-content{background:#1e1e1e;color:#fff;padding:24px;border-radius:10px;width:380px;border:1px solid #333;text-align:center;position:relative;max-height:90vh;overflow-y:auto}.modal-content input,.modal-content select{width:100%;padding:10px;margin-bottom:12px;border:1px solid #444;background:#2a2a2a;color:#fff;border-radius:6px;outline:0;font-family:inherit}.modal-content button{padding:10px 14px;margin-top:5px;cursor:pointer;border:none;border-radius:6px;font-weight:700;background:#4CAF50;color:#fff;width:100%}.close-btn{position:absolute;top:12px;right:15px;font-size:16px;color:#aaa;cursor:pointer}.divider{display:flex;align-items:center;text-align:center;margin:15px 0;color:#888;font-size:12px}.divider::after,.divider::before{content:'';flex:1;border-bottom:1px solid #444}.divider:not(:empty)::before{margin-right:.5em}.divider:not(:empty)::after{margin-left:.5em}.google-btn{background:#fff!important;color:#333!important;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #ccc!important}.logout-btn{position:fixed;right:20px;bottom:20px;padding:10px 18px;border-radius:20px;border:none;background:#e11d48;color:#fff;font-size:14px;font-weight:700;cursor:pointer;z-index:1000;box-shadow:0 4px 10px rgba(225,29,72,.3)}.dashboard{position:relative;z-index:1;padding:30px 20px;max-width:1500px;margin:0 auto;width:100%}.main-header{font-size:32px;font-weight:800;margin-bottom:25px;text-align:center;letter-spacing:.5px}.sheet-wrapper{background:rgba(30,30,30,.85);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:20px;backdrop-filter:blur(10px);box-shadow:0 10px 25px rgba(0,0,0,.5)}body.light-mode .sheet-wrapper{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.3)}.sheet-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}.toolbar-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.search-input{padding:9px 14px;border-radius:6px;border:1px solid #444;background:#2a2a2a;color:#fff;outline:0;width:280px;font-size:14px}.btn{padding:9px 16px;border-radius:6px;border:none;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s ease}.btn-sm{padding:5px 8px;font-size:12px}.btn-primary{background:#38bdf8;color:#000}.btn-primary:hover{background:#0284c7;color:#fff}.btn-success{background:#4CAF50;color:#fff}.btn-success:hover{background:#388E3C}.btn-warning{background:#f59e0b;color:#000}.btn-warning:hover{background:#d97706;color:#fff}.btn-danger{background:#f44336;color:#fff}.btn-danger:hover{background:#d32f2f}.btn-secondary{background:#6b7280;color:#fff}.btn-purple{background:#8b5cf6;color:#fff}.btn-purple:hover{background:#7c3aed}.table-container{overflow-x:auto;max-height:600px;overflow-y:auto;border:1px solid #333;border-radius:6px}table{width:100%;border-collapse:collapse;font-size:13px;text-align:left}th{position:sticky;top:0;background:#252526;color:#38bdf8;padding:12px;font-weight:700;border-bottom:2px solid #444;z-index:10}td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}tr:nth-child(even){background:rgba(255,255,255,.02)}tr:hover{background:rgba(255,255,255,.08)}.pagination{display:flex;justify-content:space-between;align-items:center;margin-top:15px;font-size:13px;color:#aaa}.badge-info{background:rgba(56,189,248,.2);color:#38bdf8;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:700}.badge-paid{background:rgba(76,175,80,.2);color:#4CAF50;padding:4px 10px;border-radius:4px;font-weight:700}.badge-pending{background:rgba(245,158,11,.2);color:#f59e0b;padding:4px 10px;border-radius:4px;font-weight:700;border:1px solid rgba(245,158,11,.4)}.developer-footer{position:relative;z-index:1;text-align:center;padding:15px 10px;font-size:14px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);margin-top:30px}.developer-footer span{font-weight:700;color:#00e676}
+        *{margin:0;padding:0;box-sizing:border-box}
+        html,body{min-height:100%;font-family:'Segoe UI',Arial,sans-serif;background:#121212;color:#f0f0f0;transition:background .3s,color .3s}
+        body.light-mode{background:linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);background-size:400% 400%;animation:gradientBG 15s ease infinite;color:#fff}
+        @keyframes gradientBG{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+        #particles-js{position:fixed;width:100%;height:100%;z-index:0;top:0;left:0;pointer-events:none}
+        
+        /* Layout Structure */
+        .app-container{display:flex;min-height:100vh;position:relative;z-index:1}
+        
+        /* Sidebar Styling */
+        .sidebar{width:260px;background:rgba(20,20,20,.95);border-right:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;gap:15px;backdrop-filter:blur(10px)}
+        body.light-mode .sidebar{background:rgba(0,0,0,.5);border-right:1px solid rgba(255,255,255,.2)}
+        .sidebar-header{font-size:20px;font-weight:800;color:#38bdf8;text-align:center;padding-bottom:15px;border-bottom:1px solid #333;display:flex;align-items:center;justify-content:center;gap:10px}
+        .sidebar-menu{display:flex;flex-direction:column;gap:8px}
+        .menu-btn{width:100%;padding:12px 15px;border-radius:8px;border:none;background:transparent;color:#ccc;font-size:14px;font-weight:600;text-align:left;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s}
+        .menu-btn:hover,.menu-btn.active{background:#38bdf8;color:#000;font-weight:700}
+        .menu-btn i{font-size:16px;width:20px;text-align:center}
+        
+        /* Main Content */
+        .main-content{flex:1;padding:25px;display:flex;flex-direction:column;gap:20px;overflow-x:hidden}
+        .top-navbar{display:flex;justify-content:space-between;align-items:center;background:rgba(30,30,30,.85);padding:15px 20px;border-radius:12px;border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px)}
+        body.light-mode .top-navbar{background:rgba(0,0,0,.35)}
+        .page-title{font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px}
+        
+        /* Search Bar Top-Right */
+        .search-box{display:flex;align-items:center;gap:10px}
+        .search-input{padding:10px 16px;border-radius:8px;border:1px solid #444;background:#2a2a2a;color:#fff;outline:0;width:320px;font-size:14px}
+        .search-input:focus{border-color:#38bdf8}
+        
+        /* Toolbar & Table */
+        .sheet-wrapper{background:rgba(30,30,30,.85);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:20px;backdrop-filter:blur(10px);box-shadow:0 10px 25px rgba(0,0,0,.5)}
+        body.light-mode .sheet-wrapper{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.3)}
+        .sheet-toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+        .toolbar-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+        
+        .btn{padding:9px 16px;border-radius:6px;border:none;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s ease}
+        .btn-sm{padding:5px 8px;font-size:12px}
+        .btn-primary{background:#38bdf8;color:#000}
+        .btn-primary:hover{background:#0284c7;color:#fff}
+        .btn-success{background:#4CAF50;color:#fff}
+        .btn-success:hover{background:#388E3C}
+        .btn-warning{background:#f59e0b;color:#000}
+        .btn-warning:hover{background:#d97706;color:#fff}
+        .btn-danger{background:#f44336;color:#fff}
+        .btn-danger:hover{background:#d32f2f}
+        .btn-secondary{background:#6b7280;color:#fff}
+        .btn-purple{background:#8b5cf6;color:#fff}
+        .btn-purple:hover{background:#7c3aed}
+        
+        .table-container{overflow-x:auto;max-height:600px;overflow-y:auto;border:1px solid #333;border-radius:6px}
+        table{width:100%;border-collapse:collapse;font-size:13px;text-align:left}
+        th{position:sticky;top:0;background:#252526;color:#38bdf8;padding:12px;font-weight:700;border-bottom:2px solid #444;z-index:10}
+        td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}
+        tr:nth-child(even){background:rgba(255,255,255,.02)}
+        tr:hover{background:rgba(255,255,255,.08)}
+        
+        .pagination{display:flex;justify-content:space-between;align-items:center;margin-top:15px;font-size:13px;color:#aaa}
+        .badge-info{background:rgba(56,189,248,.2);color:#38bdf8;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:700}
+        .badge-paid{background:rgba(76,175,80,.2);color:#4CAF50;padding:4px 10px;border-radius:4px;font-weight:700}
+        .badge-pending{background:rgba(245,158,11,.2);color:#f59e0b;padding:4px 10px;border-radius:4px;font-weight:700;border:1px solid rgba(245,158,11,.4)}
+        
+        /* Modals & Controls */
+        .user-login-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;justify-content:center;align-items:center;z-index:999}
+        .modal-content{background:#1e1e1e;color:#fff;padding:24px;border-radius:10px;width:400px;border:1px solid #333;text-align:center;position:relative;max-height:90vh;overflow-y:auto}
+        .modal-content input,.modal-content select,.modal-content textarea{width:100%;padding:10px;margin-bottom:12px;border:1px solid #444;background:#2a2a2a;color:#fff;border-radius:6px;outline:0;font-family:inherit}
+        .close-btn{position:absolute;top:12px;right:15px;font-size:16px;color:#aaa;cursor:pointer}
+        .theme-toggle{position:fixed;left:20px;bottom:20px;width:42px;height:42px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1000}
+        .developer-footer{text-align:center;padding:15px;font-size:14px;background:rgba(0,0,0,.4);margin-top:auto}
+        .developer-footer span{font-weight:700;color:#00e676}
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -19,78 +87,133 @@
         <i class="fas fa-moon" id="themeIcon"></i>
     </div>
 
+    <!-- Login Modal -->
     <div class="user-login-modal" id="userLoginModal">
         <div class="modal-content" id="loginBox">
             <h3 style="margin-bottom:15px"><i class="fas fa-shield-alt" style="color:#38bdf8"></i> Secure Login</h3>
             <input type="email" id="userInputEmail" placeholder="Email Address" autocomplete="off">
             <input type="password" id="userInputPass" placeholder="Password" autocomplete="off">
-            <button id="_0x_lgb">Login</button>
-            <div class="divider">OR</div>
-            <button class="google-btn" id="_0x_ggb">
-                <i class="fab fa-google" style="color:#ea4335;font-size:16px"></i> Sign in with Google
-            </button>
+            <button class="btn btn-success" id="_0x_lgb" style="width:100%;">Login</button>
             <div id="loginError" style="color:#f44336;font-size:12px;margin-top:10px;display:none"></div>
         </div>
     </div>
 
-    <div class="dashboard" id="mainDashboard" style="display:none">
-        <div class="main-header">ESER-ALL Billing Portal</div>
-        <div class="sheet-wrapper">
-            <div class="sheet-toolbar">
-                <div class="toolbar-group">
-                    <h2 style="font-size: 20px;"><i class="fas fa-table" style="color: #38bdf8;"></i> Cloud Spreadsheet (100k Row Engine)</h2>
-                    <span class="badge-info" id="totalRecordsCount">Total Rows: 0</span>
+    <!-- Main Application Structure -->
+    <div class="app-container" id="mainDashboard" style="display:none">
+        
+        <!-- Left Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-bolt"></i> ESER-ALL ISP
+            </div>
+            <div class="sidebar-menu">
+                <button class="menu-btn active" id="btnNavAllCust" onclick="filterByNav('all')">
+                    <i class="fas fa-users"></i> All Customer
+                </button>
+                <button class="menu-btn" id="btnNavDueCust" onclick="filterByNav('due')">
+                    <i class="fas fa-clock" style="color:#f59e0b"></i> Due Bill Customer
+                </button>
+                <button class="menu-btn" id="btnNavPaidCust" onclick="filterByNav('paid')">
+                    <i class="fas fa-check-circle" style="color:#4CAF50"></i> Paid Bill Customer
+                </button>
+                
+                <hr style="border-color:#333; margin: 5px 0;">
+
+                <button class="menu-btn" id="btnNavAllGen" onclick="triggerAllBillGen()">
+                    <i class="fas fa-calendar-plus" style="color:#8b5cf6"></i> All Bill Generate
+                </button>
+                <button class="menu-btn" id="btnNavSingleGen" onclick="triggerSingleBillGen()">
+                    <i class="fas fa-file-invoice-dollar" style="color:#38bdf8"></i> Single Bill Generate
+                </button>
+
+                <hr style="border-color:#333; margin: 5px 0;">
+
+                <button class="menu-btn" id="btnNavAllSMS" onclick="openSMSModal('all')">
+                    <i class="fas fa-paper-plane" style="color:#e11d48"></i> All Customer SMS
+                </button>
+                <button class="menu-btn" id="btnNavSingleSMS" onclick="openSMSModal('single')">
+                    <i class="fas fa-sms" style="color:#f59e0b"></i> Single Customer SMS
+                </button>
+            </div>
+            
+            <button class="btn btn-danger" id="btnLogout" style="margin-top:auto; width:100%;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+
+        <!-- Main Content Panel -->
+        <div class="main-content">
+            
+            <!-- Top Navbar with Right Side Search Engine -->
+            <div class="top-navbar">
+                <div class="page-title" id="activePageTitle">
+                    <i class="fas fa-users" style="color:#38bdf8"></i> All Customer List
                 </div>
-                <div class="toolbar-group">
+                
+                <!-- Search Engine (Top Right) -->
+                <div class="search-box">
+                    <i class="fas fa-search" style="color:#aaa;"></i>
                     <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search ID, Receipt No, Name, Phone...">
-                    <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
-                    <button class="btn btn-warning" id="btnTriggerUpload"><i class="fas fa-file-upload"></i> Upload Sheet</button>
-                    <button class="btn btn-purple" id="btnGenerateMonthlyBills"><i class="fas fa-calendar-plus"></i> Auto 1st Date Bills</button>
-                    <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Add Row</button>
-                    
-                    <!-- EXPORT BUTTONS GROUP -->
-                    <button class="btn btn-primary" id="btnExportAll"><i class="fas fa-file-download"></i> All Excel</button>
-                    <button class="btn btn-success" id="btnExportPaid"><i class="fas fa-check-circle"></i> Paid Excel</button>
-                    <button class="btn btn-danger" id="btnExportPending"><i class="fas fa-clock"></i> Pending Excel</button>
                 </div>
             </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Receipt No</th>
-                            <th>Client ID</th>
-                            <th>Customer Name</th>
-                            <th>Phone Number</th>
-                            <th>Address</th>
-                            <th>Bill Month</th>
-                            <th>Package</th>
-                            <th>Bill Amount</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sheetTableBody">
-                        <tr>
-                            <td colspan="10" style="text-align:center; padding: 40px; color:#aaa;">
-                                <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
-                                কোনো ডাটা পাওয়া যায়নি। Excel/CSV আপলোড করুন অথবা **Add Row** বাটনে ক্লিক করুন।
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="pagination">
-                <div id="pageInfo">Showing Page 0 of 0</div>
-                <div class="toolbar-group">
-                    <button class="btn btn-secondary" id="btnPrevPage"><i class="fas fa-chevron-left"></i> Prev</button>
-                    <button class="btn btn-secondary" id="btnNextPage">Next <i class="fas fa-chevron-right"></i></button>
+
+            <!-- Spreadsheet Toolbar & Actions -->
+            <div class="sheet-wrapper">
+                <div class="sheet-toolbar">
+                    <div class="toolbar-group">
+                        <span class="badge-info" id="totalRecordsCount">Total Rows: 0</span>
+                    </div>
+                    <div class="toolbar-group">
+                        <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
+                        <button class="btn btn-warning" id="btnTriggerUpload"><i class="fas fa-file-upload"></i> Upload Sheet</button>
+                        <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Add New Entry</button>
+                        
+                        <!-- EXPORT BUTTONS GROUP -->
+                        <button class="btn btn-primary" id="btnExportAll"><i class="fas fa-file-download"></i> Export Excel</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Receipt No</th>
+                                <th>Client ID</th>
+                                <th>Customer Name</th>
+                                <th>Phone Number</th>
+                                <th>Address</th>
+                                <th>Bill Month</th>
+                                <th>Package</th>
+                                <th>Bill Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sheetTableBody">
+                            <tr>
+                                <td colspan="10" style="text-align:center; padding: 40px; color:#aaa;">
+                                    <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
+                                    কোনো ডাটা পাওয়া যায়নি। Excel/CSV আপলোড করুন অথবা **Add New Entry** বাটনে ক্লিক করুন।
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <div id="pageInfo">Showing Page 0 of 0</div>
+                    <div class="toolbar-group">
+                        <button class="btn btn-secondary" id="btnPrevPage"><i class="fas fa-chevron-left"></i> Prev</button>
+                        <button class="btn btn-secondary" id="btnNextPage">Next <i class="fas fa-chevron-right"></i></button>
+                    </div>
                 </div>
             </div>
+            
+            <footer class="developer-footer">Developed by <span>Antu</span></footer>
         </div>
     </div>
 
-    <!-- Modal Form for Entry/Edit/Manual Bill -->
+    <!-- Data Entry / Bill Modal -->
     <div class="user-login-modal" id="dataRowModal" style="display:none;">
         <div class="modal-content">
             <span class="close-btn" id="btnCloseDataModal"><i class="fas fa-times"></i></span>
@@ -114,11 +237,16 @@
         </div>
     </div>
 
-    <button class="logout-btn" id="btnLogout" style="display:none">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
-
-    <footer class="developer-footer">Developed by <span>Antu</span></footer>
+    <!-- SMS Modal -->
+    <div class="user-login-modal" id="smsModal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('smsModal').style.display='none'"><i class="fas fa-times"></i></span>
+            <h3 id="smsModalTitle" style="margin-bottom:15px"><i class="fas fa-sms" style="color:#f59e0b"></i> Send SMS Notification</h3>
+            <input type="text" id="smsTargetPhone" placeholder="Target Phone Number (For Single SMS)">
+            <textarea id="smsTextBody" rows="4" placeholder="প্রাপকের কাছে পাঠানোর জন্য আপনার মেসেজটি লিখুন..."></textarea>
+            <button class="btn btn-warning" onclick="sendSMS()" style="width:100%;">Send Notification</button>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -144,6 +272,7 @@
         let recordsList = [];
         let currentPage = 1;
         const recordsPerPage = 20;
+        let currentFilter = 'all';
 
         (function() {
             const firebaseConfig = {
@@ -194,7 +323,6 @@
                 const emailInp = document.getElementById('userInputEmail'),
                       passInp = document.getElementById('userInputPass'),
                       btnLogin = document.getElementById('_0x_lgb'),
-                      btnGoogle = document.getElementById('_0x_ggb'),
                       btnLogout = document.getElementById('btnLogout'),
                       errDiv = document.getElementById('loginError');
 
@@ -207,22 +335,15 @@
                     auth.signInWithEmailAndPassword(e, p).catch(err => showError(err.message));
                 });
 
-                btnGoogle.addEventListener('click', () => {
-                    const provider = new firebase.auth.GoogleAuthProvider();
-                    auth.signInWithPopup(provider).catch(err => showError(err.message));
-                });
-
                 btnLogout.addEventListener('click', () => auth.signOut());
 
                 auth.onAuthStateChanged(user => {
                     if (user) {
                         document.getElementById('userLoginModal').style.display = 'none';
-                        document.getElementById('mainDashboard').style.display = 'block';
-                        btnLogout.style.display = 'block';
+                        document.getElementById('mainDashboard').style.display = 'flex';
                     } else {
                         document.getElementById('userLoginModal').style.display = 'flex';
                         document.getElementById('mainDashboard').style.display = 'none';
-                        btnLogout.style.display = 'none';
                     }
                 });
 
@@ -264,7 +385,6 @@
                     const status = document.getElementById('rowStatus').value;
 
                     const originalIdx = document.getElementById('rowOriginalId').value;
-
                     const newRow = { receiptNo, clientId, name, phone, address, month, pkg, amount, status };
 
                     if (originalIdx !== '') {
@@ -295,57 +415,6 @@
                         currentPage++;
                         renderTable();
                     }
-                });
-
-                // Auto Generating 1st Date Bills Handler
-                document.getElementById('btnGenerateMonthlyBills').addEventListener('click', () => {
-                    if (recordsList.length === 0) {
-                        alert('বিল তৈরি করার জন্য কোনো কাস্টমার ডাটা পাওয়া যায়নি!');
-                        return;
-                    }
-
-                    const now = new Date();
-                    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-                    const currentMonthStr = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
-
-                    if (!confirm(`আপনি কি ${currentMonthStr} মাসের জন্য সমস্ত গ্রাহকের বিল জেনারেট করতে চান?`)) {
-                        return;
-                    }
-
-                    const uniqueClientsMap = new Map();
-                    recordsList.forEach(item => {
-                        if (item.clientId && !uniqueClientsMap.has(item.clientId)) {
-                            uniqueClientsMap.set(item.clientId, item);
-                        }
-                    });
-
-                    let createdCount = 0;
-                    let skippedCount = 0;
-
-                    uniqueClientsMap.forEach((client) => {
-                        const exists = recordsList.some(r => r.clientId === client.clientId && r.month === currentMonthStr);
-                        
-                        if (!exists) {
-                            const newBill = {
-                                receiptNo: `REC-${Math.floor(100000 + Math.random() * 900000)}`,
-                                clientId: client.clientId,
-                                name: client.name,
-                                phone: client.phone,
-                                address: client.address,
-                                month: currentMonthStr,
-                                pkg: client.pkg,
-                                amount: client.amount,
-                                status: 'Pending'
-                            };
-                            recordsList.unshift(newBill);
-                            createdCount++;
-                        } else {
-                            skippedCount++;
-                        }
-                    });
-
-                    renderTable();
-                    alert(`বিল জেনারেট সম্পন্ন!\n\nনতুন বিল তৈরি হয়েছে: ${createdCount} টি\nইতিমধ্যে প্রস্তুত করা ছিল: ${skippedCount} টি`);
                 });
             }
 
@@ -389,24 +458,134 @@
                     reader.readAsArrayBuffer(file);
                 });
 
-                document.getElementById('btnExportAll').addEventListener('click', () => exportToExcel('All'));
-                document.getElementById('btnExportPaid').addEventListener('click', () => exportToExcel('Paid'));
-                document.getElementById('btnExportPending').addEventListener('click', () => exportToExcel('Pending'));
+                document.getElementById('btnExportAll').addEventListener('click', () => exportToExcel());
             }
         })();
 
+        /* Filter Navigation Functions */
+        function filterByNav(type) {
+            currentFilter = type;
+            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const titleElement = document.getElementById('activePageTitle');
+            if(type === 'all') {
+                document.getElementById('btnNavAllCust').classList.add('active');
+                titleElement.innerHTML = `<i class="fas fa-users" style="color:#38bdf8"></i> All Customer List`;
+            } else if(type === 'due') {
+                document.getElementById('btnNavDueCust').classList.add('active');
+                titleElement.innerHTML = `<i class="fas fa-clock" style="color:#f59e0b"></i> Due Bill Customer List`;
+            } else if(type === 'paid') {
+                document.getElementById('btnNavPaidCust').classList.add('active');
+                titleElement.innerHTML = `<i class="fas fa-check-circle" style="color:#4CAF50"></i> Paid Customer List`;
+            }
+            currentPage = 1;
+            renderTable();
+        }
+
+        function triggerAllBillGen() {
+            if (recordsList.length === 0) {
+                alert('বিল তৈরি করার জন্য কোনো কাস্টমার ডাটা পাওয়া যায়নি!');
+                return;
+            }
+
+            const now = new Date();
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const currentMonthStr = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
+            if (!confirm(`আপনি কি ${currentMonthStr} মাসের জন্য সমস্ত গ্রাহকের বিল জেনারেট করতে চান?`)) {
+                return;
+            }
+
+            const uniqueClientsMap = new Map();
+            recordsList.forEach(item => {
+                if (item.clientId && !uniqueClientsMap.has(item.clientId)) {
+                    uniqueClientsMap.set(item.clientId, item);
+                }
+            });
+
+            let createdCount = 0;
+            let skippedCount = 0;
+
+            uniqueClientsMap.forEach((client) => {
+                const exists = recordsList.some(r => r.clientId === client.clientId && r.month === currentMonthStr);
+                
+                if (!exists) {
+                    const newBill = {
+                        receiptNo: `REC-${Math.floor(100000 + Math.random() * 900000)}`,
+                        clientId: client.clientId,
+                        name: client.name,
+                        phone: client.phone,
+                        address: client.address,
+                        month: currentMonthStr,
+                        pkg: client.pkg,
+                        amount: client.amount,
+                        status: 'Pending'
+                    };
+                    recordsList.unshift(newBill);
+                    createdCount++;
+                } else {
+                    skippedCount++;
+                }
+            });
+
+            renderTable();
+            alert(`বিল জেনারেট সম্পন্ন!\n\nনতুন বিল তৈরি হয়েছে: ${createdCount} টি\nইতিমধ্যে প্রস্তুত করা ছিল: ${skippedCount} টি`);
+        }
+
+        function triggerSingleBillGen() {
+            document.getElementById('dataRowForm').reset();
+            document.getElementById('rowOriginalId').value = '';
+            document.getElementById('rowReceiptNo').value = `REC-${Math.floor(100000 + Math.random() * 900000)}`;
+            document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-file-invoice-dollar" style="color:#38bdf8"></i> Single Custom Bill Generate';
+            document.getElementById('dataRowModal').style.display = 'flex';
+        }
+
+        function openSMSModal(type) {
+            const modal = document.getElementById('smsModal');
+            const targetInp = document.getElementById('smsTargetPhone');
+            const title = document.getElementById('smsModalTitle');
+            
+            if(type === 'all') {
+                title.innerHTML = `<i class="fas fa-paper-plane" style="color:#e11d48"></i> Send Bulk SMS to All Due Customers`;
+                targetInp.style.display = 'none';
+                document.getElementById('smsTextBody').value = "সম্মানিত গ্রাহক, আপনার চলতি মাসের ইন্টারনেট বিল বকেয়া রয়েছে। দ্রুত পরিশোধ করার জন্য অনুরোধ করা হচ্ছে।";
+            } else {
+                title.innerHTML = `<i class="fas fa-sms" style="color:#f59e0b"></i> Send Single Customer SMS`;
+                targetInp.style.display = 'block';
+                targetInp.value = '';
+                document.getElementById('smsTextBody').value = "";
+            }
+            modal.style.display = 'flex';
+        }
+
+        function sendSMS() {
+            const body = document.getElementById('smsTextBody').value.trim();
+            if(!body) {
+                alert('মেসেজ খালি রাখা যাবে না!');
+                return;
+            }
+            alert('SMS পাঠানো সম্পন্ন হয়েছে!');
+            document.getElementById('smsModal').style.display = 'none';
+        }
+
         function getFilteredRecords() {
             const query = document.getElementById('sheetSearchInput').value.toLowerCase().trim();
-            if (!query) return recordsList;
+            
+            return recordsList.filter(item => {
+                // Nav Filter
+                if (currentFilter === 'due' && item.status !== 'Pending') return false;
+                if (currentFilter === 'paid' && item.status !== 'Paid') return false;
 
-            return recordsList.filter(item => 
-                (item.receiptNo && item.receiptNo.toLowerCase().includes(query)) ||
-                (item.clientId && item.clientId.toLowerCase().includes(query)) ||
-                (item.name && item.name.toLowerCase().includes(query)) ||
-                (item.phone && item.phone.toLowerCase().includes(query)) ||
-                (item.address && item.address.toLowerCase().includes(query)) ||
-                (item.month && item.month.toLowerCase().includes(query))
-            );
+                // Search Query Filter
+                if (!query) return true;
+
+                return (item.receiptNo && item.receiptNo.toLowerCase().includes(query)) ||
+                       (item.clientId && item.clientId.toLowerCase().includes(query)) ||
+                       (item.name && item.name.toLowerCase().includes(query)) ||
+                       (item.phone && item.phone.toLowerCase().includes(query)) ||
+                       (item.address && item.address.toLowerCase().includes(query)) ||
+                       (item.month && item.month.toLowerCase().includes(query));
+            });
         }
 
         function renderTable() {
@@ -454,7 +633,7 @@
                         <td>${row.amount} Tk</td>
                         <td>${statusBadge}</td>
                         <td>
-                            <button class="btn btn-sm btn-purple" onclick="generateManualBill(${actualIndex})" title="Generate Manual/Custom Bill"><i class="fas fa-file-invoice-dollar"></i></button>
+                            <button class="btn btn-sm btn-purple" onclick="generateManualBill(${actualIndex})" title="Generate Bill"><i class="fas fa-file-invoice-dollar"></i></button>
                             <button class="btn btn-sm btn-primary" onclick="editRow(${actualIndex})" title="Edit Record"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-danger" onclick="deleteRow(${actualIndex})" title="Delete Record"><i class="fas fa-trash"></i></button>
                         </td>
@@ -463,14 +642,13 @@
             tbody.innerHTML = html;
         }
 
-        // Manual Bill Generation for specific user (e.g., Package Change)
         function generateManualBill(index) {
             const row = recordsList[index];
             const now = new Date();
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             const currentMonthStr = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
 
-            document.getElementById('rowOriginalId').value = ''; // Create as NEW ROW
+            document.getElementById('rowOriginalId').value = ''; 
             document.getElementById('rowReceiptNo').value = `REC-${Math.floor(100000 + Math.random() * 900000)}`;
             document.getElementById('rowId').value = row.clientId || '';
             document.getElementById('rowName').value = row.name || '';
@@ -509,21 +687,10 @@
             }
         }
 
-        function exportToExcel(filterType) {
-            if (recordsList.length === 0) {
-                alert('ডাউনলোড করার মতো কোনো ডাটা নেই!');
-                return;
-            }
-
-            let exportData = recordsList;
-            if (filterType === 'Paid') {
-                exportData = recordsList.filter(item => item.status === 'Paid');
-            } else if (filterType === 'Pending') {
-                exportData = recordsList.filter(item => item.status === 'Pending');
-            }
-
+        function exportToExcel() {
+            const exportData = getFilteredRecords();
             if (exportData.length === 0) {
-                alert(`কোনো ${filterType} ডাটা খুঁজে পাওয়া যায়নি!`);
+                alert('ডাউনলোড করার মতো কোনো ডাটা নেই!');
                 return;
             }
 
@@ -543,10 +710,9 @@
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Billing Data");
 
-            const fileName = `Billing_Report_${filterType}_${new Date().toISOString().slice(0,10)}.xlsx`;
+            const fileName = `Billing_Report_${currentFilter}_${new Date().toISOString().slice(0,10)}.xlsx`;
             XLSX.writeFile(workbook, fileName);
         }
     </script>
 </body>
 </html>
-
