@@ -2,11 +2,11 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>ESER-ALL Billing & Spreadsheet Portal</title>
+    <title>ESER-ALL Billing & Client Management Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <!-- SheetJS CDN (1,00,000+ ডাটার Excel/CSV আপলোড ও প্রসেস করার জন্য) -->
+    <!-- SheetJS CDN (1,00,000+ ডাটার Excel/CSV আপলোড করার জন্য) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
@@ -76,7 +76,7 @@
             position: relative;
             z-index: 1;
             padding: 30px 20px;
-            max-width: 1400px;
+            max-width: 1500px;
             margin: 0 auto;
             width: 100%;
         }
@@ -126,7 +126,7 @@
             background: #2a2a2a;
             color: #fff;
             outline: none;
-            width: 250px;
+            width: 280px;
             font-size: 14px;
         }
 
@@ -168,7 +168,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 13px;
             text-align: left;
         }
 
@@ -177,14 +177,14 @@
             top: 0;
             background: #252526;
             color: #38bdf8;
-            padding: 12px 15px;
+            padding: 12px 12px;
             font-weight: 700;
             border-bottom: 2px solid #444;
             z-index: 10;
         }
 
         td {
-            padding: 10px 15px;
+            padding: 10px 12px;
             border-bottom: 1px solid rgba(255,255,255,0.08);
             white-space: nowrap;
         }
@@ -219,13 +219,15 @@
             color: #fff;
             padding: 24px;
             border-radius: 10px;
-            width: 360px;
+            width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
             border: 1px solid #333;
             text-align: center;
             position: relative;
         }
 
-        .modal-content input {
+        .modal-content input, .modal-content select {
             width: 100%;
             padding: 10px;
             margin-bottom: 12px;
@@ -234,6 +236,7 @@
             color: #fff;
             border-radius: 6px;
             outline: 0;
+            font-family: inherit;
         }
 
         .close-btn {
@@ -253,6 +256,22 @@
             font-size: 13px;
             font-weight: bold;
         }
+
+        .badge-paid {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .badge-unpaid {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -264,19 +283,18 @@
     </div>
 
     <div class="dashboard" id="mainDashboard">
-        <div class="main-header">ESER-ALL Billing Management</div>
+        <div class="main-header">ESER-ALL Billing Portal</div>
 
         <div class="sheet-wrapper">
             <div class="sheet-toolbar">
                 <div class="toolbar-group">
-                    <h2 style="font-size: 20px;"><i class="fas fa-file-invoice-dollar" style="color: #38bdf8;"></i> Client Bill List</h2>
+                    <h2 style="font-size: 20px;"><i class="fas fa-file-invoice-dollar" style="color: #38bdf8;"></i> Client Billing List</h2>
                     <span class="badge-info" id="totalRecordsCount">Total Rows: 0</span>
                 </div>
                 
                 <div class="toolbar-group">
-                    <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search customer ID or name...">
+                    <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search ID, Name, Phone, Month...">
                     
-                    <!-- File Upload Input Hidden -->
                     <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
                     
                     <button class="btn btn-warning" id="btnTriggerUpload"><i class="fas fa-file-upload"></i> Upload Excel/CSV</button>
@@ -289,9 +307,12 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Client ID / Reg</th>
+                            <th>Client ID</th>
                             <th>Customer Name</th>
-                            <th>Package / Service</th>
+                            <th>Phone Number</th>
+                            <th>Address</th>
+                            <th>Bill Month</th>
+                            <th>Package</th>
                             <th>Bill Amount</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -299,9 +320,9 @@
                     </thead>
                     <tbody id="sheetTableBody">
                         <tr>
-                            <td colspan="6" style="text-align:center; padding: 30px; color:#aaa;">
-                                <i class="fas fa-folder-open" style="font-size: 30px; margin-bottom: 100px;"></i><br>
-                                কোনো ডাটা নেই। Excel / CSV ফাইল **Upload** করুন অথবা **Manual Entry** অপশনে ক্লিক করুন।
+                            <td colspan="9" style="text-align:center; padding: 40px; color:#aaa;">
+                                <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
+                                কোনো ডাটা নেই। Excel/CSV ফাইল **Upload** করুন অথবা **Manual Entry** বাটনে ক্লিক করুন।
                             </td>
                         </tr>
                     </tbody>
@@ -327,10 +348,17 @@
                 <input type="hidden" id="rowOriginalId">
                 <input type="text" id="rowId" placeholder="Client ID / Account No" required>
                 <input type="text" id="rowName" placeholder="Customer Name" required>
-                <input type="text" id="rowPackage" placeholder="Package / Service" required>
+                <input type="text" id="rowPhone" placeholder="Phone Number (e.g. 017xxxxxxxx)" required>
+                <input type="text" id="rowAddress" placeholder="Customer Address" required>
+                <input type="text" id="rowMonth" placeholder="Bill Month (e.g. April 2026)" required>
+                <input type="text" id="rowPackage" placeholder="Package / Service Name" required>
                 <input type="number" id="rowAmount" placeholder="Bill Amount (Tk)" required>
-                <input type="text" id="rowStatus" placeholder="Status (e.g. Paid/Unpaid)" required>
-                <button type="submit" class="btn btn-success" style="width:100%;">Save Record</button>
+                <select id="rowStatus">
+                    <option value="Paid">Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Pending">Pending</option>
+                </select>
+                <button type="submit" class="btn btn-success" style="width:100%; margin-top:10px;">Save Record</button>
             </form>
         </div>
     </div>
@@ -377,7 +405,7 @@
             document.getElementById('btnPrevPage').addEventListener('click', () => changePage(-1));
             document.getElementById('btnNextPage').addEventListener('click', () => changePage(1));
             
-            // Upload Events
+            // Upload Event
             const fileInput = document.getElementById('excelFileInput');
             document.getElementById('btnTriggerUpload').addEventListener('click', () => fileInput.click());
             fileInput.addEventListener('change', handleFileUpload);
@@ -398,7 +426,7 @@
 
             const reader = new FileReader();
             const tbody = document.getElementById('sheetTableBody');
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin" style="font-size:24px;"></i><br><br>Processing 100,000+ Records... Please wait...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin" style="font-size:24px;"></i><br><br>Processing 100,000+ Records... Please wait...</td></tr>`;
 
             reader.onload = function(evt) {
                 try {
@@ -414,7 +442,6 @@
                         return;
                     }
 
-                    // Mapping Data
                     dataset = [];
                     for (let i = 1; i < jsonResult.length; i++) {
                         const row = jsonResult[i];
@@ -422,9 +449,12 @@
                             dataset.push({
                                 id: row[0] || `ID-${i}`,
                                 name: row[1] || 'N/A',
-                                package: row[2] || 'Basic',
-                                amount: row[3] || 0,
-                                status: row[4] || 'Pending'
+                                phone: row[2] || 'N/A',
+                                address: row[3] || 'N/A',
+                                month: row[4] || 'N/A',
+                                package: row[5] || 'Standard',
+                                amount: row[6] || 0,
+                                status: row[7] || 'Unpaid'
                             });
                         }
                     }
@@ -436,7 +466,7 @@
                     alert(`সফলভাবে ${dataset.length.toLocaleString()} টি ডাটা লোড হয়েছে!`);
 
                 } catch (err) {
-                    alert("ফাইল প্রসেস করতে সমস্যা হয়েছে। সঠিক Excel (.xlsx) অথবা CSV ফাইল নির্বাচন করুন।");
+                    alert("ফাইল প্রসেস করতে সমস্যা হয়েছে। সঠিক ফরম্যাটের Excel (.xlsx) অথবা CSV ফাইল নির্বাচন করুন।");
                     console.error(err);
                 }
             };
@@ -453,19 +483,24 @@
             const pageData = filteredDataset.slice(startIdx, endIdx);
 
             if (pageData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">কোনো ডাটা পাওয়া যায়নি।</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px;">কোনো মিল থাকা ডাটা পাওয়া যায়নি।</td></tr>`;
                 document.getElementById('pageInfo').innerText = `Page 0 of 0`;
                 return;
             }
 
             pageData.forEach(row => {
                 const tr = document.createElement('tr');
+                const statusBadge = String(row.status).toLowerCase() === 'paid' ? 'badge-paid' : 'badge-unpaid';
+                
                 tr.innerHTML = `
                     <td>${escapeHtml(row.id)}</td>
                     <td><b>${escapeHtml(row.name)}</b></td>
+                    <td>${escapeHtml(row.phone)}</td>
+                    <td>${escapeHtml(row.address)}</td>
+                    <td>${escapeHtml(row.month)}</td>
                     <td>${escapeHtml(row.package)}</td>
                     <td>${escapeHtml(row.amount)} Tk</td>
-                    <td><span class="badge-info">${escapeHtml(row.status)}</span></td>
+                    <td><span class="${statusBadge}">${escapeHtml(row.status)}</span></td>
                     <td>
                         <button class="btn btn-primary" onclick="editRow('${row.id}')" style="padding: 4px 8px; font-size:11px;"><i class="fas fa-edit"></i></button>
                         <button class="btn btn-danger" onclick="deleteRow('${row.id}')" style="padding: 4px 8px; font-size:11px;"><i class="fas fa-trash"></i></button>
@@ -486,7 +521,9 @@
             filteredDataset = dataset.filter(item => 
                 item.name.toString().toLowerCase().includes(query) ||
                 item.id.toString().toLowerCase().includes(query) ||
-                item.package.toString().toLowerCase().includes(query)
+                item.phone.toString().toLowerCase().includes(query) ||
+                item.address.toString().toLowerCase().includes(query) ||
+                item.month.toString().toLowerCase().includes(query)
             );
             currentPage = 1;
             renderTable();
@@ -510,6 +547,9 @@
                 document.getElementById('rowOriginalId').value = row.id;
                 document.getElementById('rowId').value = row.id;
                 document.getElementById('rowName').value = row.name;
+                document.getElementById('rowPhone').value = row.phone;
+                document.getElementById('rowAddress').value = row.address;
+                document.getElementById('rowMonth').value = row.month;
                 document.getElementById('rowPackage').value = row.package;
                 document.getElementById('rowAmount').value = row.amount;
                 document.getElementById('rowStatus').value = row.status;
@@ -533,6 +573,9 @@
             const rowData = {
                 id: newId,
                 name: document.getElementById('rowName').value,
+                phone: document.getElementById('rowPhone').value,
+                address: document.getElementById('rowAddress').value,
+                month: document.getElementById('rowMonth').value,
                 package: document.getElementById('rowPackage').value,
                 amount: document.getElementById('rowAmount').value,
                 status: document.getElementById('rowStatus').value
