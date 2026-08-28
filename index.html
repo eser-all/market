@@ -212,7 +212,6 @@
                         <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
                         <button class="btn btn-warning" id="btnTriggerUpload"><i class="fas fa-file-upload"></i> Upload Sheet</button>
                         <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Add New Entry</button>
-                        
                         <button class="btn btn-primary" id="btnExportAll"><i class="fas fa-file-download"></i> Export Excel</button>
                     </div>
                 </div>
@@ -237,7 +236,7 @@
                             <tr>
                                 <td colspan="10" style="text-align:center; padding: 40px; color:#aaa;">
                                     <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
-                                    কোনো ডাটা পাওয়া যায়নি। Excel/CSV আপলোড করুন অথবা **Add New Entry** বাটনে ক্লিক করুন।
+                                    ডাটা লোড হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।
                                 </td>
                             </tr>
                         </tbody>
@@ -290,9 +289,28 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
     <script>
+        // Firebase Config Setup
+        const firebaseConfig = {
+            apiKey: "AIzaSyCb4fkOtdc83ZP6fX_pVU5pjWA0WviTLiI",
+            authDomain: "eser-all-isp.firebaseapp.com",
+            databaseURL: "https://eser-all-isp-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "eser-all-isp",
+            storageBucket: "eser-all-isp.firebasestorage.app",
+            messagingSenderId: "1095314995444",
+            appId: "1:1095314995444:web:12ac46fc5823350bfb46a1",
+            measurementId: "G-WBKJLWM3HD"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         let recordsList = [];
         let currentPage = 1;
         const recordsPerPage = 20;
@@ -304,8 +322,22 @@
             initAuthEvents();
             initTableOperations();
             initExportAndUpload();
-            updateDashboardCounters();
+            listenToFirebaseData();
         });
+
+        /* ---------------- FIREBASE REALTIME DATA LISTENER ---------------- */
+        function listenToFirebaseData() {
+            db.ref('billing_records').on('value', (snapshot) => {
+                const data = snapshot.val();
+                recordsList = [];
+                if (data) {
+                    Object.keys(data).forEach(key => {
+                        recordsList.push({ id: key, ...data[key] });
+                    });
+                }
+                renderTable();
+            });
+        }
 
         function initParticles() {
             if (typeof particlesJS !== 'undefined') {
@@ -364,7 +396,7 @@
             let monthPaid = 0;
 
             const currentDate = new Date();
-            const todayDateStr = currentDate.toISOString().split('T')[0]; // "YYYY-MM-DD"
+            const todayDateStr = currentDate.toISOString().split('T')[0];
             const currentMonthName = currentDate.toLocaleString('default', { month: 'long' });
             const currentYear = currentDate.getFullYear();
             const currentMonthYear = `${currentMonthName} ${currentYear}`.toLowerCase();
@@ -375,19 +407,16 @@
                 const itemMonth = String(item.month || '').toLowerCase();
                 const paymentDate = item.paidDate || item.date;
 
-                // Today Collect Calculation
                 if (isPaid && paymentDate === todayDateStr) {
                     todayCollect += amount;
                 }
 
-                // Total Calculations
                 if (isPaid) {
                     allPaid += amount;
                 } else {
                     allDue += amount;
                 }
 
-                // This Month Calculations
                 if (itemMonth.includes(currentMonthName.toLowerCase()) || itemMonth.includes(currentMonthYear)) {
                     if (isPaid) {
                         monthPaid += amount;
@@ -406,7 +435,7 @@
 
         /* ---------------- TABLE & RENDER LOGIC ---------------- */
         function renderTable() {
-            updateDashboardCounters(); // Auto Update Dashboard
+            updateDashboardCounters();
 
             const tbody = document.getElementById('sheetTableBody');
             const searchVal = document.getElementById('sheetSearchInput').value.toLowerCase().trim();
@@ -441,7 +470,7 @@
                     <tr>
                         <td colspan="10" style="text-align:center; padding: 40px; color:#aaa;">
                             <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
-                            কোনো ডাটা পাওয়া যায়নি। Excel/CSV আপলোড করুন অথবা **Add New Entry** বাটনে ক্লিক করুন।
+                            কোনো ডাটা পাওয়া যায়নি। Excel/CSV আপলোড করুন অথবা **Add New Entry** বাটনে ক্লিক করুন।
                         </td>
                     </tr>`;
                 return;
@@ -470,6 +499,16 @@
             `).join('');
         }
 
+        function filterByNav(filter) {
+            currentFilter = filter;
+            currentPage = 1;
+            document.querySelectorAll('.sidebar-menu .menu-btn').forEach(btn => btn.classList.remove('active'));
+            if(filter === 'all') document.getElementById('btnNavAllCust').classList.add('active');
+            if(filter === 'due') document.getElementById('btnNavDueCust').classList.add('active');
+            if(filter === 'paid') document.getElementById('btnNavPaidCust').classList.add('active');
+            renderTable();
+        }
+
         function initTableOperations() {
             document.getElementById('sheetSearchInput').addEventListener('input', () => {
                 currentPage = 1;
@@ -496,15 +535,14 @@
                 modal.style.display = 'none';
             });
 
-            // Form Submit
+            // Form Submit (Save / Update to Firebase)
             document.getElementById('dataRowForm').addEventListener('submit', (e) => {
                 e.preventDefault();
                 const origId = document.getElementById('rowOriginalId').value;
                 const todayStr = new Date().toISOString().split('T')[0];
                 const statusVal = document.getElementById('rowStatus').value;
 
-                const newRecord = {
-                    id: origId || 'ID_' + Date.now(),
+                const recordData = {
                     receiptNo: document.getElementById('rowReceiptNo').value,
                     clientId: document.getElementById('rowId').value,
                     name: document.getElementById('rowName').value,
@@ -518,22 +556,14 @@
                 };
 
                 if (origId) {
-                    const idx = recordsList.findIndex(r => r.id === origId);
-                    if (idx !== -1) {
-                        // Keep previous payment date if already paid, else set today's date
-                        if (statusVal === 'Paid' && !recordsList[idx].paidDate) {
-                            newRecord.paidDate = todayStr;
-                        } else if (statusVal === 'Paid') {
-                            newRecord.paidDate = recordsList[idx].paidDate || todayStr;
-                        }
-                        recordsList[idx] = newRecord;
-                    }
+                    // Firebase-এ আগের রেকর্ড আপডেট করা
+                    db.ref('billing_records/' + origId).update(recordData);
                 } else {
-                    recordsList.unshift(newRecord);
+                    // Firebase-এ নতুন রেকর্ড যুক্ত করা
+                    db.ref('billing_records').push(recordData);
                 }
 
                 modal.style.display = 'none';
-                renderTable();
             });
         }
 
@@ -558,8 +588,8 @@
 
         function deleteRow(id) {
             if (confirm('আপনি কি এই ডাটাটি মুছে ফেলতে চান?')) {
-                recordsList = recordsList.filter(r => r.id !== id);
-                renderTable();
+                // Firebase থেকে ডাটা ডিলিট করা
+                db.ref('billing_records/' + id).remove();
             }
         }
 
@@ -576,145 +606,63 @@
                 if (!file) return;
 
                 const reader = new FileReader();
-                reader.onload = (evt) => {
-                    try {
-                        const data = new Uint8Array(evt.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        const firstSheetName = workbook.SheetNames[0];
-                        const worksheet = workbook.Sheets[firstSheetName];
-                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+                reader.onload = function(evt) {
+                    const data = new Uint8Array(evt.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
 
-                        if (jsonData.length === 0) {
-                            alert('Excel ফাইলটিতে কোনো ডাটা খুঁজে পাওয়া যায়নি!');
-                            return;
-                        }
-
-                        const todayStr = new Date().toISOString().split('T')[0];
-
-                        // Map uploaded Excel columns to UI Data Structure
-                        const importedData = jsonData.map((row, index) => {
-                            const isPaid = String(row['Status'] || row['স্ট্যাটাস']).toLowerCase().includes('paid');
-                            return {
-                                id: 'ID_' + Date.now() + '_' + index,
-                                receiptNo: row['Receipt No'] || row['Receipt'] || row['রশিদ নং'] || `REC-${1000 + index}`,
-                                clientId: row['Client ID'] || row['ID'] || row['কাস্টমার আইডি'] || `CUST-${101 + index}`,
-                                name: row['Customer Name'] || row['Name'] || row['গ্রাহকের নাম'] || 'Unknown',
-                                phone: row['Phone Number'] || row['Phone'] || row['মোবাইল'] || '',
-                                address: row['Address'] || row['ঠিকানা'] || '',
-                                month: row['Bill Month'] || row['Month'] || row['মাস'] || 'August 2026',
-                                package: row['Package'] || row['প্যাকেজ'] || 'Standard',
-                                amount: parseFloat(row['Bill Amount'] || row['Amount'] || row['বিল'] || 0),
-                                status: isPaid ? 'Paid' : 'Pending',
-                                paidDate: isPaid ? todayStr : null
-                            };
-                        });
-
-                        recordsList = [...importedData, ...recordsList];
-                        renderTable();
-                        alert(`সফলভাবে ${importedData.length} টি কাস্টমার ডাটা আপলোড করা হয়েছে!`);
-                        fileInput.value = ''; // Reset input
-                    } catch (err) {
-                        alert('ফাইল প্রসেস করার সময় ভুল হয়েছে! সঠিক Excel (.xlsx, .csv) ফাইল নির্বাচন করুন।');
-                        console.error(err);
-                    }
+                    // Excel এর ডাটা Firebase এ ইম্পোর্ট করা
+                    jsonData.forEach(item => {
+                        const newRecord = {
+                            receiptNo: item['Receipt No'] || item['receiptNo'] || '',
+                            clientId: item['Client ID'] || item['clientId'] || '',
+                            name: item['Customer Name'] || item['name'] || '',
+                            phone: item['Phone Number'] || item['phone'] || '',
+                            address: item['Address'] || item['address'] || '',
+                            month: item['Bill Month'] || item['month'] || '',
+                            package: item['Package'] || item['package'] || '',
+                            amount: parseFloat(item['Bill Amount'] || item['amount']) || 0,
+                            status: item['Status'] || item['status'] || 'Pending',
+                            paidDate: (item['Status'] === 'Paid' || item['status'] === 'Paid') ? new Date().toISOString().split('T')[0] : null
+                        };
+                        db.ref('billing_records').push(newRecord);
+                    });
+                    alert('Excel ফাইল সফলভাবে ডাটাবেজে ইম্পোর্ট হয়েছে!');
                 };
                 reader.readAsArrayBuffer(file);
             });
 
-            // Export to Excel
             exportBtn.addEventListener('click', () => {
                 if (recordsList.length === 0) {
                     alert('এক্সপোর্ট করার মতো কোনো ডাটা নেই!');
                     return;
                 }
-
-                const exportData = recordsList.map(item => ({
-                    'Receipt No': item.receiptNo,
-                    'Client ID': item.clientId,
-                    'Customer Name': item.name,
-                    'Phone Number': item.phone,
-                    'Address': item.address,
-                    'Bill Month': item.month,
-                    'Package': item.package,
-                    'Bill Amount': item.amount,
-                    'Status': item.status
+                const exportData = recordsList.map(r => ({
+                    'Receipt No': r.receiptNo,
+                    'Client ID': r.clientId,
+                    'Customer Name': r.name,
+                    'Phone Number': r.phone,
+                    'Address': r.address,
+                    'Bill Month': r.month,
+                    'Package': r.package,
+                    'Bill Amount': r.amount,
+                    'Status': r.status,
+                    'Paid Date': r.paidDate || '-'
                 }));
 
                 const worksheet = XLSX.utils.json_to_sheet(exportData);
                 const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Customers");
-                XLSX.writeFile(workbook, `Customer_Billing_List_${Date.now()}.xlsx`);
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Billing_Records");
+                XLSX.writeFile(workbook, "ESER_ALL_Billing_Records.xlsx");
             });
         }
 
-        /* ---------------- NAVIGATION FILTERS ---------------- */
-        function filterByNav(type) {
-            currentFilter = type;
-            document.querySelectorAll('.sidebar-menu .menu-btn').forEach(btn => btn.classList.remove('active'));
-            
-            const titleEl = document.getElementById('activePageTitle');
-
-            if (type === 'all') {
-                document.getElementById('btnNavAllCust').classList.add('active');
-                titleEl.innerHTML = '<i class="fas fa-users" style="color:#38bdf8"></i> All Customer List';
-            } else if (type === 'due') {
-                document.getElementById('btnNavDueCust').classList.add('active');
-                titleEl.innerHTML = '<i class="fas fa-clock" style="color:#f59e0b"></i> Due Bill Customer List';
-            } else if (type === 'paid') {
-                document.getElementById('btnNavPaidCust').classList.add('active');
-                titleEl.innerHTML = '<i class="fas fa-check-circle" style="color:#4CAF50"></i> Paid Bill Customer List';
-            }
-            currentPage = 1;
-            renderTable();
-        }
-
-        function triggerAllBillGen() {
-            if (confirm('আপনি কি সব কাস্টমারের জন্য এই মাসের বিল জেনারেট করতে চান?')) {
-                recordsList.forEach(item => {
-                    item.status = 'Pending';
-                    item.paidDate = null;
-                });
-                renderTable();
-                alert('সকল গ্রাহকের জন্য বিল নতুন করে জেনারেট করা হয়েছে!');
-            }
-        }
-
-        function triggerSingleBillGen() {
-            const id = prompt('যে কাস্টমারের বিল জেনারেট করতে চান তার Client ID দিন:');
-            if (!id) return;
-
-            const cust = recordsList.find(r => r.clientId === id);
-            if (cust) {
-                cust.status = 'Pending';
-                cust.paidDate = null;
-                renderTable();
-                alert(`${cust.name}-এর জন্য বিল Pending হিসেবে আপডেট করা হয়েছে।`);
-            } else {
-                alert('কাস্টমার আইডি খুঁজে পাওয়া যায়নি!');
-            }
-        }
-
-        function openSMSModal(type) {
-            document.getElementById('smsModal').style.display = 'flex';
-            if (type === 'single') {
-                document.getElementById('smsTargetPhone').style.display = 'block';
-                document.getElementById('smsModalTitle').innerText = 'Send Single SMS';
-            } else {
-                document.getElementById('smsTargetPhone').style.display = 'none';
-                document.getElementById('smsModalTitle').innerText = 'Send Broadcast SMS to All';
-            }
-        }
-
-        function sendSMS() {
-            const body = document.getElementById('smsTextBody').value.trim();
-            if (!body) {
-                alert('মেসেজ বক্সে কিছু লিখুন!');
-                return;
-            }
-            alert('মেসেজ প্রসেস করা হয়েছে!');
-            document.getElementById('smsModal').style.display = 'none';
-            document.getElementById('smsTextBody').value = '';
-        }
+        /* ---------------- DUMMY HANDLERS FOR OTHER BUTTONS ---------------- */
+        function triggerAllBillGen() { alert('All Bill Generation trigger modal or action.'); }
+        function triggerSingleBillGen() { alert('Single Bill Generation trigger modal or action.'); }
+        function openSMSModal(type) { document.getElementById('smsModal').style.display = 'flex'; }
+        function sendSMS() { alert('SMS function triggered.'); document.getElementById('smsModal').style.display = 'none'; }
     </script>
 </body>
 </html>
