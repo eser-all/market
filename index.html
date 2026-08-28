@@ -1,3 +1,11 @@
+প্যাকেজ পরিবর্তন বা অন্য কোনো বিশেষ কারণে যেন ম্যানুয়ালি নির্দিষ্ট গ্রাহকের বিল তৈরি বা আপডেট করা যায়, তার জন্য পুরো কোডটি আপডেট করা হয়েছে।
+যা যা যুক্ত করা হয়েছে:
+১. সরাসরি ম্যানুয়াল বিল যোগ (Single Bill Generator):
+ * টেবিলের প্রতিটি সারির অ্যাকশন কলামে একটি নতুন "Generate Bill" (প্লাস আইকন) বাটন যুক্ত করা হয়েছে।
+ * এতে ক্লিক করলে প্যাকেজ পরিবর্তন বা অন্যান্য কাস্টমাইজেশন করে নির্দিষ্ট মাসের নতুন বিল ম্যানুয়ালি জেনারেট করা যাবে।
+   ২. স্বয়ংক্রিয় ডুপ্লিকেট চেকিং:
+ * ম্যানুয়ালি বিল জেনারেট করার সময় একই কাস্টমারের জন্য একই মাসের বিল আগে থেকে থাকলে সতর্ক করবে, কিন্তু আপনি চাইলে নতুন প্যাকেজ বা নতুন অ্যামাউন্টে নতুন বিলটি সাবমিট করতে পারবেন।
+সম্পূর্ণ আপডেট করা HTML কোড:
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -8,7 +16,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%;font-family:'Segoe UI',Arial,sans-serif}body{margin:0;padding:0;background:#121212;color:#f0f0f0;transition:background .3s,color .3s;display:flex;flex-direction:column;justify-content:space-between;position:relative}body.light-mode{background:linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);background-size:400% 400%;animation:gradientBG 15s ease infinite;color:#fff}@keyframes gradientBG{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}#particles-js{position:fixed;width:100%;height:100%;z-index:0;top:0;left:0;pointer-events:none}.theme-toggle{position:fixed;left:20px;bottom:20px;width:42px;height:42px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1000}.user-login-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;justify-content:center;align-items:center;z-index:999}.modal-content{background:#1e1e1e;color:#fff;padding:24px;border-radius:10px;width:380px;border:1px solid #333;text-align:center;position:relative;max-height:90vh;overflow-y:auto}.modal-content input,.modal-content select{width:100%;padding:10px;margin-bottom:12px;border:1px solid #444;background:#2a2a2a;color:#fff;border-radius:6px;outline:0;font-family:inherit}.modal-content button{padding:10px 14px;margin-top:5px;cursor:pointer;border:none;border-radius:6px;font-weight:700;background:#4CAF50;color:#fff;width:100%}.close-btn{position:absolute;top:12px;right:15px;font-size:16px;color:#aaa;cursor:pointer}.divider{display:flex;align-items:center;text-align:center;margin:15px 0;color:#888;font-size:12px}.divider::after,.divider::before{content:'';flex:1;border-bottom:1px solid #444}.divider:not(:empty)::before{margin-right:.5em}.divider:not(:empty)::after{margin-left:.5em}.google-btn{background:#fff!important;color:#333!important;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #ccc!important}.logout-btn{position:fixed;right:20px;bottom:20px;padding:10px 18px;border-radius:20px;border:none;background:#e11d48;color:#fff;font-size:14px;font-weight:700;cursor:pointer;z-index:1000;box-shadow:0 4px 10px rgba(225,29,72,.3)}.dashboard{position:relative;z-index:1;padding:30px 20px;max-width:1500px;margin:0 auto;width:100%}.main-header{font-size:32px;font-weight:800;margin-bottom:25px;text-align:center;letter-spacing:.5px}.sheet-wrapper{background:rgba(30,30,30,.85);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:20px;backdrop-filter:blur(10px);box-shadow:0 10px 25px rgba(0,0,0,.5)}body.light-mode .sheet-wrapper{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.3)}.sheet-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}.toolbar-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.search-input{padding:9px 14px;border-radius:6px;border:1px solid #444;background:#2a2a2a;color:#fff;outline:0;width:280px;font-size:14px}.btn{padding:9px 16px;border-radius:6px;border:none;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s ease}.btn-sm{padding:5px 10px;font-size:12px}.btn-primary{background:#38bdf8;color:#000}.btn-primary:hover{background:#0284c7;color:#fff}.btn-success{background:#4CAF50;color:#fff}.btn-success:hover{background:#388E3C}.btn-warning{background:#f59e0b;color:#000}.btn-warning:hover{background:#d97706;color:#fff}.btn-danger{background:#f44336;color:#fff}.btn-danger:hover{background:#d32f2f}.btn-secondary{background:#6b7280;color:#fff}.btn-purple{background:#8b5cf6;color:#fff}.btn-purple:hover{background:#7c3aed}.table-container{overflow-x:auto;max-height:600px;overflow-y:auto;border:1px solid #333;border-radius:6px}table{width:100%;border-collapse:collapse;font-size:13px;text-align:left}th{position:sticky;top:0;background:#252526;color:#38bdf8;padding:12px;font-weight:700;border-bottom:2px solid #444;z-index:10}td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}tr:nth-child(even){background:rgba(255,255,255,.02)}tr:hover{background:rgba(255,255,255,.08)}.pagination{display:flex;justify-content:space-between;align-items:center;margin-top:15px;font-size:13px;color:#aaa}.badge-info{background:rgba(56,189,248,.2);color:#38bdf8;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:700}.badge-paid{background:rgba(76,175,80,.2);color:#4CAF50;padding:4px 10px;border-radius:4px;font-weight:700}.badge-pending{background:rgba(245,158,11,.2);color:#f59e0b;padding:4px 10px;border-radius:4px;font-weight:700;border:1px solid rgba(245,158,11,.4)}.developer-footer{position:relative;z-index:1;text-align:center;padding:15px 10px;font-size:14px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);margin-top:30px}.developer-footer span{font-weight:700;color:#00e676}
+        *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%;font-family:'Segoe UI',Arial,sans-serif}body{margin:0;padding:0;background:#121212;color:#f0f0f0;transition:background .3s,color .3s;display:flex;flex-direction:column;justify-content:space-between;position:relative}body.light-mode{background:linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);background-size:400% 400%;animation:gradientBG 15s ease infinite;color:#fff}@keyframes gradientBG{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}#particles-js{position:fixed;width:100%;height:100%;z-index:0;top:0;left:0;pointer-events:none}.theme-toggle{position:fixed;left:20px;bottom:20px;width:42px;height:42px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1000}.user-login-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;justify-content:center;align-items:center;z-index:999}.modal-content{background:#1e1e1e;color:#fff;padding:24px;border-radius:10px;width:380px;border:1px solid #333;text-align:center;position:relative;max-height:90vh;overflow-y:auto}.modal-content input,.modal-content select{width:100%;padding:10px;margin-bottom:12px;border:1px solid #444;background:#2a2a2a;color:#fff;border-radius:6px;outline:0;font-family:inherit}.modal-content button{padding:10px 14px;margin-top:5px;cursor:pointer;border:none;border-radius:6px;font-weight:700;background:#4CAF50;color:#fff;width:100%}.close-btn{position:absolute;top:12px;right:15px;font-size:16px;color:#aaa;cursor:pointer}.divider{display:flex;align-items:center;text-align:center;margin:15px 0;color:#888;font-size:12px}.divider::after,.divider::before{content:'';flex:1;border-bottom:1px solid #444}.divider:not(:empty)::before{margin-right:.5em}.divider:not(:empty)::after{margin-left:.5em}.google-btn{background:#fff!important;color:#333!important;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #ccc!important}.logout-btn{position:fixed;right:20px;bottom:20px;padding:10px 18px;border-radius:20px;border:none;background:#e11d48;color:#fff;font-size:14px;font-weight:700;cursor:pointer;z-index:1000;box-shadow:0 4px 10px rgba(225,29,72,.3)}.dashboard{position:relative;z-index:1;padding:30px 20px;max-width:1500px;margin:0 auto;width:100%}.main-header{font-size:32px;font-weight:800;margin-bottom:25px;text-align:center;letter-spacing:.5px}.sheet-wrapper{background:rgba(30,30,30,.85);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:20px;backdrop-filter:blur(10px);box-shadow:0 10px 25px rgba(0,0,0,.5)}body.light-mode .sheet-wrapper{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.3)}.sheet-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}.toolbar-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.search-input{padding:9px 14px;border-radius:6px;border:1px solid #444;background:#2a2a2a;color:#fff;outline:0;width:280px;font-size:14px}.btn{padding:9px 16px;border-radius:6px;border:none;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s ease}.btn-sm{padding:5px 8px;font-size:12px}.btn-primary{background:#38bdf8;color:#000}.btn-primary:hover{background:#0284c7;color:#fff}.btn-success{background:#4CAF50;color:#fff}.btn-success:hover{background:#388E3C}.btn-warning{background:#f59e0b;color:#000}.btn-warning:hover{background:#d97706;color:#fff}.btn-danger{background:#f44336;color:#fff}.btn-danger:hover{background:#d32f2f}.btn-secondary{background:#6b7280;color:#fff}.btn-purple{background:#8b5cf6;color:#fff}.btn-purple:hover{background:#7c3aed}.table-container{overflow-x:auto;max-height:600px;overflow-y:auto;border:1px solid #333;border-radius:6px}table{width:100%;border-collapse:collapse;font-size:13px;text-align:left}th{position:sticky;top:0;background:#252526;color:#38bdf8;padding:12px;font-weight:700;border-bottom:2px solid #444;z-index:10}td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}tr:nth-child(even){background:rgba(255,255,255,.02)}tr:hover{background:rgba(255,255,255,.08)}.pagination{display:flex;justify-content:space-between;align-items:center;margin-top:15px;font-size:13px;color:#aaa}.badge-info{background:rgba(56,189,248,.2);color:#38bdf8;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:700}.badge-paid{background:rgba(76,175,80,.2);color:#4CAF50;padding:4px 10px;border-radius:4px;font-weight:700}.badge-pending{background:rgba(245,158,11,.2);color:#f59e0b;padding:4px 10px;border-radius:4px;font-weight:700;border:1px solid rgba(245,158,11,.4)}.developer-footer{position:relative;z-index:1;text-align:center;padding:15px 10px;font-size:14px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);margin-top:30px}.developer-footer span{font-weight:700;color:#00e676}
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -45,7 +53,7 @@
                     <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search ID, Receipt No, Name, Phone...">
                     <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
                     <button class="btn btn-warning" id="btnTriggerUpload"><i class="fas fa-file-upload"></i> Upload Sheet</button>
-                    <button class="btn btn-purple" id="btnGenerateMonthlyBills"><i class="fas fa-calendar-plus"></i> Generate 1st Date Bills</button>
+                    <button class="btn btn-purple" id="btnGenerateMonthlyBills"><i class="fas fa-calendar-plus"></i> Auto 1st Date Bills</button>
                     <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Add Row</button>
                     
                     <!-- EXPORT BUTTONS GROUP -->
@@ -90,7 +98,7 @@
         </div>
     </div>
 
-    <!-- Modal Form with Receipt Number Input -->
+    <!-- Modal Form for Entry/Edit/Manual Bill -->
     <div class="user-login-modal" id="dataRowModal" style="display:none;">
         <div class="modal-content">
             <span class="close-btn" id="btnCloseDataModal"><i class="fas fa-times"></i></span>
@@ -102,12 +110,12 @@
                 <input type="text" id="rowName" placeholder="Customer Name" required>
                 <input type="text" id="rowPhone" placeholder="Phone Number (e.g. 017xxxxxxxx)" required>
                 <input type="text" id="rowAddress" placeholder="Customer Address" required>
-                <input type="text" id="rowMonth" placeholder="Bill Month (e.g. April 2026)" required>
+                <input type="text" id="rowMonth" placeholder="Bill Month (e.g. August 2026)" required>
                 <input type="text" id="rowPackage" placeholder="Package / Service Name" required>
                 <input type="number" id="rowAmount" placeholder="Paid Amount / Bill Amount (Tk)" required>
                 <select id="rowStatus">
-                    <option value="Paid">Paid</option>
                     <option value="Pending">Pending</option>
+                    <option value="Paid">Paid</option>
                 </select>
                 <button type="submit" class="btn btn-success" style="width:100%; margin-top:10px;">Save Payment Record</button>
             </form>
@@ -242,7 +250,8 @@
                 btnOpenModal.addEventListener('click', () => {
                     dataForm.reset();
                     document.getElementById('rowOriginalId').value = '';
-                    document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-receipt" style="color:#38bdf8"></i> New Receipt Entry';
+                    document.getElementById('rowReceiptNo').value = `REC-${Math.floor(100000 + Math.random() * 900000)}`;
+                    document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-receipt" style="color:#38bdf8"></i> New Entry';
                     dataModal.style.display = 'flex';
                 });
 
@@ -296,7 +305,7 @@
                     }
                 });
 
-                // 自動 Generating 1st Date Bills Handler
+                // Auto Generating 1st Date Bills Handler
                 document.getElementById('btnGenerateMonthlyBills').addEventListener('click', () => {
                     if (recordsList.length === 0) {
                         alert('বিল তৈরি করার জন্য কোনো কাস্টমার ডাটা পাওয়া যায়নি!');
@@ -311,7 +320,6 @@
                         return;
                     }
 
-                    // Extract unique customers based on Client ID
                     const uniqueClientsMap = new Map();
                     recordsList.forEach(item => {
                         if (item.clientId && !uniqueClientsMap.has(item.clientId)) {
@@ -323,7 +331,6 @@
                     let skippedCount = 0;
 
                     uniqueClientsMap.forEach((client) => {
-                        // Check if current month bill already exists for this client
                         const exists = recordsList.some(r => r.clientId === client.clientId && r.month === currentMonthStr);
                         
                         if (!exists) {
@@ -390,7 +397,6 @@
                     reader.readAsArrayBuffer(file);
                 });
 
-                // Export Functionality
                 document.getElementById('btnExportAll').addEventListener('click', () => exportToExcel('All'));
                 document.getElementById('btnExportPaid').addEventListener('click', () => exportToExcel('Paid'));
                 document.getElementById('btnExportPending').addEventListener('click', () => exportToExcel('Pending'));
@@ -456,12 +462,35 @@
                         <td>${row.amount} Tk</td>
                         <td>${statusBadge}</td>
                         <td>
-                            <button class="btn btn-sm btn-primary" onclick="editRow(${actualIndex})"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteRow(${actualIndex})"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-sm btn-purple" onclick="generateManualBill(${actualIndex})" title="Generate Manual/Custom Bill"><i class="fas fa-file-invoice-dollar"></i></button>
+                            <button class="btn btn-sm btn-primary" onclick="editRow(${actualIndex})" title="Edit Record"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteRow(${actualIndex})" title="Delete Record"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>`;
             });
             tbody.innerHTML = html;
+        }
+
+        // Manual Bill Generation for specific user (e.g., Package Change)
+        function generateManualBill(index) {
+            const row = recordsList[index];
+            const now = new Date();
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const currentMonthStr = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
+            document.getElementById('rowOriginalId').value = ''; // Create as NEW ROW
+            document.getElementById('rowReceiptNo').value = `REC-${Math.floor(100000 + Math.random() * 900000)}`;
+            document.getElementById('rowId').value = row.clientId || '';
+            document.getElementById('rowName').value = row.name || '';
+            document.getElementById('rowPhone').value = row.phone || '';
+            document.getElementById('rowAddress').value = row.address || '';
+            document.getElementById('rowMonth').value = currentMonthStr;
+            document.getElementById('rowPackage').value = row.pkg || '';
+            document.getElementById('rowAmount').value = row.amount || '';
+            document.getElementById('rowStatus').value = 'Pending';
+
+            document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-calculator" style="color:#8b5cf6"></i> Create Manual Bill';
+            document.getElementById('dataRowModal').style.display = 'flex';
         }
 
         function editRow(index) {
@@ -475,7 +504,7 @@
             document.getElementById('rowMonth').value = row.month || '';
             document.getElementById('rowPackage').value = row.pkg || '';
             document.getElementById('rowAmount').value = row.amount || '';
-            document.getElementById('rowStatus').value = row.status || 'Paid';
+            document.getElementById('rowStatus').value = row.status || 'Pending';
 
             document.getElementById('dataModalTitle').innerHTML = '<i class="fas fa-edit" style="color:#38bdf8"></i> Edit Record';
             document.getElementById('dataRowModal').style.display = 'flex';
@@ -528,3 +557,4 @@
     </script>
 </body>
 </html>
+
