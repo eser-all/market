@@ -319,6 +319,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
+    <!-- Firebase SDK Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCb4fkOtdc83ZP6fX_pVU5pjWA0WviTLiI",
+            authDomain: "eser-all-isp.firebaseapp.com",
+            databaseURL: "https://eser-all-isp-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "eser-all-isp",
+            storageBucket: "eser-all-isp.firebasestorage.app",
+            messagingSenderId: "1095314995444",
+            appId: "1:1095314995444:web:12ac46fc5823350bfb46a1",
+            measurementId: "G-WBKJLWM3HD"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+
     <script>
         let recordsList = [];
         let currentPage = 1;
@@ -809,7 +831,7 @@
                 alert('মেসেজ বক্সে কিছু লিখুন!');
                 return;
             }
-            alert('মেসেজ প্রসেস করা হয়েছে!');
+                alert('মেসেজ প্রসেস করা হয়েছে!');
             document.getElementById('smsModal').style.display = 'none';
             document.getElementById('smsTextBody').value = '';
         }
