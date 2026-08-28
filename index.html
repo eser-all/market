@@ -1,383 +1,753 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <title>ESER-ALL Portal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <!-- SheetJS Library for Processing Excel/CSV Files -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  
-  <style>
-    :root {
-      --bg-color: #0f172a;
-      --text-color: #f8fafc;
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.15);
-      --card-hover: rgba(255, 255, 255, 0.2);
-      --modal-bg: #1e293b;
-      --modal-border: #334155;
-      --input-bg: #0f172a;
-      --input-border: #475569;
-      --icon-color: #38bdf8;
-      --bg-overlay: rgba(15, 23, 42, 0.75);
-    }
+    <meta charset="UTF-8">
+    <title>ESER-ALL Portal - Spreadsheet Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(_0x1a8f, _0x3f12) {
+            var _0x534a = function(_0x2d1f) {
+                while (--_0x2d1f) {
+                    _0x1a8f['push'](_0x1a8f['shift']());
+                }
+            };
+            _0x534a(++_0x3f12);
+        })(a0_0x1112, 0x1a2);
+        function _0x3e11(_0x2211, _0x45bb) {
+            _0x2211 = _0x2211 - 0x0;
+            var _0x1a8f2 = a0_0x1112[_0x2211];
+            return _0x1a8f2;
+        }
+        function a0_0x1112() {
+            var _0x9e3a = ['k3Gz4cI70F4UTep3c', 'init'];
+            a0_0x1112 = function() { return _0x9e3a; };
+            return a0_0x1112();
+        }
+        (function() {
+            emailjs[_0x3e11('0x1')]({ publicKey: _0x3e11('0x0') });
+        })();
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    [data-theme="light"] {
-      --bg-color: #e0f2fe;
-      --text-color: #0c4a6e;
-      --card-bg: rgba(255, 255, 255, 0.85);
-      --card-border: rgba(56, 189, 248, 0.3);
-      --card-hover: #ffffff;
-      --modal-bg: #ffffff;
-      --modal-border: #bae6fd;
-      --input-bg: #f0f9ff;
-      --input-border: #7dd3fc;
-      --icon-color: #0284c7;
-      --bg-overlay: rgba(224, 242, 254, 0.45);
-    }
+        html, body {
+            min-height: 100%;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
 
-    [data-theme="light"] body {
-      animation: skyColorShift 18s infinite alternate ease-in-out;
-    }
+        body {
+            background: #121212;
+            color: #f0f0f0;
+            transition: background .3s, color .3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
 
-    @keyframes skyColorShift {
-      0% { background-color: #e0f2fe; }
-      33% { background-color: #bae6fd; }
-      66% { background-color: #e0f7fa; }
-      100% { background-color: #f0f9ff; }
-    }
+        body.light-mode {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+        }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { min-height: 100%; font-family: 'Segoe UI', sans-serif; }
-    
-    body {
-      margin: 0; padding: 0;
-      background: var(--bg-color);
-      color: var(--text-color);
-      display: flex; flex-direction: column; justify-content: space-between;
-      transition: background 0.5s ease, color 0.5s ease;
-      position: relative;
-    }
+        @keyframes gradientBG {
+            0% { background-position: 0 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0 50%; }
+        }
 
-    .bg-video-container {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      overflow: hidden; z-index: 0;
-    }
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
 
-    .bg-video-container video {
-      width: 100%; height: 100%; object-fit: cover;
-      filter: brightness(0.85) contrast(1.05);
-    }
+        .theme-toggle {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            background: rgba(255, 255, 255, .1);
+            color: #fff;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+        }
 
-    .bg-overlay {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: var(--bg-overlay); transition: background 0.5s ease;
-    }
-    
-    .theme-toggle-btn {
-      position: fixed; top: 20px; right: 20px; z-index: 1001;
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      color: var(--text-color); padding: 10px 16px; border-radius: 50px;
-      cursor: pointer; display: flex; align-items: center; gap: 8px;
-      font-weight: bold; backdrop-filter: blur(8px);
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2); transition: all 0.3s ease;
-    }
-    .theme-toggle-btn:hover { background: var(--card-hover); transform: scale(1.03); }
+        .dashboard {
+            position: relative;
+            z-index: 1;
+            padding: 30px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-    .dashboard { position: relative; z-index: 1; padding: 30px 15px 40px; text-align: center; }
-    .main-header { font-size: 32px; font-weight: 800; margin-bottom: 25px; margin-top: 10px; letter-spacing: 0.5px; }
-    .section-title { font-size: 22px; margin: 25px 0 15px; display: flex; justify-content: center; align-items: center; gap: 10px; color: var(--text-color); }
-    .section-title i { color: var(--icon-color); }
+        .main-header {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            text-align: center;
+            letter-spacing: .5px;
+        }
 
-    /* Interactive Excel & Upload Container */
-    .worksheet-section {
-      max-width: 1100px;
-      margin: 0 auto 30px auto;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+        /* Spreadsheet Section UI */
+        .sheet-wrapper {
+            background: rgba(30, 30, 30, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
 
-    .upload-box {
-      background: var(--card-bg);
-      border: 2px dashed var(--card-border);
-      border-radius: 14px;
-      padding: 25px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .upload-box:hover {
-      border-color: var(--icon-color);
-      background: var(--card-hover);
-    }
-    .upload-box i {
-      font-size: 40px;
-      color: var(--icon-color);
-      margin-bottom: 10px;
-    }
-    .upload-box input[type="file"] {
-      display: none;
-    }
-    .upload-btn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 8px 20px;
-      background: #0284c7;
-      color: #fff;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 14px;
-    }
+        body.light-mode .sheet-wrapper {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
 
-    .excel-container {
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      border: 1px solid var(--card-border);
-      background: #ffffff;
-    }
+        .sheet-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
-    .excel-container iframe {
-      width: 100%;
-      height: 650px;
-      border: none;
-      display: block;
-    }
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
-    /* Table Preview Styling */
-    .table-wrapper {
-      max-height: 350px;
-      overflow: auto;
-      margin-top: 15px;
-      border-radius: 8px;
-      background: rgba(0, 0, 0, 0.2);
-    }
-    .parsed-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      color: var(--text-color);
-    }
-    .parsed-table th, .parsed-table td {
-      border: 1px solid var(--card-border);
-      padding: 8px 12px;
-      text-align: left;
-    }
-    .parsed-table th {
-      background: var(--card-bg);
-      color: var(--icon-color);
-    }
+        .search-input {
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #2a2a2a;
+            color: #fff;
+            outline: none;
+            width: 250px;
+            font-size: 14px;
+        }
 
-    .user-login-modal { 
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-      background: rgba(15, 23, 42, 0.95); display: flex; justify-content: center; 
-      align-items: center; z-index: 999; 
-    }
-    .modal-content { 
-      background: var(--modal-bg); color: var(--text-color); padding: 28px; 
-      border-radius: 16px; width: 330px; border: 1px solid var(--modal-border); 
-      text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); 
-    }
-    .modal-content input { 
-      width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--input-border); 
-      background: var(--input-bg); color: var(--text-color); border-radius: 8px; outline: none; 
-    }
-    .modal-content button { 
-      padding: 12px; margin-top: 5px; cursor: pointer; border: none; 
-      border-radius: 8px; font-weight: bold; background: #0284c7; color: white; width: 100%; 
-    }
+        .btn {
+            padding: 9px 16px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
 
-    .logout-btn { 
-      position: fixed; left: 20px; bottom: 20px; padding: 10px 18px; border-radius: 20px; 
-      border: none; background: #e11d48; color: white; font-size: 14px; font-weight: bold; 
-      cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3); 
-    }
-  </style>
+        .btn-primary { background: #38bdf8; color: #000; }
+        .btn-primary:hover { background: #0284c7; color: #fff; }
+
+        .btn-success { background: #4CAF50; color: #fff; }
+        .btn-success:hover { background: #388E3C; }
+
+        .btn-danger { background: #f44336; color: #fff; }
+        .btn-danger:hover { background: #d32f2f; }
+
+        .btn-secondary { background: #6b7280; color: #fff; }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            background: #252526;
+            color: #38bdf8;
+            padding: 12px 15px;
+            font-weight: 700;
+            border-bottom: 2px solid #444;
+            z-index: 10;
+        }
+
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            white-space: nowrap;
+        }
+
+        tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        /* Modal Style */
+        .email-modal, .user-login-modal, .data-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 24px;
+            border-radius: 10px;
+            width: 360px;
+            border: 1px solid #333;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #444;
+            background: #2a2a2a;
+            color: #fff;
+            border-radius: 6px;
+            outline: 0;
+            font-family: inherit;
+        }
+
+        .modal-content button {
+            width: 100%;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            font-size: 16px;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .close-btn:hover { color: #fff; }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 15px 0;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .divider::after, .divider::before {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #444;
+        }
+
+        .divider:not(:empty)::before { margin-right: .5em; }
+        .divider:not(:empty)::after { margin-left: .5em; }
+
+        .google-btn {
+            background: #fff !important;
+            color: #333 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 1px solid #ccc !important;
+        }
+
+        .logout-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            padding: 10px 18px;
+            border-radius: 20px;
+            border: none;
+            background: #e11d48;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(225,29,72,.3);
+        }
+
+        .badge-info {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+    </style>
 </head>
-
 <body oncontextmenu="return false;">
 
-  <div class="bg-video-container">
-    <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1506744038136-46273834b3fb">
-      <source src="https://assets.mixkit.co/videos/preview/mixkit-timelapse-of-clouds-and-mountains-2408-large.mp4" type="video/mp4">
-    </video>
-    <div class="bg-overlay"></div>
-  </div>
+    <div id="particles-js"></div>
 
-  <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">
-    <i class="fas fa-moon" id="themeIcon"></i>
-    <span id="themeText">Dark Sky</span>
-  </button>
-
-  <div class="user-login-modal" id="userLoginModal">
-    <div class="modal-content" id="loginBox">
-      <h3 style="margin-bottom: 15px;"><i class="fas fa-shield-alt" style="color: var(--icon-color);"></i> Secure Login</h3>
-      <input type="email" id="userInputEmail" placeholder="Email Address" autocomplete="off">
-      <input type="password" id="userInputPass" placeholder="Password" autocomplete="off">
-      <button onclick="checkUserLogin()">Login</button>
-      <div id="loginError" style="color: #f44336; font-size: 12px; margin-top: 10px; display: none;"></div>
-    </div>
-  </div>
-
-  <div class="dashboard" id="mainDashboard" style="display: none;">
-    <div class="main-header">ESER-ALL Portal</div>
-
-    <!-- Section 1: Excel/CSV File Direct Upload -->
-    <div class="section-title"><i class="fas fa-file-upload"></i> Direct Excel / CSV File Upload</div>
-    <div class="worksheet-section">
-      <div class="upload-box" onclick="document.getElementById('excelFileInput').click()">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <h3>Click or Drag & Drop Excel / CSV File Here</h3>
-        <p style="font-size: 12px; opacity: 0.8; margin-top: 5px;">Supports .xlsx, .xls, .csv files</p>
-        <span class="upload-btn">Browse File</span>
-        <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" onchange="handleFileUpload(event)">
-      </div>
-      
-      <!-- Uploaded File Data Table Preview -->
-      <div id="uploadedDataContainer" style="display: none;">
-        <h4 style="margin-bottom: 8px; text-align: left;"><i class="fas fa-table"></i> Uploaded Sheet Data Preview:</h4>
-        <div class="table-wrapper" id="tablePreviewWrapper"></div>
-      </div>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggleBtn">
+        <i class="fas fa-moon" id="themeIcon"></i>
     </div>
 
-    <!-- Section 2: Google Sheet Embed Live Editor -->
-    <div class="section-title"><i class="fas fa-file-excel"></i> Live Google Sheet Editor</div>
-    <div class="worksheet-section">
-      <div class="excel-container">
-        <!-- Google Sheet Editable Link (Make sure Share Setting is set to Anyone with the link CAN EDIT) -->
-        <iframe src="https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit?usp=sharing&rm=demo"></iframe>
-      </div>
+    <!-- Firebase Auth Modal -->
+    <div class="user-login-modal" id="userLoginModal">
+        <div class="modal-content" id="loginBox">
+            <h3 style="margin-bottom:15px">
+                <i class="fas fa-shield-alt" style="color:#38bdf8"></i> Secure Login
+            </h3>
+            <input type="email" id="userInputEmail" placeholder="Email Address" autocomplete="off">
+            <input type="password" id="userInputPass" placeholder="Password" autocomplete="off">
+            <button class="btn btn-success" id="btnLoginSubmit">Login</button>
+            <div class="divider">OR</div>
+            <button class="google-btn btn" id="btnGoogleLogin">
+                <i class="fab fa-google" style="color:#ea4335;font-size:16px"></i> Sign in with Google
+            </button>
+            <div id="loginError" style="color:#f44336;font-size:12px;margin-top:10px;display:none"></div>
+        </div>
     </div>
-  </div>
 
-  <button class="logout-btn" id="btnLogout" style="display: none;" onclick="userLogout()">
-    <i class="fas fa-sign-out-alt"></i> Logout
-  </button>
+    <!-- Main Dashboard -->
+    <div class="dashboard" id="mainDashboard" style="display:none">
+        <div class="main-header">ESER-ALL Portal</div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+        <!-- Google Sheet Data Section -->
+        <div class="sheet-wrapper">
+            <div class="sheet-toolbar">
+                <div class="toolbar-group">
+                    <h2 style="font-size: 20px;"><i class="fas fa-table" style="color: #38bdf8;"></i> Spreadsheet Engine</h2>
+                    <span class="badge-info" id="totalRecordsCount">Total Rows: 0</span>
+                </div>
+                <div class="toolbar-group">
+                    <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search 100,000+ records...">
+                    <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Add Row</button>
+                    <button class="btn btn-primary" id="btnRefreshSheet"><i class="fas fa-sync"></i> Sync</button>
+                </div>
+            </div>
 
-  <script>
-    document.addEventListener('keydown', function(e) {
-      if (e.keyCode === 123 || 
-         (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || 
-         (e.ctrlKey && e.keyCode === 85)) {
-        e.preventDefault();
-        return false;
-      }
-    });
+            <div class="table-container">
+                <table id="spreadsheetTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Value / Details</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sheetTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align:center; padding: 30px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 24px;"></i><br><br>
+                                Loading Spreadsheet Engine...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    function initTheme() {
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      updateThemeUI(savedTheme);
-    }
+            <div class="pagination">
+                <div id="pageInfo">Showing Page 1</div>
+                <div class="toolbar-group">
+                    <button class="btn btn-secondary" id="btnPrevPage"><i class="fas fa-chevron-left"></i> Prev</button>
+                    <button class="btn btn-secondary" id="btnNextPage">Next <i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    function toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      updateThemeUI(newTheme);
-    }
+    <!-- Add / Edit Modal -->
+    <div class="data-modal" id="dataRowModal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-btn" id="btnCloseDataModal"><i class="fas fa-times"></i></span>
+            <h3 id="dataModalTitle" style="margin-bottom:15px"><i class="fas fa-edit" style="color:#38bdf8"></i> Add Record</h3>
+            <form id="dataRowForm">
+                <input type="hidden" id="rowId">
+                <input type="text" id="rowName" placeholder="Name / Title" required>
+                <input type="text" id="rowCategory" placeholder="Category" required>
+                <input type="text" id="rowValue" placeholder="Value or Details" required>
+                <input type="text" id="rowStatus" placeholder="Status (e.g. Active)" required>
+                <button type="submit" class="btn btn-success" id="btnSaveDataRow">Save Record</button>
+            </form>
+        </div>
+    </div>
 
-    function updateThemeUI(theme) {
-      const icon = document.getElementById('themeIcon');
-      const text = document.getElementById('themeText');
-      if (theme === 'light') {
-        icon.className = 'fas fa-sun';
-        text.innerText = 'Sky Light';
-      } else {
-        icon.className = 'fas fa-moon';
-        text.innerText = 'Night Sky';
-      }
-    }
-    initTheme();
+    <button class="logout-btn" id="btnLogout" style="display:none">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDB4r_a5gPtKhlzM0qqmYHBb6HA_I2SmHQ",
-      authDomain: "eser-all.firebaseapp.com",
-      databaseURL: "https://eser-all-default-rtdb.firebaseio.com",
-      projectId: "eser-all",
-      storageBucket: "eser-all.firebasestorage.app",
-      messagingSenderId: "741870576674",
-      appId: "1:741870576674:web:2a5094bd05f44f0b98d67b"
-    };
+    <!-- Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    <script>
+        // --- Firebase Configuration ---
+        var _0x3a4b = [
+            "AIzaSyDB4r_a5gPtKhlzM0qqmYHBb6HA_I2SmHQ",
+            "eser-all.firebaseapp.com",
+            "http://eser-all-default-rtdb.firebaseio.com",
+            "eser-all",
+            "eser-all.appspot.com",
+            "741870576674",
+            "1:741870576674:web:2a5094bd05f44f0b98d67b"
+        ];
 
-    function checkUserLogin() {
-      const email = document.getElementById('userInputEmail').value.trim();
-      const pass = document.getElementById('userInputPass').value.trim();
-      const errorDiv = document.getElementById('loginError');
-
-      if (!email || !pass) {
-        errorDiv.innerText = "Please enter both email & password.";
-        errorDiv.style.display = "block";
-        return;
-      }
-
-      auth.signInWithEmailAndPassword(email, pass)
-        .then(() => {
-          errorDiv.style.display = "none";
-          showDashboard();
-        })
-        .catch((error) => {
-          errorDiv.innerText = "Invalid Login Credentials!";
-          errorDiv.style.display = "block";
+        firebase.initializeApp({
+            apiKey: _0x3a4b[0],
+            authDomain: _0x3a4b[1],
+            databaseURL: _0x3a4b[2],
+            projectId: _0x3a4b[3],
+            storageBucket: _0x3a4b[4],
+            messagingSenderId: _0x3a4b[5],
+            appId: _0x3a4b[6]
         });
-    }
 
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        showDashboard();
-      } else {
-        document.getElementById('userLoginModal').style.display = 'flex';
-        document.getElementById('mainDashboard').style.display = 'none';
-        document.getElementById('btnLogout').style.display = 'none';
-      }
-    });
+        var auth = firebase.auth();
 
-    function showDashboard() {
-      document.getElementById('userLoginModal').style.display = 'none';
-      document.getElementById('mainDashboard').style.display = 'block';
-      document.getElementById('btnLogout').style.display = 'block';
-    }
+        // --- Google App Script Web App API Endpoint ---
+        // (আপনার Google App Script Deploy করে পাওয়া Web App URL টি এখানে বসাতে হবে)
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID/exec";
 
-    function userLogout() {
-      auth.signOut().then(() => {
-        location.reload();
-      });
-    }
+        // --- Global Variables ---
+        let dataset = [];
+        let filteredDataset = [];
+        let currentPage = 1;
+        const pageSize = 50; // Performance optimization for 100k rows
 
-    // Direct Excel / CSV File Parsing Function
-    function handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+        // --- UI & Event Listeners ---
+        document.addEventListener("DOMContentLoaded", () => {
+            initParticles();
+            setupThemeToggle();
+            setupAuthEvents();
+            setupSpreadsheetEvents();
+        });
 
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        
-        // Convert sheet to HTML Table
-        const htmlTable = XLSX.utils.sheet_to_html(worksheet, { id: 'parsedExcelTable', editable: true });
-        
-        document.getElementById('tablePreviewWrapper').innerHTML = htmlTable;
-        document.getElementById('uploadedDataContainer').style.display = 'block';
-        
-        // Add styling class to generated table
-        const table = document.getElementById('parsedExcelTable');
-        if (table) table.classList.add('parsed-table');
-      };
-      reader.readAsArrayBuffer(file);
-    }
-  </script>
+        // Background Particles
+        function initParticles() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 40, density: { enable: true, value_area: 800 } },
+                        color: { value: "#ffffff" },
+                        opacity: { value: 0.2 },
+                        size: { value: 3 },
+                        line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.1, width: 1 },
+                        move: { enable: true, speed: 2 }
+                    }
+                });
+            }
+        }
+
+        // Theme Toggle Functionality
+        function setupThemeToggle() {
+            const toggleBtn = document.getElementById('themeToggleBtn');
+            const icon = document.getElementById('themeIcon');
+
+            toggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                if (document.body.classList.contains('light-mode')) {
+                    icon.className = 'fas fa-sun';
+                } else {
+                    icon.className = 'fas fa-moon';
+                }
+            });
+        }
+
+        // Authentication Handler
+        function setupAuthEvents() {
+            const loginModal = document.getElementById('userLoginModal');
+            const dashboard = document.getElementById('mainDashboard');
+            const btnLogout = document.getElementById('btnLogout');
+            const loginError = document.getElementById('loginError');
+
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    loginModal.style.display = 'none';
+                    dashboard.style.display = 'block';
+                    btnLogout.style.display = 'block';
+                    loadSpreadsheetData();
+                } else {
+                    loginModal.style.display = 'flex';
+                    dashboard.style.display = 'none';
+                    btnLogout.style.display = 'none';
+                }
+            });
+
+            document.getElementById('btnLoginSubmit').addEventListener('click', () => {
+                const email = document.getElementById('userInputEmail').value;
+                const pass = document.getElementById('userInputPass').value;
+                loginError.style.display = 'none';
+
+                auth.signInWithEmailAndPassword(email, pass).catch(err => {
+                    loginError.innerText = err.message;
+                    loginError.style.display = 'block';
+                });
+            });
+
+            document.getElementById('btnGoogleLogin').addEventListener('click', () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                auth.signInWithPopup(provider).catch(err => {
+                    loginError.innerText = err.message;
+                    loginError.style.display = 'block';
+                });
+            });
+
+            btnLogout.addEventListener('click', () => {
+                auth.signOut();
+            });
+        }
+
+        // --- Google Spreadsheet Engine ---
+
+        function setupSpreadsheetEvents() {
+            document.getElementById('sheetSearchInput').addEventListener('input', handleSearch);
+            document.getElementById('btnRefreshSheet').addEventListener('click', loadSpreadsheetData);
+            document.getElementById('btnPrevPage').addEventListener('click', () => changePage(-1));
+            document.getElementById('btnNextPage').addEventListener('click', () => changePage(1));
+            
+            // Modal Handlers
+            document.getElementById('btnOpenAddModal').addEventListener('click', () => openDataModal());
+            document.getElementById('btnCloseDataModal').addEventListener('click', closeDataModal);
+            document.getElementById('dataRowForm').addEventListener('submit', handleFormSubmit);
+        }
+
+        // Fetch Data from Google Sheet Engine
+        async function loadSpreadsheetData() {
+            const tbody = document.getElementById('sheetTableBody');
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px;"><i class="fas fa-spinner fa-spin" style="font-size: 24px;"></i><br><br>Syncing Data...</td></tr>`;
+
+            try {
+                // If API is connected, uncomment line below:
+                // const res = await fetch(GOOGLE_SCRIPT_API_URL + "?action=read");
+                // dataset = await res.json();
+
+                // Mocking 100k high performance Virtual Dataset
+                if (dataset.length === 0) {
+                    dataset = generateMockLargeDataset(100000);
+                }
+
+                filteredDataset = [...dataset];
+                document.getElementById('totalRecordsCount').innerText = `Total Rows: ${dataset.length.toLocaleString()}`;
+                currentPage = 1;
+                renderTable();
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#f44336; padding:20px;">Failed to fetch data from Spreadsheet API</td></tr>`;
+            }
+        }
+
+        // Virtualized Render for 100,000 Rows
+        function renderTable() {
+            const tbody = document.getElementById('sheetTableBody');
+            tbody.innerHTML = '';
+
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = Math.min(startIdx + pageSize, filteredDataset.length);
+            const pageData = filteredDataset.slice(startIdx, endIdx);
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">No matching records found.</td></tr>`;
+                document.getElementById('pageInfo').innerText = `Page 0 of 0`;
+                return;
+            }
+
+            pageData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.id}</td>
+                    <td><b>${escapeHtml(row.name)}</b></td>
+                    <td>${escapeHtml(row.category)}</td>
+                    <td>${escapeHtml(row.value)}</td>
+                    <td><span class="badge-info">${escapeHtml(row.status)}</span></td>
+                    <td>
+                        <button class="btn btn-primary" onclick="editRow('${row.id}')" style="padding: 4px 8px; font-size:11px;"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="deleteRow('${row.id}')" style="padding: 4px 8px; font-size:11px;"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const totalPages = Math.ceil(filteredDataset.length / pageSize);
+            document.getElementById('pageInfo').innerText = `Page ${currentPage} of ${totalPages} (${startIdx + 1}-${endIdx} of ${filteredDataset.length.toLocaleString()})`;
+            
+            document.getElementById('btnPrevPage').disabled = currentPage === 1;
+            document.getElementById('btnNextPage').disabled = currentPage >= totalPages;
+        }
+
+        function handleSearch(e) {
+            const query = e.target.value.toLowerCase().trim();
+            filteredDataset = dataset.filter(item => 
+                item.name.toLowerCase().includes(query) ||
+                item.category.toLowerCase().includes(query) ||
+                item.id.toString().includes(query)
+            );
+            currentPage = 1;
+            renderTable();
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredDataset.length / pageSize);
+            if (currentPage + direction >= 1 && currentPage + direction <= totalPages) {
+                currentPage += direction;
+                renderTable();
+            }
+        }
+
+        // Add / Edit Record Modal Controls
+        function openDataModal(row = null) {
+            const modal = document.getElementById('dataRowModal');
+            const title = document.getElementById('dataModalTitle');
+            
+            if (row) {
+                title.innerHTML = `<i class="fas fa-edit" style="color:#38bdf8"></i> Edit Record`;
+                document.getElementById('rowId').value = row.id;
+                document.getElementById('rowName').value = row.name;
+                document.getElementById('rowCategory').value = row.category;
+                document.getElementById('rowValue').value = row.value;
+                document.getElementById('rowStatus').value = row.status;
+            } else {
+                title.innerHTML = `<i class="fas fa-plus" style="color:#4CAF50"></i> Add New Record`;
+                document.getElementById('dataRowForm').reset();
+                document.getElementById('rowId').value = '';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeDataModal() {
+            document.getElementById('dataRowModal').style.display = 'none';
+        }
+
+        // CRUD Operations
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('rowId').value;
+            const rowData = {
+                id: id ? id : 'ROW-' + (dataset.length + 1),
+                name: document.getElementById('rowName').value,
+                category: document.getElementById('rowCategory').value,
+                value: document.getElementById('rowValue').value,
+                status: document.getElementById('rowStatus').value
+            };
+
+            if (id) {
+                // Edit existing row
+                const idx = dataset.findIndex(r => r.id === id);
+                if (idx !== -1) dataset[idx] = rowData;
+                syncWithGoogleSheet("update", rowData);
+            } else {
+                // Add new row
+                dataset.unshift(rowData);
+                syncWithGoogleSheet("create", rowData);
+            }
+
+            filteredDataset = [...dataset];
+            document.getElementById('totalRecordsCount').innerText = `Total Rows: ${dataset.length.toLocaleString()}`;
+            closeDataModal();
+            renderTable();
+        }
+
+        function editRow(id) {
+            const row = dataset.find(r => r.id === id);
+            if (row) openDataModal(row);
+        }
+
+        function deleteRow(id) {
+            if (confirm(`Are you sure you want to delete record ${id}?`)) {
+                dataset = dataset.filter(r => r.id !== id);
+                filteredDataset = filteredDataset.filter(r => r.id !== id);
+                syncWithGoogleSheet("delete", { id: id });
+                document.getElementById('totalRecordsCount').innerText = `Total Rows: ${dataset.length.toLocaleString()}`;
+                renderTable();
+            }
+        }
+
+        // Google Sheet Web API Sync Method
+        async function syncWithGoogleSheet(action, payload) {
+            console.log(`Syncing action [${action}] to Google Sheet:`, payload);
+            /*
+            fetch(GOOGLE_SCRIPT_API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, data: payload })
+            });
+            */
+        }
+
+        // Generating Fast 100,000 Mock Records for Testing Performance
+        function generateMockLargeDataset(count) {
+            const data = [];
+            const categories = ['Finance', 'IT Support', 'Operations', 'HR', 'Logistics'];
+            const statuses = ['Active', 'Pending', 'Archived', 'Completed'];
+
+            for (let i = 1; i <= count; i++) {
+                data.push({
+                    id: `REC-${100000 + i}`,
+                    name: `Data Entry Record Item #${i}`,
+                    category: categories[i % categories.length],
+                    value: `Val-${(i * 3.14).toFixed(2)}`,
+                    status: statuses[i % statuses.length]
+                });
+            }
+            return data;
+        }
+
+        function escapeHtml(text) {
+            return String(text).replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+    </script>
 </body>
 </html>
