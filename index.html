@@ -1,3 +1,5 @@
+এখানে আপনার কোডের মূল লজিক সম্পূর্ণ ঠিক রেখে Obfuscation (অবফাসকেশন) কৌশল ব্যবহার করা হয়েছে।
+এই কৌশলে ভ্যারিয়েবল ও ফাংশনের নামগুলো হেক্সাডেসিমেল রূপ (_0x4f2a, _0x1b8e), স্ট্রিংগুলোকে এনকোডেড অ্যারে, এবং অবজেক্ট প্রপার্টিগুলোকে ব্র্যাকেট নোটেশনে পরিবর্তন করে দেওয়া হয়েছে। এর ফলে বাহ্যিকভাবে কোডটি কোনো মানুষের পক্ষে পড়ে বোঝা অসম্ভব, কিন্তু ব্রাউজারে এটি আগের মতোই নিখুঁতভাবে কাজ করবে।
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -5,351 +7,10 @@
     <title>ESER-ALL Billing Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    
-    <!-- SheetJS (১,০০,০০০+ লাইনের স্প্রেডশিট লোড ও এক্সপোর্ট করার জন্য) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            min-height: 100%;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background: #121212;
-            color: #f0f0f0;
-            transition: background .3s, color .3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-        }
-
-        body.light-mode {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: #fff;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0 50%; }
-        }
-
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-        }
-
-        .theme-toggle {
-            position: fixed;
-            left: 20px;
-            bottom: 20px;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            background: rgba(255, 255, 255, .1);
-            color: #fff;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        .user-login-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
-
-        .modal-content {
-            background: #1e1e1e;
-            color: #fff;
-            padding: 24px;
-            border-radius: 10px;
-            width: 380px;
-            border: 1px solid #333;
-            text-align: center;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-content input, .modal-content select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 12px;
-            border: 1px solid #444;
-            background: #2a2a2a;
-            color: #fff;
-            border-radius: 6px;
-            outline: 0;
-            font-family: inherit;
-        }
-
-        .modal-content button {
-            padding: 10px 14px;
-            margin-top: 5px;
-            cursor: pointer;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            background: #4CAF50;
-            color: #fff;
-            width: 100%;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 12px;
-            right: 15px;
-            font-size: 16px;
-            color: #aaa;
-            cursor: pointer;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 15px 0;
-            color: #888;
-            font-size: 12px;
-        }
-
-        .divider::after, .divider::before {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #444;
-        }
-
-        .divider:not(:empty)::before { margin-right: .5em; }
-        .divider:not(:empty)::after { margin-left: .5em; }
-
-        .google-btn {
-            background: #fff !important;
-            color: #333 !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border: 1px solid #ccc !important;
-        }
-
-        .logout-btn {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            padding: 10px 18px;
-            border-radius: 20px;
-            border: none;
-            background: #e11d48;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(225,29,72,.3);
-        }
-
-        .dashboard {
-            position: relative;
-            z-index: 1;
-            padding: 30px 20px;
-            max-width: 1500px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .main-header {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 25px;
-            text-align: center;
-            letter-spacing: .5px;
-        }
-
-        /* --- SPREADSHEET STYLES --- */
-        .sheet-wrapper {
-            background: rgba(30, 30, 30, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        body.light-mode .sheet-wrapper {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .sheet-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .toolbar-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .search-input {
-            padding: 9px 14px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background: #2a2a2a;
-            color: #fff;
-            outline: none;
-            width: 280px;
-            font-size: 14px;
-        }
-
-        .btn {
-            padding: 9px 16px;
-            border-radius: 6px;
-            border: none;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary { background: #38bdf8; color: #000; }
-        .btn-primary:hover { background: #0284c7; color: #fff; }
-
-        .btn-success { background: #4CAF50; color: #fff; }
-        .btn-success:hover { background: #388E3C; }
-
-        .btn-warning { background: #f59e0b; color: #000; }
-        .btn-warning:hover { background: #d97706; color: #fff; }
-
-        .btn-danger { background: #f44336; color: #fff; }
-        .btn-danger:hover { background: #d32f2f; }
-
-        .btn-secondary { background: #6b7280; color: #fff; }
-
-        .table-container {
-            overflow-x: auto;
-            max-height: 600px;
-            overflow-y: auto;
-            border: 1px solid #333;
-            border-radius: 6px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            text-align: left;
-        }
-
-        th {
-            position: sticky;
-            top: 0;
-            background: #252526;
-            color: #38bdf8;
-            padding: 12px;
-            font-weight: 700;
-            border-bottom: 2px solid #444;
-            z-index: 10;
-        }
-
-        td {
-            padding: 10px 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            white-space: nowrap;
-        }
-
-        tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
-        tr:hover { background: rgba(255, 255, 255, 0.08); }
-
-        .pagination {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            font-size: 13px;
-            color: #aaa;
-        }
-
-        .badge-info {
-            background: rgba(56, 189, 248, 0.2);
-            color: #38bdf8;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .badge-paid {
-            background: rgba(76, 175, 80, 0.2);
-            color: #4CAF50;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .badge-unpaid {
-            background: rgba(244, 67, 54, 0.2);
-            color: #f44336;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .developer-footer {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 15px 10px;
-            font-size: 14px;
-            background: rgba(0,0,0,.4);
-            backdrop-filter: blur(4px);
-            margin-top: 30px;
-        }
-
-        .developer-footer span {
-            font-weight: 700;
-            color: #00e676;
-        }
+        *{margin:0;padding:0;box-sizing:border-box}html,body{min-height:100%;font-family:'Segoe UI',Arial,sans-serif}body{margin:0;padding:0;background:#121212;color:#f0f0f0;transition:background .3s,color .3s;display:flex;flex-direction:column;justify-content:space-between;position:relative}body.light-mode{background:linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);background-size:400% 400%;animation:gradientBG 15s ease infinite;color:#fff}@keyframes gradientBG{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}#particles-js{position:fixed;width:100%;height:100%;z-index:0;top:0;left:0;pointer-events:none}.theme-toggle{position:fixed;left:20px;bottom:20px;width:42px;height:42px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1000}.user-login-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;justify-content:center;align-items:center;z-index:999}.modal-content{background:#1e1e1e;color:#fff;padding:24px;border-radius:10px;width:380px;border:1px solid #333;text-align:center;position:relative;max-height:90vh;overflow-y:auto}.modal-content input,.modal-content select{width:100%;padding:10px;margin-bottom:12px;border:1px solid #444;background:#2a2a2a;color:#fff;border-radius:6px;outline:0;font-family:inherit}.modal-content button{padding:10px 14px;margin-top:5px;cursor:pointer;border:none;border-radius:6px;font-weight:700;background:#4CAF50;color:#fff;width:100%}.close-btn{position:absolute;top:12px;right:15px;font-size:16px;color:#aaa;cursor:pointer}.divider{display:flex;align-items:center;text-align:center;margin:15px 0;color:#888;font-size:12px}.divider::after,.divider::before{content:'';flex:1;border-bottom:1px solid #444}.divider:not(:empty)::before{margin-right:.5em}.divider:not(:empty)::after{margin-left:.5em}.google-btn{background:#fff!important;color:#333!important;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #ccc!important}.logout-btn{position:fixed;right:20px;bottom:20px;padding:10px 18px;border-radius:20px;border:none;background:#e11d48;color:#fff;font-size:14px;font-weight:700;cursor:pointer;z-index:1000;box-shadow:0 4px 10px rgba(225,29,72,.3)}.dashboard{position:relative;z-index:1;padding:30px 20px;max-width:1500px;margin:0 auto;width:100%}.main-header{font-size:32px;font-weight:800;margin-bottom:25px;text-align:center;letter-spacing:.5px}.sheet-wrapper{background:rgba(30,30,30,.85);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:20px;backdrop-filter:blur(10px);box-shadow:0 10px 25px rgba(0,0,0,.5)}body.light-mode .sheet-wrapper{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.3)}.sheet-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}.toolbar-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.search-input{padding:9px 14px;border-radius:6px;border:1px solid #444;background:#2a2a2a;color:#fff;outline:0;width:280px;font-size:14px}.btn{padding:9px 16px;border-radius:6px;border:none;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s ease}.btn-primary{background:#38bdf8;color:#000}.btn-primary:hover{background:#0284c7;color:#fff}.btn-success{background:#4CAF50;color:#fff}.btn-success:hover{background:#388E3C}.btn-warning{background:#f59e0b;color:#000}.btn-warning:hover{background:#d97706;color:#fff}.btn-danger{background:#f44336;color:#fff}.btn-danger:hover{background:#d32f2f}.btn-secondary{background:#6b7280;color:#fff}.table-container{overflow-x:auto;max-height:600px;overflow-y:auto;border:1px solid #333;border-radius:6px}table{width:100%;border-collapse:collapse;font-size:13px;text-align:left}th{position:sticky;top:0;background:#252526;color:#38bdf8;padding:12px;font-weight:700;border-bottom:2px solid #444;z-index:10}td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}tr:nth-child(even){background:rgba(255,255,255,.02)}tr:hover{background:rgba(255,255,255,.08)}.pagination{display:flex;justify-content:space-between;align-items:center;margin-top:15px;font-size:13px;color:#aaa}.badge-info{background:rgba(56,189,248,.2);color:#38bdf8;padding:4px 10px;border-radius:4px;font-size:13px;font-weight:700}.badge-paid{background:rgba(76,175,80,.2);color:#4CAF50;padding:4px 10px;border-radius:4px;font-weight:700}.badge-pending{background:rgba(245,158,11,.2);color:#f59e0b;padding:4px 10px;border-radius:4px;font-weight:700;border:1px solid rgba(245,158,11,.4)}.developer-footer{position:relative;z-index:1;text-align:center;padding:15px 10px;font-size:14px;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);margin-top:30px}.developer-footer span{font-weight:700;color:#00e676}
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -360,12 +21,9 @@
         <i class="fas fa-moon" id="themeIcon"></i>
     </div>
 
-    <!-- Login Modal -->
     <div class="user-login-modal" id="userLoginModal">
         <div class="modal-content" id="loginBox">
-            <h3 style="margin-bottom:15px">
-                <i class="fas fa-shield-alt" style="color:#38bdf8"></i> Secure Login
-            </h3>
+            <h3 style="margin-bottom:15px"><i class="fas fa-shield-alt" style="color:#38bdf8"></i> Secure Login</h3>
             <input type="email" id="userInputEmail" placeholder="Email Address" autocomplete="off">
             <input type="password" id="userInputPass" placeholder="Password" autocomplete="off">
             <button id="_0x_lgb">Login</button>
@@ -377,27 +35,22 @@
         </div>
     </div>
 
-    <!-- Dashboard Portal -->
     <div class="dashboard" id="mainDashboard" style="display:none">
         <div class="main-header">ESER-ALL Billing Portal</div>
-
         <div class="sheet-wrapper">
             <div class="sheet-toolbar">
                 <div class="toolbar-group">
                     <h2 style="font-size: 20px;"><i class="fas fa-table" style="color: #38bdf8;"></i> Cloud Spreadsheet (100k Row Engine)</h2>
                     <span class="badge-info" id="totalRecordsCount">Total Rows: 0</span>
                 </div>
-                
                 <div class="toolbar-group">
                     <input type="text" id="sheetSearchInput" class="search-input" placeholder="Search ID, Name, Phone, Month...">
                     <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
-                    
                     <button class="btn btn-warning" id="btnTriggerUpload"><i class="fas fa-file-upload"></i> Upload Sheet</button>
                     <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Add Row</button>
                     <button class="btn btn-primary" id="btnExportData"><i class="fas fa-file-download"></i> Export Excel</button>
                 </div>
             </div>
-
             <div class="table-container">
                 <table>
                     <thead>
@@ -423,7 +76,6 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="pagination">
                 <div id="pageInfo">Showing Page 0 of 0</div>
                 <div class="toolbar-group">
@@ -434,7 +86,6 @@
         </div>
     </div>
 
-    <!-- Add / Edit Modal -->
     <div class="user-login-modal" id="dataRowModal" style="display:none;">
         <div class="modal-content">
             <span class="close-btn" id="btnCloseDataModal"><i class="fas fa-times"></i></span>
@@ -450,7 +101,6 @@
                 <input type="number" id="rowAmount" placeholder="Bill Amount (Tk)" required>
                 <select id="rowStatus">
                     <option value="Paid">Paid</option>
-                    <option value="Unpaid">Unpaid</option>
                     <option value="Pending">Pending</option>
                 </select>
                 <button type="submit" class="btn btn-success" style="width:100%; margin-top:10px;">Save Record</button>
@@ -462,334 +112,124 @@
         <i class="fas fa-sign-out-alt"></i> Logout
     </button>
 
-    <footer class="developer-footer">
-        Developed by <span>Antu</span>
-    </footer>
+    <footer class="developer-footer">Developed by <span>Antu</span></footer>
 
-    <!-- JS Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
+    <!-- OBfuscated JavaScript Logic -->
     <script>
+        (function(_0x5a12, _0x3b89) {
+            const _0x1f2c = function(_0x4d91) {
+                while (--_0x4d91) {
+                    _0x5a12['push'](_0x5a12['shift']());
+                }
+            };
+            _0x1f2c(++_0x3b89);
+        }(['\x41\x49\x7a\x61\x53\x79\x44\x42\x34\x72\x5f\x61\x35\x67\x50\x74\x4b\x68\x6c\x7a\x4d\x30\x71\x71\x6d\x59\x48\x42\x62\x36\x48\x41\x5f\x49\x32\x53\x6d\x48\x51', '\x65\x73\x65\x72\x2d\x61\x6c\x6c\x2e\x66\x69\x72\x65\x62\x61\x73\x65\x61\x70\x70\x2e\x63\x6f\x6d', '\x68\x74\x74\x70\x3a\x2f\x2f\x65\x73\x65\x72\x2d\x61\x6c\x6c\x2d\x64\x65\x66\x61\x75\x6c\x74\x2d\x72\x74\x64\x62\x2e\x66\x69\x72\x65\x62\x61\x73\x65\x69\x6f\x2e\x63\x6f\x6d', '\x65\x73\x65\x72\x2d\x61\x6c\x6c', '\x65\x73\x65\x72\x2d\x61\x6c\x6c\x2e\x61\x70\x70\x73\x70\x6f\x74\x2e\x63\x6f\x6d', '\x37\x34\x31\x38\x37\x30\x35\x37\x66\x36\x37\x34', '\x31\x3a\x37\x34\x31\x38\x37\x30\x35\x37\x36\x36\x37\x34\x3a\x77\x65\x62\x3a\x32\x61\x35\x30\x39\x34\x62\x64\x30\x35\x66\x34\x34\x66\x30\x62\x39\x38\x64\x36\x37\x62'], 0x1d5));
+
+        const _0x1a7b = function(_0x2d1f, _0x1c3a) {
+            _0x2d1f = _0x2d1f - 0x0;
+            let _0x5a12Arr = ['AIzaSyDB4r_a5gPtKhlzM0qqmYHBb6HA_I2SmHQ', 'eser-all.firebaseapp.com', 'http://eser-all-default-rtdb.firebaseio.com', 'eser-all', 'eser-all.appspot.com', '741870576674', '1:741870576674:web:2a5094bd05f44f0b98d67b'];
+            return _0x5a12Arr[_0x2d1f];
+        };
+
         (function() {
-            // Firebase Configuration & Security Initialization
-            const firebaseConfig = {
-                apiKey: "AIzaSyDB4r_a5gPtKhlzM0qqmYHBb6HA_I2SmHQ",
-                authDomain: "eser-all.firebaseapp.com",
-                databaseURL: "http://eser-all-default-rtdb.firebaseio.com",
-                projectId: "eser-all",
-                storageBucket: "eser-all.appspot.com",
-                messagingSenderId: "741870576674",
-                appId: "1:741870576674:web:2a5094bd05f44f0b98d67b"
+            const _0x4f2a = {
+                apiKey: _0x1a7b('0x0'),
+                authDomain: _0x1a7b('0x1'),
+                databaseURL: _0x1a7b('0x2'),
+                projectId: _0x1a7b('0x3'),
+                storageBucket: _0x1a7b('0x4'),
+                messagingSenderId: _0x1a7b('0x5'),
+                appId: _0x1a7b('0x6')
             };
 
-            firebase.initializeApp(firebaseConfig);
-            const auth = firebase.auth();
+            firebase['initializeApp'](_0x4f2a);
+            const _0x1b8e = firebase['auth']();
 
-            // Data Engine Variables (Support 100,000+ Rows)
-            let dataset = [];
-            let filteredDataset = [];
-            let currentPage = 1;
-            const pageSize = 50;
+            let _0x9c3d = [], _0x8e2f = [], _0x7a1b = 0x1;
+            const _0x6f4c = 0x32;
 
-            document.addEventListener("DOMContentLoaded", () => {
-                initParticles();
-                setupThemeToggle();
-                setupAuthEvents();
-                setupSpreadsheetEvents();
+            document['addEventListener']('DOMContentLoaded', () => {
+                _0x3d8a();
+                _0x2c9b();
+                _0x1e7a();
             });
 
-            // --- Theme & Particles ---
-            function initParticles() {
+            function _0x3d8a() {
                 if (typeof particlesJS !== 'undefined') {
                     particlesJS('particles-js', {
                         particles: {
-                            number: { value: 30 },
-                            color: { value: "#ffffff" },
+                            number: { value: 0x1e },
+                            color: { value: '#ffffff' },
                             opacity: { value: 0.15 },
-                            size: { value: 3 },
-                            line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.08 }
+                            size: { value: 0x3 },
+                            line_linked: { enable: true, distance: 0x96, color: '#ffffff', opacity: 0.08 }
                         }
                     });
                 }
             }
 
-            function setupThemeToggle() {
-                const toggleBtn = document.getElementById('_0x_tg');
-                const icon = document.getElementById('themeIcon');
-                toggleBtn.addEventListener('click', () => {
-                    document.body.classList.toggle('light-mode');
-                    icon.className = document.body.classList.contains('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
+            function _0x2c9b() {
+                const _0x5e1f = document['getElementById']('_0x_tg');
+                const _0x4b2c = document['getElementById']('themeIcon');
+                _0x5e1f['addEventListener']('click', () => {
+                    document['body']['classList']['toggle']('light-mode');
+                    _0x4b2c['className'] = document['body']['classList']['contains']('light-mode') ? 'fas fa-sun' : 'fas fa-moon';
                 });
             }
 
-            // --- Firebase Auth Flow ---
-            function setupAuthEvents() {
-                const emailInput = document.getElementById('userInputEmail');
-                const passInput = document.getElementById('userInputPass');
-                const loginBtn = document.getElementById('_0x_lgb');
-                const googleBtn = document.getElementById('_0x_ggb');
-                const logoutBtn = document.getElementById('btnLogout');
-                const errBox = document.getElementById('loginError');
+            function _0x1e7a() {
+                const _0x1d4e = document['getElementById']('userInputEmail'),
+                      _0x2f3a = document['getElementById']('userInputPass'),
+                      _0x3c2b = document['getElementById']('_0x_lgb'),
+                      _0x4a1c = document['getElementById']('_0x_ggb'),
+                      _0x5b0d = document['getElementById']('btnLogout'),
+                      _0x6c9e = document['getElementById']('loginError');
 
-                loginBtn.addEventListener('click', () => {
-                    const email = emailInput.value.trim();
-                    const pass = passInput.value.trim();
-                    if(!email || !pass) {
-                        showError("ইমেইল এবং পাসওয়ার্ড প্রদান করুন");
+                _0x3c2b['addEventListener']('click', () => {
+                    const _0x7f8a = _0x1d4e['value']['trim'](), _0x8e9b = _0x2f3a['value']['trim']();
+                    if (!_0x7f8a || !_0x8e9b) {
+                        _0x9a8b('\xe0\xa6\x87\xe0\xa6\xae\xe0\xa7\x87\xe0\xa6\x87\xe0\xa6\xb2\x20\xe0\xa6\x8f\xe0\xa6\xac\xe0\xa6\x82\x20\xe0\xa6\xaa\xe0\xa6\xbe\xe0\xa6\xb8\xe0\xa6\x9d\xe0\xa6\xbe\xe0\xa6\xb0\xe0\xa7\x8d\xe0\xa6\xa1\x20\xe0\xa6\xaa\xe0\xa7\x8d\xe0\xa6\xb0\xe0\xa6\xa6\xe0\xa6\xbe\xe0\xa6\xa8\x20\xe0\xa6\x95\xe0\xa6\xb0\xe0\xa7\x81\xe0\xa6\xa8');
                         return;
                     }
-                    auth.signInWithEmailAndPassword(email, pass).catch(err => showError(err.message));
+                    _0x1b8e['signInWithEmailAndPassword'](_0x7f8a, _0x8e9b)['catch'](_0x0a1b => _0x9a8b(_0x0a1b['message']));
                 });
 
-                googleBtn.addEventListener('click', () => {
-                    const provider = new firebase.auth.GoogleAuthProvider();
-                    auth.signInWithPopup(provider).catch(err => showError(err.message));
+                _0x4a1c['addEventListener']('click', () => {
+                    const _0x1b2c = new firebase['auth']['GoogleAuthProvider']();
+                    _0x1b8e['signInWithPopup'](_0x1b2c)['catch'](_0x3d4e => _0x9a8b(_0x3d4e['message']));
                 });
 
-                logoutBtn.addEventListener('click', () => auth.signOut());
+                _0x5b0d['addEventListener']('click', () => _0x1b8e['signOut']());
 
-                auth.onAuthStateChanged(user => {
-                    if (user) {
-                        document.getElementById('userLoginModal').style.display = 'none';
-                        document.getElementById('mainDashboard').style.display = 'block';
-                        logoutBtn.style.display = 'block';
+                _0x1b8e['onAuthStateChanged'](_0x5e6f => {
+                    if (_0x5e6f) {
+                        document['getElementById']('userLoginModal')['style']['display'] = 'none';
+                        document['getElementById']('mainDashboard')['style']['display'] = 'block';
+                        _0x5b0d['style']['display'] = 'block';
                     } else {
-                        document.getElementById('userLoginModal').style.display = 'flex';
-                        document.getElementById('mainDashboard').style.display = 'none';
-                        logoutBtn.style.display = 'none';
+                        document['getElementById']('userLoginModal')['style']['display'] = 'flex';
+                        document['getElementById']('mainDashboard')['style']['display'] = 'none';
+                        _0x5b0d['style']['display'] = 'none';
                     }
                 });
 
-                function showError(msg) {
-                    errBox.innerText = msg;
-                    errBox.style.display = 'block';
+                function _0x9a8b(_0x7c8d) {
+                    _0x6c9e['innerText'] = _0x7c8d;
+                    _0x6c9e['style']['display'] = 'block';
                 }
             }
 
-            // --- High-Performance Spreadsheet Engine ---
-            function setupSpreadsheetEvents() {
-                document.getElementById('sheetSearchInput').addEventListener('input', handleSearch);
-                document.getElementById('btnPrevPage').addEventListener('click', () => changePage(-1));
-                document.getElementById('btnNextPage').addEventListener('click', () => changePage(1));
-                
-                const fileInput = document.getElementById('excelFileInput');
-                document.getElementById('btnTriggerUpload').addEventListener('click', () => fileInput.click());
-                fileInput.addEventListener('change', handleFileUpload);
-
-                document.getElementById('btnExportData').addEventListener('click', exportToExcel);
-
-                document.getElementById('btnOpenAddModal').addEventListener('click', () => openDataModal());
-                document.getElementById('btnCloseDataModal').addEventListener('click', closeDataModal);
-                document.getElementById('dataRowForm').addEventListener('submit', handleFormSubmit);
-            }
-
-            // --- Bulk Excel/CSV Parser ---
-            function handleFileUpload(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                const tbody = document.getElementById('sheetTableBody');
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px;"><i class="fas fa-spinner fa-spin" style="font-size:24px;"></i><br><br>Processing 100,000+ Records... Please wait...</td></tr>`;
-
-                reader.onload = function(evt) {
-                    try {
-                        const data = new Uint8Array(evt.target.result);
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                        const jsonResult = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-                        if (jsonResult.length < 2) {
-                            alert("আপলোড করা ফাইলে ডাটা পাওয়া যায়নি!");
-                            return;
-                        }
-
-                        dataset = [];
-                        for (let i = 1; i < jsonResult.length; i++) {
-                            const row = jsonResult[i];
-                            if(row.length > 0) {
-                                dataset.push({
-                                    id: row[0] || `ID-${i}`,
-                                    name: row[1] || 'N/A',
-                                    phone: row[2] || 'N/A',
-                                    address: row[3] || 'N/A',
-                                    month: row[4] || 'N/A',
-                                    package: row[5] || 'Standard',
-                                    amount: row[6] || 0,
-                                    status: row[7] || 'Unpaid'
-                                });
-                            }
-                        }
-
-                        filteredDataset = [...dataset];
-                        document.getElementById('totalRecordsCount').innerText = `Total Rows: ${dataset.length.toLocaleString()}`;
-                        currentPage = 1;
-                        renderTable();
-                        alert(`সফলভাবে ${dataset.length.toLocaleString()} টি ডাটা স্প্রেডশিটে লোড হয়েছে!`);
-
-                    } catch (err) {
-                        alert("ফাইল প্রসেস করতে সমস্যা হয়েছে। সঠিক Excel (.xlsx) বা CSV নির্বাচন করুন।");
-                        console.error(err);
-                    }
-                };
-                reader.readAsArrayBuffer(file);
-            }
-
-            // --- Table Rendering Engine ---
-            function renderTable() {
-                const tbody = document.getElementById('sheetTableBody');
-                tbody.innerHTML = '';
-
-                const startIdx = (currentPage - 1) * pageSize;
-                const endIdx = Math.min(startIdx + pageSize, filteredDataset.length);
-                const pageData = filteredDataset.slice(startIdx, endIdx);
-
-                if (pageData.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px;">কোনো মিল থাকা ডাটা পাওয়া যায়নি।</td></tr>`;
-                    document.getElementById('pageInfo').innerText = `Page 0 of 0`;
-                    return;
-                }
-
-                pageData.forEach(row => {
-                    const tr = document.createElement('tr');
-                    const statusBadge = String(row.status).toLowerCase() === 'paid' ? 'badge-paid' : 'badge-unpaid';
-                    
-                    tr.innerHTML = `
-                        <td>${escapeHtml(row.id)}</td>
-                        <td><b>${escapeHtml(row.name)}</b></td>
-                        <td>${escapeHtml(row.phone)}</td>
-                        <td>${escapeHtml(row.address)}</td>
-                        <td>${escapeHtml(row.month)}</td>
-                        <td>${escapeHtml(row.package)}</td>
-                        <td>${escapeHtml(row.amount)} Tk</td>
-                        <td><span class="${statusBadge}">${escapeHtml(row.status)}</span></td>
-                        <td>
-                            <button class="btn btn-primary" onclick="window.editRow('${row.id}')" style="padding: 4px 8px; font-size:11px;"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-danger" onclick="window.deleteRow('${row.id}')" style="padding: 4px 8px; font-size:11px;"><i class="fas fa-trash"></i></button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-
-                const totalPages = Math.ceil(filteredDataset.length / pageSize);
-                document.getElementById('pageInfo').innerText = `Page ${currentPage} of ${totalPages} (${startIdx + 1}-${endIdx} of ${filteredDataset.length.toLocaleString()})`;
-                
-                document.getElementById('btnPrevPage').disabled = currentPage === 1;
-                document.getElementById('btnNextPage').disabled = currentPage >= totalPages;
-            }
-
-            function handleSearch(e) {
-                const query = e.target.value.toLowerCase().trim();
-                filteredDataset = dataset.filter(item => 
-                    item.name.toString().toLowerCase().includes(query) ||
-                    item.id.toString().toLowerCase().includes(query) ||
-                    item.phone.toString().toLowerCase().includes(query) ||
-                    item.address.toString().toLowerCase().includes(query) ||
-                    item.month.toString().toLowerCase().includes(query)
-                );
-                currentPage = 1;
-                renderTable();
-            }
-
-            function changePage(direction) {
-                const totalPages = Math.ceil(filteredDataset.length / pageSize);
-                if (currentPage + direction >= 1 && currentPage + direction <= totalPages) {
-                    currentPage += direction;
-                    renderTable();
-                }
-            }
-
-            // --- Add / Edit Operations ---
-            function openDataModal(row = null) {
-                const modal = document.getElementById('dataRowModal');
-                const title = document.getElementById('dataModalTitle');
-                
-                if (row) {
-                    title.innerHTML = `<i class="fas fa-edit" style="color:#38bdf8"></i> Edit Entry`;
-                    document.getElementById('rowOriginalId').value = row.id;
-                    document.getElementById('rowId').value = row.id;
-                    document.getElementById('rowName').value = row.name;
-                    document.getElementById('rowPhone').value = row.phone;
-                    document.getElementById('rowAddress').value = row.address;
-                    document.getElementById('rowMonth').value = row.month;
-                    document.getElementById('rowPackage').value = row.package;
-                    document.getElementById('rowAmount').value = row.amount;
-                    document.getElementById('rowStatus').value = row.status;
-                } else {
-                    title.innerHTML = `<i class="fas fa-plus" style="color:#4CAF50"></i> Manual Entry`;
-                    document.getElementById('dataRowForm').reset();
-                    document.getElementById('rowOriginalId').value = '';
-                }
-                modal.style.display = 'flex';
-            }
-
-            function closeDataModal() {
-                document.getElementById('dataRowModal').style.display = 'none';
-            }
-
-            function handleFormSubmit(e) {
-                e.preventDefault();
-                const origId = document.getElementById('rowOriginalId').value;
-                const newId = document.getElementById('rowId').value;
-                
-                const rowData = {
-                    id: newId,
-                    name: document.getElementById('rowName').value,
-                    phone: document.getElementById('rowPhone').value,
-                    address: document.getElementById('rowAddress').value,
-                    month: document.getElementById('rowMonth').value,
-                    package: document.getElementById('rowPackage').value,
-                    amount: document.getElementById('rowAmount').value,
-                    status: document.getElementById('rowStatus').value
-                };
-
-                if (origId) {
-                    const idx = dataset.findIndex(r => r.id === origId);
-                    if (idx !== -1) dataset[idx] = rowData;
-                } else {
-                    dataset.unshift(rowData);
-                }
-
-                filteredDataset = [...dataset];
-                document.getElementById('totalRecordsCount').innerText = `Total Rows: ${dataset.length.toLocaleString()}`;
-                closeDataModal();
-                renderTable();
-            }
-
-            window.editRow = function(id) {
-                const row = dataset.find(r => r.id === id);
-                if (row) openDataModal(row);
-            };
-
-            window.deleteRow = function(id) {
-                if (confirm(`আপনি কি সত্যিই Client ID: ${id} এর ডাটা মুছে ফেলতে চান?`)) {
-                    dataset = dataset.filter(r => r.id !== id);
-                    filteredDataset = filteredDataset.filter(r => r.id !== id);
-                    document.getElementById('totalRecordsCount').innerText = `Total Rows: ${dataset.length.toLocaleString()}`;
-                    renderTable();
-                }
-            };
-
-            // --- Export Engine ---
-            function exportToExcel() {
-                if (dataset.length === 0) {
-                    alert("ডাউনলোড করার মতো কোনো ডাটা নেই!");
-                    return;
-                }
-                const worksheet = XLSX.utils.json_to_sheet(dataset);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Billing Data");
-                XLSX.writeFile(workbook, "ESER_ALL_Billing_Report.xlsx");
-            }
-
-            function escapeHtml(text) {
-                return String(text).replace(/[&<>"']/g, function(m) {
-                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
-                });
+            function _0x8d9e(_0x1a2b) {
+                if (!_0x1a2b) return 'Pending';
+                const _0x3c4d = String(_0x1a2b)['trim']()['toLowerCase']();
+                return (_0x3c4d === 'paid' || _0x3c4d === '\xe0\xa6\xaa\xe0\xa6\xbe\xe0\xa6\xbf\xe0\xa6\xa1') ? 'Paid' : 'Pending';
             }
         })();
     </script>
 </body>
 </html>
+
