@@ -68,8 +68,6 @@
         .btn-danger{background:#f44336;color:#fff}
         .btn-danger:hover{background:#d32f2f}
         .btn-secondary{background:#6b7280;color:#fff}
-        .btn-purple{background:#8b5cf6;color:#fff}
-        .btn-purple:hover{background:#7c3aed}
         
         .table-container{overflow-x:auto;max-height:600px;overflow-y:auto;border:1px solid #333;border-radius:6px}
         table{width:100%;border-collapse:collapse;font-size:13px;text-align:left}
@@ -91,6 +89,10 @@
         .theme-toggle{position:fixed;left:20px;bottom:20px;width:42px;height:42px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1000}
         .developer-footer{text-align:center;padding:15px;font-size:14px;background:rgba(0,0,0,.4);margin-top:auto}
         .developer-footer span{font-weight:700;color:#00e676}
+        
+        .client-info-box{background:#2a2a2a;border-radius:8px;padding:12px;margin-bottom:15px;text-align:left;border:1px solid #444}
+        .client-info-box p{margin-bottom:4px;font-size:13px;color:#ccc}
+        .client-info-box strong{color:#38bdf8}
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -118,11 +120,11 @@
                 <i class="fas fa-bolt"></i> ESER-ALL ISP
             </div>
             <div class="sidebar-menu">
-                <button class="menu-btn active" id="btnNavAllCust" onclick="filterByNav('all')">
-                    <i class="fas fa-users"></i> All Customer
+                <button class="menu-btn active" id="btnNavAllCust" onclick="openSearchModal('all')">
+                    <i class="fas fa-users"></i> All Customer (ID Search)
                 </button>
-                <button class="menu-btn" id="btnNavDueCust" onclick="filterByNav('due')">
-                    <i class="fas fa-clock" style="color:#f59e0b"></i> Due Bill Customer
+                <button class="menu-btn" id="btnNavDueCust" onclick="openSearchModal('due')">
+                    <i class="fas fa-clock" style="color:#f59e0b"></i> Due Bill Customer (ID Search)
                 </button>
                 <button class="menu-btn" id="btnNavPaidCust" onclick="filterByNav('paid')">
                     <i class="fas fa-check-circle" style="color:#4CAF50"></i> Paid Bill Customer
@@ -133,8 +135,8 @@
                 <button class="menu-btn" id="btnNavAllGen" onclick="triggerAllBillGen()">
                     <i class="fas fa-calendar-plus" style="color:#8b5cf6"></i> All Bill Generate
                 </button>
-                <button class="menu-btn" id="btnNavSingleGen" onclick="triggerSingleBillGen()">
-                    <i class="fas fa-file-invoice-dollar" style="color:#38bdf8"></i> Single Bill Generate
+                <button class="menu-btn" id="btnNavSingleGen" onclick="openSearchModal('singleGen')">
+                    <i class="fas fa-file-invoice-dollar" style="color:#38bdf8"></i> Single Bill Generate (ID Search)
                 </button>
 
                 <hr style="border-color:#333; margin: 5px 0;">
@@ -212,7 +214,6 @@
                         <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;">
                         <button class="btn btn-warning" id="btnTriggerUpload"><i class="fas fa-file-upload"></i> Upload Sheet</button>
                         <button class="btn btn-success" id="btnOpenAddModal"><i class="fas fa-plus"></i> Add New Entry</button>
-                        
                         <button class="btn btn-primary" id="btnExportAll"><i class="fas fa-file-download"></i> Export Excel</button>
                     </div>
                 </div>
@@ -257,6 +258,32 @@
         </div>
     </div>
 
+    <div class="user-login-modal" id="idSearchModal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('idSearchModal').style.display='none'"><i class="fas fa-times"></i></span>
+            <h3 id="idSearchTitle" style="margin-bottom:15px"><i class="fas fa-search" style="color:#38bdf8"></i> Search By Client ID</h3>
+            <input type="text" id="targetClientIdInput" placeholder="Enter Client ID (e.g. CUST-101)">
+            <button class="btn btn-primary" onclick="executeIDSearch()" style="width:100%;">Search Customer</button>
+        </div>
+    </div>
+
+    <div class="user-login-modal" id="quickPayModal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('quickPayModal').style.display='none'"><i class="fas fa-times"></i></span>
+            <h3 style="margin-bottom:15px"><i class="fas fa-money-bill-wave" style="color:#00e676"></i> Quick Money Entry</h3>
+            
+            <div class="client-info-box" id="quickPayClientInfo">
+                </div>
+
+            <form id="quickPayForm">
+                <input type="hidden" id="quickPayRowId">
+                <input type="text" id="quickReceiptNo" placeholder="Receipt Number (e.g. REC-1001)" required>
+                <input type="number" id="quickAmount" placeholder="Paid Amount (Tk)" required>
+                <button type="submit" class="btn btn-success" style="width:100%; margin-top:10px;">Submit Payment</button>
+            </form>
+        </div>
+    </div>
+
     <div class="user-login-modal" id="dataRowModal" style="display:none;">
         <div class="modal-content">
             <span class="close-btn" id="btnCloseDataModal"><i class="fas fa-times"></i></span>
@@ -297,6 +324,7 @@
         let currentPage = 1;
         const recordsPerPage = 20;
         let currentFilter = 'all';
+        let searchContext = 'all'; 
 
         document.addEventListener('DOMContentLoaded', () => {
             initParticles();
@@ -304,6 +332,7 @@
             initAuthEvents();
             initTableOperations();
             initExportAndUpload();
+            initQuickPayForm();
             updateDashboardCounters();
         });
 
@@ -364,7 +393,7 @@
             let monthPaid = 0;
 
             const currentDate = new Date();
-            const todayDateStr = currentDate.toISOString().split('T')[0]; // "YYYY-MM-DD"
+            const todayDateStr = currentDate.toISOString().split('T')[0];
             const currentMonthName = currentDate.toLocaleString('default', { month: 'long' });
             const currentYear = currentDate.getFullYear();
             const currentMonthYear = `${currentMonthName} ${currentYear}`.toLowerCase();
@@ -373,21 +402,18 @@
                 const amount = parseFloat(item.amount) || 0;
                 const isPaid = item.status === 'Paid';
                 const itemMonth = String(item.month || '').toLowerCase();
-                const paymentDate = item.paidDate || item.date;
+                const paymentDate = item.paidDate;
 
-                // Today Collect Calculation
                 if (isPaid && paymentDate === todayDateStr) {
                     todayCollect += amount;
                 }
 
-                // Total Calculations
                 if (isPaid) {
                     allPaid += amount;
                 } else {
                     allDue += amount;
                 }
 
-                // This Month Calculations
                 if (itemMonth.includes(currentMonthName.toLowerCase()) || itemMonth.includes(currentMonthYear)) {
                     if (isPaid) {
                         monthPaid += amount;
@@ -404,9 +430,98 @@
             document.getElementById('dashMonthPaidTk').innerText = `৳ ${monthPaid.toLocaleString()}`;
         }
 
+        /* ---------------- SEARCH MODAL LOGIC ---------------- */
+        function openSearchModal(context) {
+            searchContext = context;
+            const modal = document.getElementById('idSearchModal');
+            const title = document.getElementById('idSearchTitle');
+            document.getElementById('targetClientIdInput').value = '';
+
+            if (context === 'all') {
+                title.innerHTML = '<i class="fas fa-search" style="color:#38bdf8"></i> Search All Customer ID';
+            } else if (context === 'due') {
+                title.innerHTML = '<i class="fas fa-search" style="color:#f59e0b"></i> Search Due Customer ID';
+            } else if (context === 'singleGen') {
+                title.innerHTML = '<i class="fas fa-search" style="color:#8b5cf6"></i> Single Bill Generate Search';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function executeIDSearch() {
+            const idVal = document.getElementById('targetClientIdInput').value.trim();
+            if (!idVal) {
+                alert('Client ID লিখুন!');
+                return;
+            }
+
+            document.getElementById('idSearchModal').style.display = 'none';
+
+            if (searchContext === 'singleGen') {
+                const cust = recordsList.find(r => String(r.clientId).toLowerCase() === idVal.toLowerCase());
+                if (cust) {
+                    cust.status = 'Pending';
+                    cust.paidDate = null;
+                    renderTable();
+                    alert(`${cust.name}-এর জন্য বিল Pending হিসেবে আপডেট করা হয়েছে।`);
+                } else {
+                    alert('কাস্টমার আইডি খুঁজে পাওয়া যায়নি!');
+                }
+                return;
+            }
+
+            // Set global search input and filter view
+            document.getElementById('sheetSearchInput').value = idVal;
+            if (searchContext === 'due') {
+                filterByNav('due');
+            } else {
+                filterByNav('all');
+            }
+        }
+
+        /* ---------------- QUICK PAYMENT LOGIC ---------------- */
+        function openQuickPayModal(id) {
+            const row = recordsList.find(r => r.id === id);
+            if (!row) return;
+
+            document.getElementById('quickPayRowId').value = row.id;
+            document.getElementById('quickReceiptNo').value = row.receiptNo || '';
+            document.getElementById('quickAmount').value = row.amount || '';
+
+            document.getElementById('quickPayClientInfo').innerHTML = `
+                <p><strong>Name:</strong> ${row.name || '-'}</p>
+                <p><strong>Client ID:</strong> ${row.clientId || '-'}</p>
+                <p><strong>Phone:</strong> ${row.phone || '-'}</p>
+            `;
+
+            document.getElementById('quickPayModal').style.display = 'flex';
+        }
+
+        function initQuickPayForm() {
+            document.getElementById('quickPayForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const rowId = document.getElementById('quickPayRowId').value;
+                const recNo = document.getElementById('quickReceiptNo').value;
+                const amt = parseFloat(document.getElementById('quickAmount').value) || 0;
+                const todayStr = new Date().toISOString().split('T')[0];
+
+                const idx = recordsList.findIndex(r => r.id === rowId);
+                if (idx !== -1) {
+                    recordsList[idx].receiptNo = recNo;
+                    recordsList[idx].amount = amt;
+                    recordsList[idx].status = 'Paid';
+                    recordsList[idx].paidDate = todayStr;
+                }
+
+                document.getElementById('quickPayModal').style.display = 'none';
+                renderTable();
+                alert('টাকা জমা সফলভাবে আপডেট হয়েছে!');
+            });
+        }
+
         /* ---------------- TABLE & RENDER LOGIC ---------------- */
         function renderTable() {
-            updateDashboardCounters(); // Auto Update Dashboard
+            updateDashboardCounters();
 
             const tbody = document.getElementById('sheetTableBody');
             const searchVal = document.getElementById('sheetSearchInput').value.toLowerCase().trim();
@@ -441,7 +556,7 @@
                     <tr>
                         <td colspan="10" style="text-align:center; padding: 40px; color:#aaa;">
                             <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 10px;"></i><br>
-                            কোনো ডাটা পাওয়া যায়নি। Excel/CSV আপলোড করুন অথবা **Add New Entry** বাটনে ক্লিক করুন।
+                            কোনো ডাটা পাওয়া যায়নি। Search অপশন বা Add Entry ব্যবহার করুন।
                         </td>
                     </tr>`;
                 return;
@@ -463,8 +578,9 @@
                         </span>
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-primary" onclick="editRow('${row.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteRow('${row.id}')"><i class="fas fa-trash"></i></button>
+                        <button class="btn btn-sm btn-success" title="Quick Pay" onclick="openQuickPayModal('${row.id}')"><i class="fas fa-hand-holding-usd"></i> Pay</button>
+                        <button class="btn btn-sm btn-primary" title="Edit Full" onclick="editRow('${row.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" title="Delete" onclick="deleteRow('${row.id}')"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -520,7 +636,6 @@
                 if (origId) {
                     const idx = recordsList.findIndex(r => r.id === origId);
                     if (idx !== -1) {
-                        // Keep previous payment date if already paid, else set today's date
                         if (statusVal === 'Paid' && !recordsList[idx].paidDate) {
                             newRecord.paidDate = todayStr;
                         } else if (statusVal === 'Paid') {
@@ -591,7 +706,6 @@
 
                         const todayStr = new Date().toISOString().split('T')[0];
 
-                        // Map uploaded Excel columns to UI Data Structure
                         const importedData = jsonData.map((row, index) => {
                             const isPaid = String(row['Status'] || row['স্ট্যাটাস']).toLowerCase().includes('paid');
                             return {
@@ -612,16 +726,15 @@
                         recordsList = [...importedData, ...recordsList];
                         renderTable();
                         alert(`সফলভাবে ${importedData.length} টি কাস্টমার ডাটা আপলোড করা হয়েছে!`);
-                        fileInput.value = ''; // Reset input
+                        fileInput.value = '';
                     } catch (err) {
-                        alert('ফাইল প্রসেস করার সময় ভুল হয়েছে! সঠিক Excel (.xlsx, .csv) ফাইল নির্বাচন করুন।');
+                        alert('ফাইল প্রসেস করার সময় ভুল হয়েছে!');
                         console.error(err);
                     }
                 };
                 reader.readAsArrayBuffer(file);
             });
 
-            // Export to Excel
             exportBtn.addEventListener('click', () => {
                 if (recordsList.length === 0) {
                     alert('এক্সপোর্ট করার মতো কোনো ডাটা নেই!');
@@ -676,21 +789,6 @@
                 });
                 renderTable();
                 alert('সকল গ্রাহকের জন্য বিল নতুন করে জেনারেট করা হয়েছে!');
-            }
-        }
-
-        function triggerSingleBillGen() {
-            const id = prompt('যে কাস্টমারের বিল জেনারেট করতে চান তার Client ID দিন:');
-            if (!id) return;
-
-            const cust = recordsList.find(r => r.clientId === id);
-            if (cust) {
-                cust.status = 'Pending';
-                cust.paidDate = null;
-                renderTable();
-                alert(`${cust.name}-এর জন্য বিল Pending হিসেবে আপডেট করা হয়েছে।`);
-            } else {
-                alert('কাস্টমার আইডি খুঁজে পাওয়া যায়নি!');
             }
         }
 
