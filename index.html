@@ -1,111 +1,452 @@
-<div class="row g-3 mb-4 text-center">
-  <div class="col-6 col-lg-3">
-    <div class="card card-custom p-3 bg-white stat-card stat-in">
-      <div class="text-muted small fw-bold"><i class="fa-solid fa-arrow-down-long text-success me-1"></i> মোট জমা / বিক্রি</div>
-      <h4 class="text-success fw-bold mt-2 mb-0" id="totalIn">৳ 0.00</h4>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ডিজিটাল ক্যাশ বুক - এন্টারপ্রাইজ এডিশন</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      --accent-color: #0d6efd;
+    }
+    body { background-color: #f4f7f6; font-family: 'Hind Siliguri', sans-serif; }
+    .header-banner { background: var(--primary-gradient); color: white; padding: 22px 0; border-radius: 0 0 24px 24px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
+    .card-custom { border: none; border-radius: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); transition: all 0.25s ease-in-out; }
+    .stat-card { border-left: 6px solid; }
+    .stat-in { border-color: #198754; }
+    .stat-out { border-color: #dc3545; }
+    .stat-profit { border-color: #0d6efd; }
+    .stat-count { border-color: #6c757d; }
+    .badge-mfs { background-color: #e2136e; color: white; }
+    .badge-print { background-color: #0d6efd; color: white; }
+    .badge-stationery { background-color: #198754; color: white; }
+    .badge-expense { background-color: #dc3545; color: white; }
+    .table-container { background: white; border-radius: 14px; padding: 22px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); }
+    .auth-container { max-width: 420px; margin: 70px auto; border-top: 5px solid #0d6efd; }
+    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
+  </style>
+</head>
+<body>
+
+<div id="loader" class="loading-overlay">
+  <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status"></div>
+</div>
+
+<!-- Auth Container -->
+<div id="authSection" class="container">
+  <div class="card card-custom p-4 auth-container bg-white">
+    <div class="text-center mb-4">
+      <i class="fa-solid fa-shield-halved fa-3x text-primary mb-2"></i>
+      <h4 class="fw-bold" id="authTitle">নিরাপদ লগইন</h4>
+      <p class="text-muted small">সিস্টেমে প্রবেশ করতে আপনার তথ্য প্রদান করুন</p>
     </div>
-  </div>
-  <div class="col-6 col-lg-3">
-    <div class="card card-custom p-3 bg-white stat-card stat-out">
-      <div class="text-muted small fw-bold"><i class="fa-solid fa-arrow-up-long text-danger me-1"></i> মোট খরচ / ক্যাশ-আউট</div>
-      <h4 class="text-danger fw-bold mt-2 mb-0" id="totalOut">৳ 0.00</h4>
-    </div>
-  </div>
-  <div class="col-6 col-lg-3">
-    <div class="card card-custom p-3 bg-white stat-card stat-profit">
-      <div class="text-muted small fw-bold"><i class="fa-solid fa-chart-line text-primary me-1"></i> মোট নিট লাভ</div>
-      <h4 class="text-primary fw-bold mt-2 mb-0" id="totalProfit">৳ 0.00</h4>
-    </div>
-  </div>
-  <div class="col-6 col-lg-3">
-    <div class="card card-custom p-3 bg-white stat-card stat-count">
-      <div class="text-muted small fw-bold"><i class="fa-solid fa-receipt text-secondary me-1"></i> মোট লেনদেন সংখ্যা</div>
-      <h4 class="text-dark fw-bold mt-2 mb-0" id="totalCount">0</h4>
+    <form id="authForm">
+      <div class="mb-3">
+        <label class="form-label fw-semibold">ইমেইল এড্রেস</label>
+        <input type="email" id="authEmail" class="form-control" autocomplete="off" placeholder="name@domain.com" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold">পাসওয়ার্ড</label>
+        <input type="password" id="authPassword" class="form-control" placeholder="••••••••" minlength="6" required>
+      </div>
+      <div id="authError" class="alert alert-danger py-2 small mb-3 text-center" style="display: none;"></div>
+      <button type="submit" id="authSubmitBtn" class="btn btn-primary w-100 fw-bold py-2 mb-3 shadow-sm">প্রবেশ করুন</button>
+    </form>
+    <div class="text-center">
+      <small class="text-muted" id="authToggleText">অ্যাকাউন্ট নেই? <a href="#" id="authToggleBtn" class="fw-bold text-decoration-none">নতুন অ্যাকাউন্ট তৈরি করুন</a></small>
     </div>
   </div>
 </div>
 
-<div class="row">
-  <div class="col-lg-4 mb-4">
-    <div class="card card-custom p-4">
-      <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>নতুন এন্ট্রি যুক্ত করুন</h5>
-      <form id="transactionForm">
-        <div class="mb-3">
-          <label class="form-label fw-semibold">খাত / বিভাগ</label>
-          <select id="category" class="form-select shadow-sm" required>
-            <option value="Mobile Banking">মোবাইল ব্যাংকিং (বিকাশ/নগদ/রকেট)</option>
-            <option value="Print & Photo">প্রিন্ট ও ফটোকপি</option>
-            <option value="Stationery">স্টেশনারি পণ্য</option>
-            <option value="Expense">অন্যান্য খরচ</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">লেনদেনের ধরন</label>
-          <select id="type" class="form-select shadow-sm" required>
-            <option value="Cash In">ক্যাশ-ইন / জমা (বিক্রি)</option>
-            <option value="Cash Out">ক্যাশ-আউট / খরচ</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">বিবরণ / কাস্টমার নোট</label>
-          <input type="text" id="description" class="form-control shadow-sm" placeholder="যেমন: ১০ কপি ফটোকপি / বিকাশ ক্যাশ-আউট" required>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">পরিমাণ (টাকা)</label>
-          <input type="number" id="amount" class="form-control shadow-sm" placeholder="0.00" min="0" step="any" required>
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label fw-semibold">কমিশন / নিট লাভ (যদি থাকে)</label>
-          <input type="number" id="profit" class="form-control shadow-sm" placeholder="0.00" value="0" min="0" step="any">
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2">
-          <i class="fa-solid fa-floppy-disk me-1"></i> এন্ট্রি সংরক্ষণ করুন
+<!-- Dashboard Section -->
+<div id="dashboardSection" style="display: none;">
+  <div class="header-banner mb-4">
+    <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
+      <div>
+        <h3 class="fw-bold mb-0"><i class="fa-solid fa-vault me-2"></i>স্মার্ট ক্যাশ বুক এনভায়রনমেন্ট</h3>
+        <p class="mb-0 opacity-75 small">সুরক্ষিত ডাটাবেস ও রিয়েলটাইম ক্যাশ ট্র্যাকিং সার্ভিস</p>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span id="userDisplayEmail" class="badge bg-light text-dark d-none d-md-inline-block py-2 px-3"></span>
+        <button onclick="_0x4f2a()" class="btn btn-outline-light btn-sm fw-bold">
+          <i class="fa-solid fa-power-off me-1"></i> লগআউট
         </button>
-      </form>
+      </div>
     </div>
   </div>
 
-  <div class="col-lg-8">
-    <div class="table-container mb-4">
-      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-        <div class="d-flex gap-2 align-items-center">
-          <input type="text" id="searchInput" onkeyup="_0x5a1b('filter')" class="form-control form-control-sm shadow-sm" placeholder="🔍 বিবরণ বা বিভাগ খুঁজুন...">
+  <div class="container-fluid px-md-4">
+    <!-- Summary -->
+    <div class="row g-3 mb-4 text-center">
+      <div class="col-6 col-lg-3">
+        <div class="card card-custom p-3 bg-white stat-card stat-in">
+          <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-down text-success me-1"></i> মোট জমা / বিক্রি</div>
+          <h4 class="text-success fw-bold mt-2 mb-0" id="totalIn">৳ 0.00</h4>
         </div>
-        
-        <div class="d-flex gap-2">
-          <button onclick="_0x5a1b('export')" class="btn btn-outline-success btn-sm fw-bold">
-            <i class="fa-solid fa-file-excel me-1"></i> Excel ডাউনলোড
-          </button>
-          <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;" onchange="_0x5a1b('import', event)">
-          <button onclick="document.getElementById('excelFileInput').click()" class="btn btn-outline-primary btn-sm fw-bold">
-            <i class="fa-solid fa-file-import me-1"></i> Excel আপলোড
-          </button>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card card-custom p-3 bg-white stat-card stat-out">
+          <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-up text-danger me-1"></i> মোট খরচ / ক্যাশ-আউট</div>
+          <h4 class="text-danger fw-bold mt-2 mb-0" id="totalOut">৳ 0.00</h4>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card card-custom p-3 bg-white stat-card stat-profit">
+          <div class="text-muted small fw-bold"><i class="fa-solid fa-chart-pie text-primary me-1"></i> মোট নিট লাভ</div>
+          <h4 class="text-primary fw-bold mt-2 mb-0" id="totalProfit">৳ 0.00</h4>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card card-custom p-3 bg-white stat-card stat-count">
+          <div class="text-muted small fw-bold"><i class="fa-solid fa-list-check text-secondary me-1"></i> লেনদেন রেকর্ড</div>
+          <h4 class="text-dark fw-bold mt-2 mb-0" id="totalCount">0</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Input Panel -->
+      <div class="col-lg-4 mb-4">
+        <div class="card card-custom p-4">
+          <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-square-plus me-2 text-primary"></i>নতুন ডাটা এন্ট্রি</h5>
+          <form id="transactionForm">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">বিভাগ</label>
+              <select id="category" class="form-select shadow-sm" required>
+                <option value="Mobile Banking">মোবাইল ব্যাংকিং (বিকাশ/নগদ/রকেট)</option>
+                <option value="Print & Photo">প্রিন্ট ও ফটোকপি</option>
+                <option value="Stationery">স্টেশনারি পণ্য</option>
+                <option value="Expense">অন্যান্য খরচ</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">লেনদেনের ধরন</label>
+              <select id="type" class="form-select shadow-sm" required>
+                <option value="Cash In">ক্যাশ-ইন / জমা (বিক্রি)</option>
+                <option value="Cash Out">ক্যাশ-আউট / খরচ</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">বিবরণ / নোটিং</label>
+              <input type="text" id="description" class="form-control shadow-sm" placeholder="যেমন: ১০ কপি ফটোকপি" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">পরিমাণ (৳)</label>
+              <input type="number" id="amount" class="form-control shadow-sm" placeholder="0.00" min="0" step="any" required>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-semibold">কমিশন / লাভ (৳)</label>
+              <input type="number" id="profit" class="form-control shadow-sm" placeholder="0.00" value="0" min="0" step="any">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2">
+              <i class="fa-solid fa-cloud-arrow-up me-1"></i> এন্ট্রি সেভ করুন
+            </button>
+          </form>
         </div>
       </div>
 
-      <div class="table-responsive">
-        <table class="table table-hover align-middle" id="transactionTable">
-          <thead class="table-light">
-            <tr>
-              <th>তারিখ ও সময়</th>
-              <th>বিভাগ</th>
-              <th>বিবরণ</th>
-              <th>ধরন</th>
-              <th>পরিমাণ</th>
-              <th>লাভ</th>
-              <th class="text-center">অ্যাকশন</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-          </tbody>
-        </table>
-      </div>
+      <!-- Table Panel -->
+      <div class="col-lg-8">
+        <div class="table-container mb-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <input type="text" id="searchInput" onkeyup="_0x7b1c()" class="form-control form-control-sm w-auto shadow-sm" placeholder="🔍 অনুসন্ধান করুন...">
+            <div class="d-flex gap-2">
+              <button onclick="_0x1e8a()" class="btn btn-outline-success btn-sm fw-bold">
+                <i class="fa-solid fa-file-excel me-1"></i> Excel রানিং ডাটা এক্সপোর্ট
+              </button>
+              <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;" onchange="_0x9a3d(event)">
+              <button onclick="document.getElementById('excelFileInput').click()" class="btn btn-outline-primary btn-sm fw-bold">
+                <i class="fa-solid fa-file-import me-1"></i> Excel বাল্ক আপলোড
+              </button>
+            </div>
+          </div>
 
+          <div class="table-responsive">
+            <table class="table table-hover align-middle" id="transactionTable">
+              <thead class="table-light">
+                <tr>
+                  <th>টাইমস্ট্যাম্প</th>
+                  <th>ক্যাটাগরি</th>
+                  <th>বিবরণ</th>
+                  <th>টাইপ</th>
+                  <th>পরিমাণ</th>
+                  <th>মার্জিন/লাভ</th>
+                  <th class="text-center">অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+  // Obfuscated Engine Core
+  const _0x99a = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXNlYXBwLmNvbQ==", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI0NmEx", "Rz1XQktKTEdNM0hE"];
+  const _0x3b = (idx) => atob(_0x99a[idx]);
+
+  const _0x4d21 = {
+    apiKey: _0x3b(0), authDomain: _0x3b(1), databaseURL: _0x3b(2),
+    projectId: _0x3b(3), storageBucket: _0x3b(4), messagingSenderId: _0x3b(5),
+    appId: _0x3b(6), measurementId: _0x3b(7)
+  };
+
+  firebase.initializeApp(_0x4d21);
+  const _auth = firebase.auth();
+  const _db = firebase.database();
+
+  let _user = null;
+  let _cache = [];
+  let _isSignUp = false;
+  let _sessionRef = null;
+
+  const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
+
+  // Authentication State Handler & Single Session Validator
+  _auth.onAuthStateChanged(async (u) => {
+    toggleLoader(true);
+    if (u) {
+      _user = u;
+      const sId = 'sess_' + Date.now();
+      _sessionRef = _db.ref(`users/${_user.uid}/active_session`);
+      
+      // Enforce unique device lock
+      await _sessionRef.set(sId);
+      _sessionRef.on('value', (snap) => {
+        if (snap.val() && snap.val() !== sId) {
+          alert('অন্য একটি ডিভাইস অথবা ট্যাব থেকে লগইন করা হয়েছে!');
+          _auth.signOut();
+        }
+      });
+
+      document.getElementById('authSection').style.display = 'none';
+      document.getElementById('dashboardSection').style.display = 'block';
+      document.getElementById('userDisplayEmail').innerText = _user.email;
+      _0x3a12();
+    } else {
+      if(_sessionRef) _sessionRef.off();
+      _user = null;
+      document.getElementById('authSection').style.display = 'block';
+      document.getElementById('dashboardSection').style.display = 'none';
+    }
+    toggleLoader(false);
+  });
+
+  document.getElementById('authToggleBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    _isSignUp = !_isSignUp;
+    document.getElementById('authTitle').innerText = _isSignUp ? "রেজিস্ট্রেশন" : "নিরাপদ লগইন";
+    document.getElementById('authSubmitBtn').innerText = _isSignUp ? "সাইন আপ করুন" : "প্রবেশ করুন";
+    document.getElementById('authToggleText').innerHTML = _isSignUp 
+      ? 'ইতিমধ্যে একাউন্ট আছে? <a href="#" id="authToggleBtn" class="fw-bold text-decoration-none">লগইন করুন</a>'
+      : 'অ্যাকাউন্ট নেই? <a href="#" id="authToggleBtn" class="fw-bold text-decoration-none">নতুন অ্যাকাউন্ট তৈরি করুন</a>';
+  });
+
+  document.getElementById('authForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('authEmail').value;
+    const pwd = document.getElementById('authPassword').value;
+    const err = document.getElementById('authError');
+    err.style.display = 'none';
+    toggleLoader(true);
+
+    try {
+      if (_isSignUp) {
+        await _auth.createUserWithEmailAndPassword(email, pwd);
+      } else {
+        await _auth.signInWithEmailAndPassword(email, pwd);
+      }
+    } catch (e) {
+      err.style.display = 'block';
+      err.innerText = "অথেনটিকেশন ত্রুটি: " + e.message;
+    } finally {
+      toggleLoader(false);
+    }
+  });
+
+  function _0x4f2a() {
+    if(_user && _sessionRef) _sessionRef.remove();
+    _auth.signOut();
+  }
+
+  // Core Data Insertion with Obfuscated Payload Protection
+  document.getElementById('transactionForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!_user) return;
+    toggleLoader(true);
+
+    const payload = {
+      id: "TX_" + Date.now(),
+      date: new Date().toLocaleString('bn-BD', { dateStyle: 'short', timeStyle: 'short' }),
+      timestamp: Date.now(),
+      category: document.getElementById('category').value,
+      type: document.getElementById('type').value,
+      description: btoa(unescape(encodeURIComponent(document.getElementById('description').value))), // Light Data Payload Hashing
+      amount: Number(parseFloat(document.getElementById('amount').value).toFixed(2)) || 0,
+      profit: Number(parseFloat(document.getElementById('profit').value).toFixed(2)) || 0
+    };
+
+    try {
+      await _db.ref(`users/${_user.uid}/transactions/${payload.id}`).set(payload);
+      document.getElementById('transactionForm').reset();
+    } catch(err) {
+      alert("ডেটা সেভ করতে সমস্যা হয়েছে: " + err.message);
+    } finally {
+      toggleLoader(false);
+    }
+  });
+
+  function _0x8c4b(records) {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    let totalIn = 0, totalOut = 0, totalProfit = 0;
+
+    records.forEach((item) => {
+      const amt = Number(item.amount) || 0;
+      const prf = Number(item.profit) || 0;
+      
+      let decodedDesc = item.description;
+      try { decodedDesc = decodeURIComponent(escape(atob(item.description))); } catch(e){}
+
+      if (item.type === 'Cash In') totalIn += amt;
+      if (item.type === 'Cash Out') totalOut += amt;
+      totalProfit += prf;
+
+      let badgeClass = 'badge-stationery';
+      if (item.category === 'Mobile Banking') badgeClass = 'badge-mfs';
+      else if (item.category === 'Print & Photo') badgeClass = 'badge-print';
+      else if (item.category === 'Expense') badgeClass = 'badge-expense';
+
+      let row = `
+        <tr>
+          <td><small class="text-muted fw-semibold">${item.date}</small></td>
+          <td><span class="badge ${badgeClass}">${item.category}</span></td>
+          <td>${decodedDesc}</td>
+          <td><span class="${item.type === 'Cash In' ? 'text-success fw-bold' : 'text-danger fw-bold'}">${item.type}</span></td>
+          <td class="fw-bold">৳ ${amt.toLocaleString('bn-BD', {minimumFractionDigits: 2})}</td>
+          <td class="text-primary fw-bold">৳ ${prf.toLocaleString('bn-BD', {minimumFractionDigits: 2})}</td>
+          <td class="text-center">
+            <button onclick="_0x5d99('${item.id}')" class="btn btn-outline-danger btn-sm border-0"><i class="fa-solid fa-trash-can"></i></button>
+          </td>
+        </tr>
+      `;
+      tbody.innerHTML += row;
+    });
+
+    document.getElementById('totalIn').innerText = `৳ ${totalIn.toLocaleString('bn-BD', {minimumFractionDigits: 2})}`;
+    document.getElementById('totalOut').innerText = `৳ ${totalOut.toLocaleString('bn-BD', {minimumFractionDigits: 2})}`;
+    document.getElementById('totalProfit').innerText = `৳ ${totalProfit.toLocaleString('bn-BD', {minimumFractionDigits: 2})}`;
+    document.getElementById('totalCount').innerText = records.length;
+  }
+
+  async function _0x5d99(id) {
+    if (confirm("আপনি কি এটি স্থায়ীভাবে মুছে ফেলার ব্যাপারে নিশ্চিত?")) {
+      if (_user) {
+        toggleLoader(true);
+        await _db.ref(`users/${_user.uid}/transactions/${id}`).remove();
+        toggleLoader(false);
+      }
+    }
+  }
+
+  function _0x3a12() {
+    if (_user) {
+      _db.ref(`users/${_user.uid}/transactions`).on('value', (snap) => {
+        const val = snap.val();
+        _cache = val ? Object.values(val).sort((a, b) => b.timestamp - a.timestamp) : [];
+        _0x8c4b(_cache);
+      });
+    }
+  }
+
+  function _0x7b1c() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = _cache.filter(item => {
+      let desc = item.description;
+      try { desc = decodeURIComponent(escape(atob(item.description))); } catch(e){}
+      return desc.toLowerCase().includes(q) || item.category.toLowerCase().includes(q) || item.type.toLowerCase().includes(q);
+    });
+    _0x8c4b(filtered);
+  }
+
+  function _0x1e8a() {
+    if (_cache.length === 0) return alert("রপ্তানি করার মতো ডেটা পাওয়া যায়নি!");
+    const formatted = _cache.map(t => {
+      let desc = t.description;
+      try { desc = decodeURIComponent(escape(atob(t.description))); } catch(e){}
+      return {
+        "তারিখ ও সময়": t.date,
+        "বিভাগ": t.category,
+        "বিবরণ": desc,
+        "ধরন": t.type,
+        "পরিমাণ (টাকা)": t.amount,
+        "লাভ (টাকা)": t.profit
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(formatted);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "ক্যাশ বুক রিপোর্ট");
+    XLSX.writeFile(wb, `Audit_Report_${Date.now()}.xlsx`);
+  }
+
+  function _0x9a3d(evt) {
+    const file = evt.target.files[0];
+    if (!file || !_user) return;
+    toggleLoader(true);
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, { type: 'array' });
+        const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+
+        if (json.length > 0) {
+          json.forEach((r, idx) => {
+            const id = "TX_IMP_" + (Date.now() + idx);
+            const desc = r["বিবরণ"] || "Excel Imported Data";
+            const payload = {
+              id: id,
+              date: r["তারিখ ও সময়"] || new Date().toLocaleString('bn-BD'),
+              timestamp: Date.now() + idx,
+              category: r["বিভাগ"] || "Stationery",
+              description: btoa(unescape(encodeURIComponent(desc))),
+              type: r["ধরন"] || "Cash In",
+              amount: parseFloat(r["পরিমাণ (টাকা)"]) || 0,
+              profit: parseFloat(r["লাভ (টাকা)"]) || 0
+            };
+            _db.ref(`users/${_user.uid}/transactions/${id}`).set(payload);
+          });
+          alert("বাল্ক ইমপোর্ট সফল হয়েছে!");
+        }
+      } catch(err) {
+        alert("ফাংশনাল ত্রুটি: ফাইলের স্ট্রাকচার সঠিক নয়!");
+      } finally {
+        toggleLoader(false);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+</script>
+
+</body>
+</html>
