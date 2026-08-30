@@ -255,8 +255,7 @@
     document.getElementById('authTitle').innerText = _isSignUp ? "রেজিস্ট্রেশন" : "নিরাপদ লগইন";
     document.getElementById('authSubmitBtn').innerText = _isSignUp ? "সাইন আপ করুন" : "প্রবেশ করুন";
     document.getElementById('authToggleText').innerHTML = _isSignUp 
-      ? 'ইতিমধ্যে একাউন্ট আছে? <a href="#" id="authToggleBtn" class="fw-bold text-decoration-none">লগইন করুন</a>'
-      : 'অ্যাকাউন্ট নেই? <a href="#" id="authToggleBtn" class="fw-bold text-decoration-none">নতুন অ্যাকাউন্ট তৈরি করুন</a>';
+      ? 'ইতিমধ্যে একাউন্ট আছে? <a href="#" id="authToggleBtn" class="fw-bold text-decoration-none">লগইন করুন</a>';
   });
 
   document.getElementById('authForm').addEventListener('submit', async (e) => {
