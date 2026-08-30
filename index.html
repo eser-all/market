@@ -136,31 +136,30 @@
 
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
   // ==========================================
   // ১. Firebase Configuration
-  // (এখানে আপনার Firebase Console-এর নিজের Config দিন)
   // ==========================================
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyCb4fkOtdc83ZP6fX_pVU5pjWA0WviTLiI",
+    authDomain: "eser-all-isp.firebaseapp.com",
+    databaseURL: "https://eser-all-isp-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "eser-all-isp",
+    storageBucket: "eser-all-isp.firebasestorage.app",
+    messagingSenderId: "1095314995444",
+    appId: "1:1095314995444:web:12ac46fc5823350bfb46a1",
+    measurementId: "G-WBKJLWM3HD"
   };
 
   // Firebase Initialize
   let db;
   try {
     firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
-    // Enable offline persistence in LocalStorage automatically
-    db.enablePersistence().catch(err => console.log("Persistence error:", err));
+    db = firebase.database();
   } catch (e) {
-    console.warn("Firebase config is empty, running in LocalStorage mode only.");
+    console.warn("Firebase initialization error:", e);
   }
 
   // Application Data Array
@@ -194,20 +193,18 @@
     };
 
     transactions.unshift(entry);
-    saveData();
+    saveData(entry);
     form.reset();
   });
 
-  // Save to LocalStorage and Firebase
-  function saveData() {
+  // Save to LocalStorage and Firebase Realtime Database
+  function saveData(latestEntry) {
     localStorage.setItem('shop_transactions', JSON.stringify(transactions));
     renderData();
 
-    // Firebase-এ সেভ করা
-    if (db && transactions.length > 0) {
-      const latestEntry = transactions[0];
-      db.collection("transactions").doc(latestEntry.id).set(latestEntry)
-        .then(() => console.log("Saved to Firebase"))
+    if (db && latestEntry) {
+      db.ref("transactions/" + latestEntry.id).set(latestEntry)
+        .then(() => console.log("Saved to Firebase Realtime Database"))
         .catch(err => console.error("Firebase save error:", err));
     }
   }
@@ -219,7 +216,7 @@
     tableBody.innerHTML = '';
     let totalIn = 0, totalOut = 0, totalProfit = 0;
 
-    transactions.forEach((item, index) => {
+    transactions.forEach((item) => {
       if (item.type === 'Cash In') totalIn += item.amount;
       if (item.type === 'Cash Out') totalOut += item.amount;
       totalProfit += (item.profit || 0);
@@ -255,28 +252,27 @@
       transactions = transactions.filter(item => item.id !== id);
       localStorage.setItem('shop_transactions', JSON.stringify(transactions));
       if (db) {
-        db.collection("transactions").doc(id).delete().catch(err => console.error(err));
+        db.ref("transactions/" + id).remove().catch(err => console.error(err));
       }
       renderData();
     }
   }
 
-  // Sync from Firebase on Start
+  // Sync Realtime Data from Firebase
   function syncWithFirebase() {
     if (db) {
-      db.collection("transactions").orderBy("timestamp", "desc").get()
-        .then((querySnapshot) => {
-          let fbData = [];
-          querySnapshot.forEach((doc) => {
-            fbData.push(doc.data());
-          });
-          if (fbData.length > 0) {
-            transactions = fbData;
-            localStorage.setItem('shop_transactions', JSON.stringify(transactions));
-            renderData();
-          }
-        })
-        .catch((error) => console.log("Offline mode, using LocalStorage: ", error));
+      db.ref("transactions").on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const fbData = Object.values(data);
+          fbData.sort((a, b) => b.timestamp - a.timestamp);
+          transactions = fbData;
+          localStorage.setItem('shop_transactions', JSON.stringify(transactions));
+          renderData();
+        }
+      }, (error) => {
+        console.log("Realtime DB read error / Offline mode: ", error);
+      });
     }
   }
 
@@ -333,9 +329,13 @@
             profit: parseFloat(row["লাভ/কমিশন (টাকা)"]) || 0
           };
           transactions.unshift(newEntry);
+          if (db) {
+            db.ref("transactions/" + newEntry.id).set(newEntry);
+          }
         });
 
-        saveData();
+        localStorage.setItem('shop_transactions', JSON.stringify(transactions));
+        renderData();
         alert("এক্সেল থেকে সফলভাবে ডেটা আপলোড করা হয়েছে!");
       }
     };
