@@ -21,7 +21,7 @@
     .header-banner {
       background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
       color: white;
-      padding: 25px 0;
+      padding: 20px 0;
       border-radius: 0 0 20px 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
@@ -31,9 +31,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       transition: all 0.3s ease;
     }
-    .stat-card {
-      border-left: 5px solid;
-    }
+    .stat-card { border-left: 5px solid; }
     .stat-in { border-color: #198754; }
     .stat-out { border-color: #dc3545; }
     .stat-profit { border-color: #0d6efd; }
@@ -50,140 +48,187 @@
       padding: 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
+
+    /* Auth Overlay Card Style */
+    .auth-container {
+      max-width: 400px;
+      margin: 80px auto;
+    }
   </style>
 </head>
 <body>
 
-<!-- Banner Header -->
-<div class="header-banner text-center mb-4">
-  <h2 class="fw-bold mb-1"><i class="fa-solid fa-cash-register me-2"></i>দোকানের ডিজিটাল ক্যাশ বুক</h2>
-  <p class="mb-0 opacity-75">সহজ, নিখুঁত ও নিরাপদ দৈনিক লেনদেনের হিসাব</p>
+<!-- Login / Signup Form Section -->
+<div id="authSection" class="container">
+  <div class="card card-custom p-4 auth-container bg-white">
+    <div class="text-center mb-4">
+      <i class="fa-solid fa-cash-register fa-3x text-primary mb-2"></i>
+      <h4 class="fw-bold" id="authTitle">লগইন করুন</h4>
+      <p class="text-muted small">আপনার অ্যাকাউন্টে প্রবেশ করতে ইমেইল ও পাসওয়ার্ড দিন</p>
+    </div>
+    <form id="authForm">
+      <div class="mb-3">
+        <label class="form-label fw-semibold">ইমেইল এড্রেস</label>
+        <input type="email" id="authEmail" class="form-control" placeholder="example@email.com" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold">পাসওয়ার্ড</label>
+        <input type="password" id="authPassword" class="form-control" placeholder="******" minlength="6" required>
+      </div>
+      <div id="authError" class="text-danger small mb-3 text-center" style="display: none;"></div>
+      <button type="submit" id="authSubmitBtn" class="btn btn-primary w-100 fw-bold py-2 mb-3">লগইন করুন</button>
+    </form>
+    <div class="text-center">
+      <small class="text-muted" id="authToggleText">অ্যাকাউন্ট নেই? <a href="#" id="authToggleBtn" class="fw-bold text-decoration-none">রেজিস্ট্রেশন করুন</a></small>
+    </div>
+  </div>
 </div>
 
-<div class="container-fluid px-md-4">
-
-  <!-- Summary Widgets -->
-  <div class="row g-3 mb-4 text-center">
-    <div class="col-6 col-lg-3">
-      <div class="card card-custom p-3 bg-white stat-card stat-in">
-        <div class="text-muted small fw-bold"><i class="fa-solid fa-arrow-down-long text-success me-1"></i> মোট জমা / বিক্রি</div>
-        <h4 class="text-success fw-bold mt-2 mb-0" id="totalIn">৳ 0.00</h4>
+<!-- Main Dashboard Section (Hidden until Logged In) -->
+<div id="dashboardSection" style="display: none;">
+  
+  <!-- Banner Header -->
+  <div class="header-banner mb-4">
+    <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
+      <div>
+        <h3 class="fw-bold mb-0"><i class="fa-solid fa-cash-register me-2"></i>দোকানের ডিজিটাল ক্যাশ বুক</h3>
+        <p class="mb-0 opacity-75 small">সহজ, নিখুঁত ও নিরাপদ দৈনিক লেনদেনের হিসাব</p>
       </div>
-    </div>
-    <div class="col-6 col-lg-3">
-      <div class="card card-custom p-3 bg-white stat-card stat-out">
-        <div class="text-muted small fw-bold"><i class="fa-solid fa-arrow-up-long text-danger me-1"></i> মোট খরচ / ক্যাশ-আউট</div>
-        <h4 class="text-danger fw-bold mt-2 mb-0" id="totalOut">৳ 0.00</h4>
-      </div>
-    </div>
-    <div class="col-6 col-lg-3">
-      <div class="card card-custom p-3 bg-white stat-card stat-profit">
-        <div class="text-muted small fw-bold"><i class="fa-solid fa-chart-line text-primary me-1"></i> মোট নিট লাভ</div>
-        <h4 class="text-primary fw-bold mt-2 mb-0" id="totalProfit">৳ 0.00</h4>
-      </div>
-    </div>
-    <div class="col-6 col-lg-3">
-      <div class="card card-custom p-3 bg-white stat-card stat-count">
-        <div class="text-muted small fw-bold"><i class="fa-solid fa-receipt text-secondary me-1"></i> মোট লেনদেন সংখ্যা</div>
-        <h4 class="text-dark fw-bold mt-2 mb-0" id="totalCount">0</h4>
+      <div class="d-flex align-items-center gap-2">
+        <span id="userDisplayEmail" class="badge bg-light text-dark d-none d-md-inline-block"></span>
+        <button onclick="logout()" class="btn btn-outline-light btn-sm fw-bold">
+          <i class="fa-solid fa-right-from-bracket me-1"></i> লগআউট
+        </button>
       </div>
     </div>
   </div>
 
-  <div class="row">
-    <!-- Entry Form -->
-    <div class="col-lg-4 mb-4">
-      <div class="card card-custom p-4">
-        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>নতুন এন্ট্রি যুক্ত করুন</h5>
-        <form id="transactionForm">
-          <div class="mb-3">
-            <label class="form-label fw-semibold">খাত / বিভাগ</label>
-            <select id="category" class="form-select shadow-sm" required>
-              <option value="Mobile Banking">মোবাইল ব্যাংকিং (বিকাশ/নগদ/রকেট)</option>
-              <option value="Print & Photo">প্রিন্ট ও ফটোকপি</option>
-              <option value="Stationery">স্টেশনারি পণ্য</option>
-              <option value="Expense">অন্যান্য খরচ</option>
-            </select>
-          </div>
+  <div class="container-fluid px-md-4">
 
-          <div class="mb-3">
-            <label class="form-label fw-semibold">লেনদেনের ধরন</label>
-            <select id="type" class="form-select shadow-sm" required>
-              <option value="Cash In">ক্যাশ-ইন / জমা (বিক্রি)</option>
-              <option value="Cash Out">ক্যাশ-আউট / খরচ</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label fw-semibold">বিবরণ / কাস্টমার নোট</label>
-            <input type="text" id="description" class="form-control shadow-sm" placeholder="যেমন: ১০ কপি ফটোকপি / বিকাশ ক্যাশ-আউট" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label fw-semibold">পরিমাণ (টাকা)</label>
-            <input type="number" id="amount" class="form-control shadow-sm" placeholder="0.00" min="0" step="any" required>
-          </div>
-
-          <div class="mb-4">
-            <label class="form-label fw-semibold">কমিশন / নিট লাভ (যদি থাকে)</label>
-            <input type="number" id="profit" class="form-control shadow-sm" placeholder="0.00" value="0" min="0" step="any">
-          </div>
-
-          <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2">
-            <i class="fa-solid fa-floppy-disk me-1"></i> এন্ট্রি সংরক্ষণ করুন
-          </button>
-        </form>
+    <!-- Summary Widgets -->
+    <div class="row g-3 mb-4 text-center">
+      <div class="col-6 col-lg-3">
+        <div class="card card-custom p-3 bg-white stat-card stat-in">
+          <div class="text-muted small fw-bold"><i class="fa-solid fa-arrow-down-long text-success me-1"></i> মোট জমা / বিক্রি</div>
+          <h4 class="text-success fw-bold mt-2 mb-0" id="totalIn">৳ 0.00</h4>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card card-custom p-3 bg-white stat-card stat-out">
+          <div class="text-muted small fw-bold"><i class="fa-solid fa-arrow-up-long text-danger me-1"></i> মোট খরচ / ক্যাশ-আউট</div>
+          <h4 class="text-danger fw-bold mt-2 mb-0" id="totalOut">৳ 0.00</h4>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card card-custom p-3 bg-white stat-card stat-profit">
+          <div class="text-muted small fw-bold"><i class="fa-solid fa-chart-line text-primary me-1"></i> মোট নিট লাভ</div>
+          <h4 class="text-primary fw-bold mt-2 mb-0" id="totalProfit">৳ 0.00</h4>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card card-custom p-3 bg-white stat-card stat-count">
+          <div class="text-muted small fw-bold"><i class="fa-solid fa-receipt text-secondary me-1"></i> মোট লেনদেন সংখ্যা</div>
+          <h4 class="text-dark fw-bold mt-2 mb-0" id="totalCount">0</h4>
+        </div>
       </div>
     </div>
 
-    <!-- Data Table & Controls -->
-    <div class="col-lg-8">
-      <div class="table-container mb-4">
-        
-        <!-- Search & Excel Controls -->
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-          <div class="d-flex gap-2 align-items-center">
-            <input type="text" id="searchInput" onkeyup="filterData()" class="form-control form-control-sm shadow-sm" placeholder="🔍 বিবরণ বা বিভাগ খুঁজুন...">
-          </div>
+    <div class="row">
+      <!-- Entry Form -->
+      <div class="col-lg-4 mb-4">
+        <div class="card card-custom p-4">
+          <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-pen-to-square me-2 text-primary"></i>নতুন এন্ট্রি যুক্ত করুন</h5>
+          <form id="transactionForm">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">খাত / বিভাগ</label>
+              <select id="category" class="form-select shadow-sm" required>
+                <option value="Mobile Banking">মোবাইল ব্যাংকিং (বিকাশ/নগদ/রকেট)</option>
+                <option value="Print & Photo">প্রিন্ট ও ফটোকপি</option>
+                <option value="Stationery">স্টেশনারি পণ্য</option>
+                <option value="Expense">অন্যান্য খরচ</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">লেনদেনের ধরন</label>
+              <select id="type" class="form-select shadow-sm" required>
+                <option value="Cash In">ক্যাশ-ইন / জমা (বিক্রি)</option>
+                <option value="Cash Out">ক্যাশ-আউট / খরচ</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">বিবরণ / কাস্টমার নোট</label>
+              <input type="text" id="description" class="form-control shadow-sm" placeholder="যেমন: ১০ কপি ফটোকপি / বিকাশ ক্যাশ-আউট" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">পরিমাণ (টাকা)</label>
+              <input type="number" id="amount" class="form-control shadow-sm" placeholder="0.00" min="0" step="any" required>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-semibold">কমিশন / নিট লাভ (যদি থাকে)</label>
+              <input type="number" id="profit" class="form-control shadow-sm" placeholder="0.00" value="0" min="0" step="any">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2">
+              <i class="fa-solid fa-floppy-disk me-1"></i> এন্ট্রি সংরক্ষণ করুন
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Data Table & Controls -->
+      <div class="col-lg-8">
+        <div class="table-container mb-4">
           
-          <div class="d-flex gap-2">
-            <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
-              <i class="fa-solid fa-file-excel me-1"></i> Excel ডাউনলোড
-            </button>
-            <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;" onchange="importFromExcel(event)">
-            <button onclick="document.getElementById('excelFileInput').click()" class="btn btn-outline-primary btn-sm fw-bold">
-              <i class="fa-solid fa-file-import me-1"></i> Excel আপলোড
-            </button>
+          <!-- Search & Excel Controls -->
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div class="d-flex gap-2 align-items-center">
+              <input type="text" id="searchInput" onkeyup="filterData()" class="form-control form-control-sm shadow-sm" placeholder="🔍 বিবরণ বা বিভাগ খুঁজুন...">
+            </div>
+            
+            <div class="d-flex gap-2">
+              <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
+                <i class="fa-solid fa-file-excel me-1"></i> Excel ডাউনলোড
+              </button>
+              <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;" onchange="importFromExcel(event)">
+              <button onclick="document.getElementById('excelFileInput').click()" class="btn btn-outline-primary btn-sm fw-bold">
+                <i class="fa-solid fa-file-import me-1"></i> Excel আপলোড
+              </button>
+            </div>
           </div>
-        </div>
 
-        <!-- Table -->
-        <div class="table-responsive">
-          <table class="table table-hover align-middle" id="transactionTable">
-            <thead class="table-light">
-              <tr>
-                <th>তারিখ ও সময়</th>
-                <th>বিভাগ</th>
-                <th>বিবরণ</th>
-                <th>ধরন</th>
-                <th>পরিমাণ</th>
-                <th>লাভ</th>
-                <th class="text-center">অ্যাকশন</th>
-              </tr>
-            </thead>
-            <tbody id="tableBody">
-              <!-- JS Populated -->
-            </tbody>
-          </table>
-        </div>
+          <!-- Table -->
+          <div class="table-responsive">
+            <table class="table table-hover align-middle" id="transactionTable">
+              <thead class="table-light">
+                <tr>
+                  <th>তারিখ ও সময়</th>
+                  <th>বিভাগ</th>
+                  <th>বিবরণ</th>
+                  <th>ধরন</th>
+                  <th>পরিমাণ</th>
+                  <th>লাভ</th>
+                  <th class="text-center">অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <!-- JS Populated -->
+              </tbody>
+            </table>
+          </div>
 
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Firebase SDKs -->
+<!-- Firebase SDKs (App, Auth, and Database) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
@@ -199,24 +244,76 @@
     measurementId: "G-WBKJLWM3HD"
   };
 
-  let db;
-  try {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.database();
-  } catch (e) {
-    console.warn("Firebase Init Error:", e);
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.database();
+
+  let currentUser = null;
+  let transactions = [];
+  let isSignUpMode = false;
+
+  // Authentication Observer (লগইন স্টেট চেক করা)
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      currentUser = user;
+      document.getElementById('authSection').style.display = 'none';
+      document.getElementById('dashboardSection').style.display = 'block';
+      document.getElementById('userDisplayEmail').innerText = user.email;
+      syncWithFirebase();
+    } else {
+      currentUser = null;
+      document.getElementById('authSection').style.display = 'block';
+      document.getElementById('dashboardSection').style.display = 'none';
+    }
+  });
+
+  // Toggle Between Login & Sign Up
+  const authToggleBtn = document.getElementById('authToggleBtn');
+  authToggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    isSignUpMode = !isSignUpMode;
+    document.getElementById('authTitle').innerText = isSignUpMode ? "রেজিস্ট্রেশন করুন" : "লগইন করুন";
+    document.getElementById('authSubmitBtn').innerText = isSignUpMode ? "রেজিস্টার করুন" : "লগইন করুন";
+    document.getElementById('authToggleText').innerHTML = isSignUpMode 
+      ? 'ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="#" id="authToggleBtn" class="fw-bold text-decoration-none">লগইন করুন</a>'
+      : 'অ্যাকাউন্ট নেই? <a href="#" id="authToggleBtn" class="fw-bold text-decoration-none">রেজিস্ট্রেশন করুন</a>';
+    
+    // Re-bind event after text change
+    document.getElementById('authToggleBtn').addEventListener('click', arguments.callee);
+  });
+
+  // Handle Auth Form Submission
+  document.getElementById('authForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+    const errorDiv = document.getElementById('authError');
+    errorDiv.style.display = 'none';
+
+    if (isSignUpMode) {
+      auth.createUserWithEmailAndPassword(email, password)
+        .catch(error => {
+          errorDiv.style.display = 'block';
+          errorDiv.innerText = "ত্রুটি: " + error.message;
+        });
+    } else {
+      auth.signInWithEmailAndPassword(email, password)
+        .catch(error => {
+          errorDiv.style.display = 'block';
+          errorDiv.innerText = "লগইন ব্যর্থ হয়েছে! সঠিক ইমেইল ও পাসওয়ার্ড দিন।";
+        });
+    }
+  });
+
+  // Logout Function
+  function logout() {
+    auth.signOut();
   }
 
-  let transactions = JSON.parse(localStorage.getItem('shop_transactions')) || [];
-
-  window.onload = () => {
-    renderData(transactions);
-    syncWithFirebase();
-  };
-
-  // ২. Form Submit
+  // ২. Form Submit (Transaction Entry)
   document.getElementById('transactionForm').addEventListener('submit', (e) => {
     e.preventDefault();
+    if (!currentUser) return;
 
     const entry = {
       id: Date.now().toString(),
@@ -229,22 +326,12 @@
       profit: Number(parseFloat(document.getElementById('profit').value).toFixed(2)) || 0
     };
 
-    if (db) {
-      db.ref("transactions/" + entry.id).set(entry);
-    } else {
-      transactions.unshift(entry);
-      saveToLocal();
-    }
-
+    // নির্দিষ্ট ব্যবহারকারীর পাথ (users/userId/transactions) এ সেভ হবে
+    db.ref(`users/${currentUser.uid}/transactions/${entry.id}`).set(entry);
     document.getElementById('transactionForm').reset();
   });
 
-  function saveToLocal() {
-    localStorage.setItem('shop_transactions', JSON.stringify(transactions));
-    renderData(transactions);
-  }
-
-  // ৩. Render Function (নির্ভুল হিসাব নিশ্চিতকরণ)
+  // ৩. Render Function
   function renderData(dataList) {
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = '';
@@ -289,26 +376,23 @@
   // ৪. ডিলিট সার্ভিস
   function deleteEntry(id) {
     if (confirm("আপনি কি নিশ্চিত এই হিসাবটি মুছে ফেলতে চান?")) {
-      if (db) {
-        db.ref("transactions/" + id).remove();
-      } else {
-        transactions = transactions.filter(item => item.id !== id);
-        saveToLocal();
+      if (currentUser) {
+        db.ref(`users/${currentUser.uid}/transactions/${id}`).remove();
       }
     }
   }
 
   // ৫. Firebase Realtime Sync
   function syncWithFirebase() {
-    if (db) {
-      db.ref("transactions").on('value', (snapshot) => {
+    if (currentUser) {
+      db.ref(`users/${currentUser.uid}/transactions`).on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
           transactions = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
         } else {
           transactions = [];
         }
-        saveToLocal();
+        renderData(transactions);
       });
     }
   }
@@ -348,7 +432,7 @@
   // ৮. Excel Import
   function importFromExcel(event) {
     const file = event.target.files[0];
-    if (!file) return;
+    if (!file || !currentUser) return;
 
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -370,7 +454,7 @@
             amount: parseFloat(row["পরিমাণ (টাকা)"]) || 0,
             profit: parseFloat(row["লাভ (টাকা)"]) || 0
           };
-          if (db) db.ref("transactions/" + id).set(newEntry);
+          db.ref(`users/${currentUser.uid}/transactions/${id}`).set(newEntry);
         });
         alert("এক্সেল থেকে সফলভাবে যুক্ত করা হয়েছে!");
       }
