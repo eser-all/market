@@ -317,14 +317,18 @@
   document.getElementById('authForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     toggleLoader(true);
+    
+    const errorEl = document.getElementById('authError');
+    errorEl.style.display = 'none';
+
     try {
       await _auth.signInWithEmailAndPassword(
         document.getElementById('authEmail').value,
         document.getElementById('authPassword').value
       );
     } catch (e) {
-      document.getElementById('authError').style.display = 'block';
-      document.getElementById('authError').innerText = "অথেনটিকেশন ত্রুটি: " + e.message;
+      errorEl.style.display = 'block';
+      errorEl.innerText = "পাসওয়ার্ডটি ভুল হয়েছে!";
     } finally {
       toggleLoader(false);
     }
@@ -394,7 +398,6 @@
     let totalIn = 0, totalOut = 0, totalProfit = 0;
     let todayIn = 0, todayProfit = 0;
 
-    // Get Today Date in MM/DD/YYYY format for matching
     const todayStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
     records.forEach((item) => {
@@ -408,7 +411,6 @@
       if (item.type === 'Cash Out') totalOut += amt;
       totalProfit += prf;
 
-      // Calculate Today's In & Profit based on cache data
       const itemDateStr = item.date.split(',')[0].trim();
       if (itemDateStr === todayStr) {
         if (item.type === 'Cash In') todayIn += amt;
@@ -496,15 +498,14 @@
     }
   }
 
-  // Text & Date Search Filter Logic
   function _0x7b1c() {
     const q = document.getElementById('searchInput').value.toLowerCase();
-    const selectedDate = document.getElementById('dateFilter').value; // YYYY-MM-DD
+    const selectedDate = document.getElementById('dateFilter').value;
     
     let targetFormattedDate = "";
     if (selectedDate) {
       const parts = selectedDate.split('-');
-      targetFormattedDate = `${parts[1]}/${parts[2]}/${parts[0]}`; // Convert to MM/DD/YYYY
+      targetFormattedDate = `${parts[1]}/${parts[2]}/${parts[0]}`;
     }
 
     const filtered = _cache.filter(item => {
