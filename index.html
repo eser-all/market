@@ -49,7 +49,7 @@
     }
     .app-footer span { color: #00d2ff; }
 
-    /* প্রিন্ট সেটিংস: শুধুমাত্র ১ টি কপি এবং পরিষ্কার পেজ সাইজ */
+    /* প্রিন্ট সেটিংস: শুধুমাত্র ১টি কপি প্রিন্ট হবে */
     @media print {
       @page {
         size: auto;
@@ -285,16 +285,20 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div id="printableReceipt" class="p-3 border rounded bg-light">
-          <div class="text-center mb-3">
+        <div id="printableReceipt" class="p-3 border rounded bg-light text-center">
+          <div class="mb-3">
             <h5 class="fw-bold mb-0">ডিজিটাল ক্যাশ বুক</h5>
             <small class="text-muted">পেমেন্ট স্লিপ ও টোকেন</small>
             <hr class="my-2">
           </div>
-          <p class="mb-1"><strong>তারিখ:</strong> <span id="rDate"></span></p>
-          <p class="mb-1"><strong>বিভাগ:</strong> <span id="rCategory"></span></p>
-          <p class="mb-1"><strong>বিবরণ:</strong> <span id="rDesc"></span></p>
-          <p class="mb-1"><strong>পরিমাণ:</strong> ৳ <span id="rAmount"></span></p>
+          <div class="text-start">
+            <p class="mb-1"><strong>তারিখ:</strong> <span id="rDate"></span></p>
+            <p class="mb-1"><strong>বিভাগ:</strong> <span id="rCategory"></span></p>
+            <p class="mb-1"><strong>বিবরণ:</strong> <span id="rDesc"></span></p>
+            <p class="mb-1"><strong>পরিমাণ:</strong> ৳ <span id="rAmount"></span></p>
+          </div>
+          <hr class="my-2">
+          <p class="fw-bold mb-0 text-success mt-2">ধন্যবাদ, আবার আসবেন</p>
         </div>
       </div>
       <div class="modal-footer d-flex justify-content-between">
@@ -674,7 +678,6 @@
     window.open(waUrl, '_blank');
   }
 
-  // ১ টি কপি প্রিন্ট করার জন্য ফায়ার ফাংশন
   function printReceipt() {
     window.print();
   }
