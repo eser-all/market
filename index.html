@@ -49,7 +49,6 @@
     }
     .app-footer span { color: #00d2ff; }
 
-    /* প্রিন্ট সেটিংস: শুধুমাত্র ১টি কপি প্রিন্ট হবে */
     @media print {
       @page {
         size: auto;
@@ -181,7 +180,7 @@
 
               <div class="mb-3">
                 <label class="form-label fw-semibold">গ্রাহকের হোয়াটসঅ্যাপ নম্বর (ঐচ্ছিক)</label>
-                <input type="text" id="customerPhone" class="form-control shadow-sm" placeholder="01712345678">
+                <input type="text" id="customerPhone" class="form-control shadow-sm" placeholder="01712345678 (না দিলেও চলবে)">
               </div>
 
               <div class="mb-3">
@@ -383,7 +382,6 @@
       document.getElementById('dashboardSection').style.display = 'block';
       document.getElementById('userDisplayEmail').innerText = _user.email;
       _0x3a12();
-      _0x9b3f();
     } else {
       if(_sessionRef) _sessionRef.off();
       _user = null;
@@ -429,6 +427,7 @@
     const customerPhone = document.getElementById('customerPhone').value.trim();
     const rawDesc = document.getElementById('description').value;
     const rawAmount = Number(parseFloat(document.getElementById('amount').value).toFixed(2)) || 0;
+    const rawProfit = Number(parseFloat(document.getElementById('profit').value).toFixed(2)) || 0;
 
     toggleLoader(true);
 
@@ -437,199 +436,84 @@
       hour: '2-digit', minute: '2-digit', hour12: true 
     });
 
-    const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
-    const uniqueTxId = newTxRef.key;
-
-    const payload = {
-      id: uniqueTxId,
-      date: englishDate,
-      timestamp: Date.now(),
-      category: category,
-      productName: category === 'Stationery' ? productName : '',
-      quantity: category === 'Stationery' ? qty : 0,
-      type: type,
-      description: btoa(unescape(encodeURIComponent(rawDesc))),
-      amount: rawAmount,
-      profit: Number(parseFloat(document.getElementById('profit').value).toFixed(2)) || 0
-    };
-
     try {
-      if (category === 'Stationery' && productName) {
-        const stockRef = _db.ref(`users/${_user.uid}/inventory/${productName}`);
-        const snap = await stockRef.once('value');
-        let currentStock = snap.val() || 0;
+      const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
+      const uniqueTxId = newTxRef.key;
 
-        if (type === 'Cash Out') {
-          currentStock += qty;
-        } else if (type === 'Cash In') {
-          currentStock -= qty;
-        }
-        await stockRef.set(currentStock);
-      }
+      const payload = {
+        id: uniqueTxId,
+        date: englishDate,
+        timestamp: Date.now(),
+        category: category,
+        productName: category === 'Stationery' ? productName : '',
+        quantity: category === 'Stationery' ? qty : 0,
+        customerPhone: customerPhone,
+        type: type,
+        description: btoa(unescape(encodeURIComponent(rawDesc))),
+        amount: rawAmount,
+        profit: rawProfit
+      };
 
       await newTxRef.set(payload);
 
       currentReceiptData = {
         date: englishDate,
         category: category,
-        description: rawDesc,
+        desc: rawDesc,
         amount: rawAmount,
         phone: customerPhone
       };
 
-      document.getElementById('rDate').innerText = englishDate;
-      document.getElementById('rCategory').innerText = category;
-      document.getElementById('rDesc').innerText = rawDesc;
-      document.getElementById('rAmount').innerText = rawAmount.toFixed(2);
+      showReceiptModal(currentReceiptData);
 
       document.getElementById('transactionForm').reset();
       toggleStationeryFields();
 
-      const receiptModal = new bootstrap.Modal(document.getElementById('receiptModal'));
-      receiptModal.show();
-
-    } catch(err) {
-      alert("ত্রুটি: " + err.message);
+    } catch (error) {
+      alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + error.message);
     } finally {
       toggleLoader(false);
     }
   });
 
-  // ডাটা রিডার: আগের সকল ডাটা লোড করবে
   function _0x3a12() {
+    if (!_user) return;
     _db.ref(`users/${_user.uid}/transactions`).on('value', (snap) => {
       _cache = [];
-      if (snap.exists()) {
-        snap.forEach((child) => {
-          let item = child.val();
-          
-          if (!item.id) item.id = child.key;
-
-          let cat = item.category || item.cat || 'General';
-          let type = item.type || item.trxType || 'Cash In';
-          let amt = (item.amount !== undefined) ? item.amount : (item.amt || 0);
-          let prf = (item.profit !== undefined) ? item.profit : (item.prf || 0);
-          let date = item.date || item.time || new Date().toLocaleDateString('en-US');
-          let desc = item.description || item.desc || '';
-
-          _cache.unshift({
-            id: item.id,
-            category: cat,
-            type: type,
-            amount: Number(amt) || 0,
-            profit: Number(prf) || 0,
-            date: date,
-            description: desc,
-            productName: item.productName || '',
-            quantity: item.quantity || 0
-          });
+      const val = snap.val();
+      if (val) {
+        Object.keys(val).forEach(k => {
+          _cache.push(val[k]);
         });
+        _cache.sort((a, b) => b.timestamp - a.timestamp);
       }
       _0x7b1c();
     });
   }
 
-  function _0x9b3f() {
-    _db.ref(`users/${_user.uid}/inventory`).on('value', (snap) => {
-      const tbody = document.getElementById('inventoryTableBody');
-      tbody.innerHTML = '';
-      if (!snap.exists()) {
-        tbody.innerHTML = '<tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>';
-        return;
-      }
-      snap.forEach((child) => {
-        const name = child.key.toUpperCase();
-        const count = child.val();
-        let statusBadge = count > 5 ? '<span class="badge bg-success">স্টক পর্যাপ্ত</span>' : '<span class="badge bg-danger">স্টক সীমিত</span>';
-        tbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${count} Pcs</td><td>${statusBadge}</td></tr>`;
-      });
-    });
-  }
-
-  function _0x8c4b(records) {
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
-    let totalIn = 0, totalOut = 0, totalProfit = 0;
-    let todayIn = 0, todayProfit = 0;
-
-    const todayStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-
-    records.forEach((item) => {
-      const amt = Number(item.amount) || 0;
-      const prf = Number(item.profit) || 0;
-      const decodedDesc = safeDecode(item.description);
-
-      if (item.type === 'Cash In') totalIn += amt;
-      if (item.type === 'Cash Out') totalOut += amt;
-      totalProfit += prf;
-
-      const itemDateStr = String(item.date).split(',')[0].trim();
-      if (itemDateStr === todayStr) {
-        if (item.type === 'Cash In') todayIn += amt;
-        todayProfit += prf;
-      }
-
-      let badgeClass = 'badge-stationery';
-      if (item.category === 'Mobile Banking') badgeClass = 'badge-mfs';
-      else if (item.category === 'Print & Photo') badgeClass = 'badge-print';
-      else if (item.category === 'Expense') badgeClass = 'badge-expense';
-
-      let detailsDisplay = decodedDesc || 'N/A';
-      if (item.category === 'Stationery' && item.productName) {
-        detailsDisplay += ` <br><small class="text-primary fw-bold">[পণ্য: ${item.productName.toUpperCase()} | ${item.quantity || 1} পিস]</small>`;
-      }
-
-      let row = `
-        <tr>
-          <td><small class="text-muted fw-semibold">${item.date}</small></td>
-          <td><span class="badge ${badgeClass}">${item.category}</span></td>
-          <td>${detailsDisplay}</td>
-          <td><span class="${item.type === 'Cash In' ? 'text-success fw-bold' : 'text-danger fw-bold'}">${item.type}</span></td>
-          <td class="fw-bold">৳ ${amt.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-          <td class="${prf >= 0 ? 'text-primary' : 'text-danger'} fw-bold">৳ ${prf.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-          <td class="text-center">
-            <button onclick="_0x5d99('${item.id}')" class="btn btn-outline-danger btn-sm border-0"><i class="fa-solid fa-trash-can"></i></button>
-          </td>
-        </tr>
-      `;
-      tbody.innerHTML += row;
-    });
-
-    document.getElementById('todayIn').innerText = `৳ ${todayIn.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    document.getElementById('todayProfit').innerText = `৳ ${todayProfit.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    document.getElementById('totalIn').innerText = `৳ ${totalIn.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    document.getElementById('totalOut').innerText = `৳ ${totalOut.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    document.getElementById('totalProfit').innerText = `৳ ${totalProfit.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-  }
-
   function _0x7b1c() {
     const q = document.getElementById('searchInput').value.toLowerCase();
-    const d = document.getElementById('dateFilter').value;
-    
-    let formattedSelectedDate = "";
-    if (d) {
-      const parts = d.split('-');
-      formattedSelectedDate = `${parts[1]}/${parts[2]}/${parts[0]}`;
-    }
+    const dateVal = document.getElementById('dateFilter').value;
 
     _filteredCache = _cache.filter(item => {
-      const decodedDesc = safeDecode(item.description);
-      const cat = String(item.category || '').toLowerCase();
-      
-      const matchSearch = cat.includes(q) || 
-                          decodedDesc.toLowerCase().includes(q) || 
-                          (item.productName && item.productName.toLowerCase().includes(q));
+      const descText = safeDecode(item.description).toLowerCase();
+      const catText = (item.category || '').toLowerCase();
+      const phoneText = (item.customerPhone || '').toLowerCase();
+      const matchesQuery = descText.includes(q) || catText.includes(q) || phoneText.includes(q);
 
-      let matchDate = true;
-      if (formattedSelectedDate) {
-        const itemDatePart = String(item.date).split(',')[0].trim();
-        matchDate = (itemDatePart === formattedSelectedDate);
+      let matchesDate = true;
+      if (dateVal) {
+        const itemDate = new Date(item.timestamp);
+        const filterDate = new Date(dateVal);
+        matchesDate = itemDate.getFullYear() === filterDate.getFullYear() &&
+                      itemDate.getMonth() === filterDate.getMonth() &&
+                      itemDate.getDate() === filterDate.getDate();
       }
 
-      return matchSearch && matchDate;
+      return matchesQuery && matchesDate;
     });
 
-    _0x8c4b(_filteredCache);
+    _0x9b3f();
   }
 
   function clearDateFilter() {
@@ -637,74 +521,173 @@
     _0x7b1c();
   }
 
-  async function _0x5d99(id) {
-    if (confirm("আপনি কি নিশ্চিত যে এই রেকর্ডটি মুছে ফেলতে চান?")) {
+  function _0x9b3f() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    let totIn = 0, totOut = 0, totProfit = 0;
+    let todayIn = 0, todayProfit = 0;
+
+    const todayStr = new Date().toLocaleDateString('en-US');
+
+    let inventoryMap = {};
+
+    _cache.forEach(item => {
+      const isCashIn = item.type === 'Cash In';
+      const amt = Number(item.amount) || 0;
+      const prf = Number(item.profit) || 0;
+
+      if (isCashIn) totIn += amt;
+      else totOut += amt;
+      totProfit += prf;
+
+      const itemDateStr = new Date(item.timestamp).toLocaleDateString('en-US');
+      if (itemDateStr === todayStr) {
+        if (isCashIn) todayIn += amt;
+        todayProfit += prf;
+      }
+
+      if (item.category === 'Stationery' && item.productName) {
+        const pName = item.productName.toUpperCase();
+        if (!inventoryMap[pName]) inventoryMap[pName] = 0;
+        if (isCashIn) {
+          inventoryMap[pName] -= (Number(item.quantity) || 0);
+        } else {
+          inventoryMap[pName] += (Number(item.quantity) || 0);
+        }
+      }
+    });
+
+    document.getElementById('totalIn').innerText = `৳ ${totIn.toFixed(2)}`;
+    document.getElementById('totalOut').innerText = `৳ ${totOut.toFixed(2)}`;
+    document.getElementById('totalProfit').innerText = `৳ ${totProfit.toFixed(2)}`;
+    document.getElementById('todayIn').innerText = `৳ ${todayIn.toFixed(2)}`;
+    document.getElementById('todayProfit').innerText = `৳ ${todayProfit.toFixed(2)}`;
+
+    const invTbody = document.getElementById('inventoryTableBody');
+    invTbody.innerHTML = '';
+    const invKeys = Object.keys(inventoryMap);
+    if (invKeys.length === 0) {
+      invTbody.innerHTML = '<tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>';
+    } else {
+      invKeys.forEach(k => {
+        const qty = inventoryMap[k];
+        const statusBadge = qty <= 0 
+          ? '<span class="badge bg-danger">স্টক শেষ</span>' 
+          : '<span class="badge bg-success">পর্যাপ্ত</span>';
+        invTbody.innerHTML += `
+          <tr>
+            <td class="fw-semibold">${k}</td>
+            <td>${qty}</td>
+            <td>${statusBadge}</td>
+          </tr>`;
+      });
+    }
+
+    if (_filteredCache.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">কোনো রেকর্ড পাওয়া যায়নি</td></tr>';
+      return;
+    }
+
+    _filteredCache.forEach(item => {
+      let badgeClass = 'badge-mfs';
+      if (item.category === 'Print & Photo') badgeClass = 'badge-print';
+      else if (item.category === 'Stationery') badgeClass = 'badge-stationery';
+      else if (item.category === 'Expense') badgeClass = 'badge-expense';
+
+      const typeBadge = item.type === 'Cash In' 
+        ? '<span class="badge bg-success">ক্যাশ ইন</span>' 
+        : '<span class="badge bg-danger">ক্যাশ আউট</span>';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="small text-muted">${item.date || ''}</td>
+        <td><span class="badge ${badgeClass}">${item.category}</span></td>
+        <td>
+          <div class="fw-semibold">${safeDecode(item.description)}</div>
+          ${item.customerPhone ? `<small class="text-muted"><i class="fa-brands fa-whatsapp text-success me-1"></i>${item.customerPhone}</small>` : ''}
+          ${item.productName ? `<div class="small text-secondary">পণ্য: ${item.productName} (${item.quantity} Pcs)</div>` : ''}
+        </td>
+        <td>${typeBadge}</td>
+        <td class="fw-bold">৳ ${Number(item.amount || 0).toFixed(2)}</td>
+        <td class="fw-bold ${Number(item.profit || 0) >= 0 ? 'text-success' : 'text-danger'}">৳ ${Number(item.profit || 0).toFixed(2)}</td>
+        <td class="text-center">
+          <button onclick="deleteTx('${item.id}')" class="btn btn-outline-danger btn-sm" title="মুছে ফেলুন">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function deleteTx(id) {
+    if (!_user || !id) return;
+    if (confirm('আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান?')) {
       toggleLoader(true);
       try {
         await _db.ref(`users/${_user.uid}/transactions/${id}`).remove();
       } catch (e) {
-        alert("ডিলিট করতে সমস্যা হয়েছে: " + e.message);
+        alert('মুছে ফেলতে সমস্যা হয়েছে: ' + e.message);
       } finally {
         toggleLoader(false);
       }
     }
   }
 
-  function sendWhatsAppReceipt() {
-    if (!currentReceiptData) return;
-    
-    let phone = currentReceiptData.phone.replace(/[^0-9]/g, '');
-    if (!phone) {
-      alert("গ্রাহকের নম্বর দেওয়া হয়নি!");
+  function _0x1e8a() {
+    if (_filteredCache.length === 0) {
+      alert('এক্সপোর্ট করার মতো কোনো ডাটা নেই!');
       return;
     }
+    const exportData = _filteredCache.map(i => ({
+      'তারিখ': i.date,
+      'বিভাগ': i.category,
+      'বিবরণ': safeDecode(i.description),
+      'মোবাইল': i.customerPhone || '',
+      'টাইপ': i.type,
+      'পরিমাণ': i.amount,
+      'লাভ/ক্ষতি': i.profit
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Transactions");
+    XLSX.writeFile(wb, `CashBook_Report_${Date.now()}.xlsx`);
+  }
+
+  function showReceiptModal(data) {
+    document.getElementById('rDate').innerText = data.date;
+    document.getElementById('rCategory').innerText = data.category;
+    document.getElementById('rDesc').innerText = data.desc;
+    document.getElementById('rAmount').innerText = data.amount.toFixed(2);
     
-    if (phone.startsWith('0')) {
-      phone = '88' + phone;
-    }
-
-    const message = `
-🧾 *ডিজিটাল ক্যাশ বুক - ক্যাশ রিসিট*
-----------------------------------
-📅 *তারিখ:* ${currentReceiptData.date}
-🏷️ *ক্যাটাগরি:* ${currentReceiptData.category}
-📝 *বিবরণ:* ${currentReceiptData.description}
-💰 *পরিশোধিত মূল্য:* ৳ ${currentReceiptData.amount.toFixed(2)}
-----------------------------------
-ধন্যবাদ, আবার আসবেন!
-    `.trim();
-
-    const waUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
-    window.open(waUrl, '_blank');
+    const receiptModal = new bootstrap.Modal(document.getElementById('receiptModal'));
+    receiptModal.show();
   }
 
   function printReceipt() {
     window.print();
   }
 
-  function _0x1e8a() {
-    if (_filteredCache.length === 0) {
-      alert("এক্সপোর্ট করার জন্য কোনো ডাটা নেই!");
+  function sendWhatsAppReceipt() {
+    if (!currentReceiptData || !currentReceiptData.phone) {
+      alert('গ্রাহকের হোয়াটসঅ্যাপ নম্বর দেওয়া হয়নি!');
       return;
     }
-
-    const exportData = _filteredCache.map(item => {
-      return {
-        "Date": item.date,
-        "Category": item.category,
-        "Description": safeDecode(item.description),
-        "Type": item.type,
-        "Amount": item.amount,
-        "Profit": item.profit
-      };
-    });
-
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
-    XLSX.writeFile(workbook, `CashBook_Report_${Date.now()}.xlsx`);
+    let phone = currentReceiptData.phone.replace(/[^0-9]/g, '');
+    if (phone.startsWith('0')) {
+      phone = '88' + phone;
+    }
+    const text = `*ডিজিটাল ক্যাশ বুক - পেমেন্ট স্লিপ*\n\n` +
+                 `📅 তারিখ: ${currentReceiptData.date}\n` +
+                 `📂 বিভাগ: ${currentReceiptData.category}\n` +
+                 `📝 বিবরণ: ${currentReceiptData.desc}\n` +
+                 `💰 পরিমাণ: ৳ ${currentReceiptData.amount}\n\n` +
+                 `ধন্যবাদ, আবার আসবেন!`;
+    
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
   }
 </script>
-
 </body>
 </html>
