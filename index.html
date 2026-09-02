@@ -49,7 +49,7 @@
     }
     .app-footer span { color: #00d2ff; }
 
-    /* প্রিন্ট সেটিংস: শুধুমাত্র ১টি কপি প্রিন্ট হবে */
+    /* প্রিন্ট সেটিংস */
     @media print {
       @page {
         size: auto;
@@ -181,7 +181,7 @@
 
               <div class="mb-3">
                 <label class="form-label fw-semibold">গ্রাহকের হোয়াটসঅ্যাপ নম্বর (ঐচ্ছিক)</label>
-                <input type="text" id="customerPhone" class="form-control shadow-sm" placeholder="01712345678">
+                <input type="text" id="customerPhone" class="form-control shadow-sm" placeholder="01712345678 (না দিলেও চলবে)">
               </div>
 
               <div class="mb-3">
@@ -330,7 +330,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  const _0x99a = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXNlYXBwLmNvbQ==", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI4NmEx", "Rz1XQktKTEdNM0hE"];
+  const _0x99a = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXNlYXBwLmNvbQ==", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydDRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI4NmEx", "Rz1XQktKTEdNM0hE"];
   const _0x3b = (idx) => atob(_0x99a[idx]);
 
   const _0x4d21 = {
@@ -495,7 +495,7 @@
     }
   });
 
-  // ডাটা রিডার: আগের সকল ডাটা লোড করবে
+  // আপডেট করা ডাটা ফেচিং মেথড (পুরনো ও নতুন ডাটার সামঞ্জস্য বজায় রাখার জন্য)
   function _0x3a12() {
     _db.ref(`users/${_user.uid}/transactions`).on('value', (snap) => {
       _cache = [];
@@ -503,25 +503,32 @@
         snap.forEach((child) => {
           let item = child.val();
           
-          if (!item.id) item.id = child.key;
-
+          let id = item.id || child.key;
           let cat = item.category || item.cat || 'General';
-          let type = item.type || item.trxType || 'Cash In';
-          let amt = (item.amount !== undefined) ? item.amount : (item.amt || 0);
-          let prf = (item.profit !== undefined) ? item.profit : (item.prf || 0);
-          let date = item.date || item.time || new Date().toLocaleDateString('en-US');
-          let desc = item.description || item.desc || '';
+          let type = item.type || item.trxType || item.transactionType || 'Cash In';
+          let amt = (item.amount !== undefined) ? item.amount : (item.amt !== undefined ? item.amt : 0);
+          let prf = (item.profit !== undefined) ? item.profit : (item.prf !== undefined ? item.prf : 0);
+          let date = item.date || item.timestamp || item.time || new Date().toLocaleDateString('en-US');
+          let desc = item.description || item.desc || item.note || '';
+
+          // তারিখ যদি সংখ্যায় (Timestamp) থাকে তবে তা স্ট্রিং এ রূপান্তর
+          if (typeof date === 'number') {
+            date = new Date(date).toLocaleString('en-US', { 
+              year: 'numeric', month: '2-digit', day: '2-digit', 
+              hour: '2-digit', minute: '2-digit', hour12: true 
+            });
+          }
 
           _cache.unshift({
-            id: item.id,
+            id: id,
             category: cat,
             type: type,
             amount: Number(amt) || 0,
             profit: Number(prf) || 0,
             date: date,
             description: desc,
-            productName: item.productName || '',
-            quantity: item.quantity || 0
+            productName: item.productName || item.prodName || '',
+            quantity: item.quantity || item.qty || 0
           });
         });
       }
@@ -651,11 +658,14 @@
   }
 
   function sendWhatsAppReceipt() {
-    if (!currentReceiptData) return;
+    if (!currentReceiptData || !currentReceiptData.phone) {
+      alert("গ্রাহকের হোয়াটসঅ্যাপ নম্বর দেওয়া হয়নি!");
+      return;
+    }
     
     let phone = currentReceiptData.phone.replace(/[^0-9]/g, '');
     if (!phone) {
-      alert("গ্রাহকের নম্বর দেওয়া হয়নি!");
+      alert("সঠিক নম্বর প্রবেশ করান!");
       return;
     }
     
