@@ -120,7 +120,7 @@
         </div>
         <div class="col-6 col-lg-2">
           <div class="card card-custom p-3 bg-white stat-card stat-out">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-up text-danger me-1"></i> সর্বমোট খরচ / ক্রয়</div>
+            <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-up text-danger me-1"></i> সর্বমোট খরচ / ক্রয়</div>
             <h5 class="text-danger fw-bold mt-2 mb-0" id="totalOut">৳ 0.00</h5>
           </div>
         </div>
@@ -164,13 +164,13 @@
                 <label class="form-label fw-semibold">লেনদেনের ধরন</label>
                 <select id="type" class="form-select shadow-sm" required>
                   <option value="Cash In">ক্যাশ-ইন / বিক্রি</option>
-                  <option value="Cash Out">ক্যাশ-আউট / খরচ (মাল ক্রয়)</option>
+                  <option value="Cash Out">ক্যাশ-আউট / খরচ (মাল ক্রয়)</option>
                 </select>
               </div>
 
               <div class="mb-3">
                 <label class="form-label fw-semibold">বিবরণ / নোটিং</label>
-                <input type="text" id="description" class="form-control shadow-sm" placeholder="যেমন: ১০ কপি ফটোকপি / কলম ক্রয়" required>
+                <input type="text" id="description" class="form-control shadow-sm" placeholder="যেমন: ১০ কপি ফটোকপি / কলম ক্রয়" required>
               </div>
 
               <div class="mb-3">
@@ -205,7 +205,7 @@
                   </tr>
                 </thead>
                 <tbody id="inventoryTableBody">
-                  <tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>
+                  <tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>
                 </tbody>
               </table>
             </div>
@@ -278,6 +278,7 @@
 
   let _user = null;
   let _cache = [];
+  let _filteredCache = []; // ফিল্টার করা ডাটা রাখার জন্য নতুন ভেরিয়েবল
   let _sessionRef = null;
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
@@ -479,7 +480,7 @@
             `;
           });
         } else {
-          tbody.innerHTML = '<tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>';
         }
       });
     }
@@ -508,7 +509,7 @@
       targetFormattedDate = `${parts[1]}/${parts[2]}/${parts[0]}`;
     }
 
-    const filtered = _cache.filter(item => {
+    _filteredCache = _cache.filter(item => {
       let desc = item.description;
       try { desc = decodeURIComponent(escape(atob(item.description))); } catch(e){}
 
@@ -524,7 +525,7 @@
       return matchesText && matchesDate;
     });
 
-    _0x8c4b(filtered);
+    _0x8c4b(_filteredCache);
   }
 
   function clearDateFilter() {
@@ -532,12 +533,13 @@
     _0x7b1c();
   }
 
+  // ফিল্টার করা ডাটা Excel-এ এক্সপোর্ট করার আপডেট ফান্সন
   function _0x1e8a() {
-    if (_cache.length === 0) {
+    if (_filteredCache.length === 0) {
       alert("এক্সপোর্ট করার মতো কোনো ডাটা নেই!");
       return;
     }
-    const dataToExport = _cache.map(item => {
+    const dataToExport = _filteredCache.map(item => {
       let desc = item.description;
       try { desc = decodeURIComponent(escape(atob(item.description))); } catch(e){}
       return {
@@ -554,7 +556,7 @@
 
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "CashBook");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered_CashBook");
     XLSX.writeFile(workbook, `CashBook_Report_${Date.now()}.xlsx`);
   }
 </script>
