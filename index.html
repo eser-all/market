@@ -49,10 +49,23 @@
     }
     .app-footer span { color: #00d2ff; }
 
+    /* প্রিন্ট সেটিংস: শুধুমাত্র ১টি কপি প্রিন্ট হবে */
     @media print {
+      @page {
+        size: auto;
+        margin: 0;
+      }
       body * { visibility: hidden; }
       #printableReceipt, #printableReceipt * { visibility: visible; }
-      #printableReceipt { position: absolute; left: 0; top: 0; width: 100%; }
+      #printableReceipt { 
+        position: absolute; 
+        left: 0; 
+        top: 0; 
+        width: 100%; 
+        padding: 15px; 
+        page-break-after: avoid;
+        page-break-inside: avoid;
+      }
     }
   </style>
 </head>
@@ -272,28 +285,31 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div id="printableReceipt" class="p-3 border rounded bg-light">
-          <div class="text-center mb-3">
+        <div id="printableReceipt" class="p-3 border rounded bg-light text-center">
+          <div class="mb-3">
             <h5 class="fw-bold mb-0">ডিজিটাল ক্যাশ বুক</h5>
             <small class="text-muted">পেমেন্ট স্লিপ ও টোকেন</small>
             <hr class="my-2">
           </div>
-          <p class="mb-1"><strong>তারিখ:</strong> <span id="rDate"></span></p>
-          <p class="mb-1"><strong>বিভাগ:</strong> <span id="rCategory"></span></p>
-          <p class="mb-1"><strong>বিবরণ:</strong> <span id="rDesc"></span></p>
-          <p class="mb-1"><strong>পরিমাণ:</strong> ৳ <span id="rAmount"></span></p>
+          <div class="text-start">
+            <p class="mb-1"><strong>তারিখ:</strong> <span id="rDate"></span></p>
+            <p class="mb-1"><strong>বিভাগ:</strong> <span id="rCategory"></span></p>
+            <p class="mb-1"><strong>বিবরণ:</strong> <span id="rDesc"></span></p>
+            <p class="mb-1"><strong>পরিমাণ:</strong> ৳ <span id="rAmount"></span></p>
+          </div>
+          <hr class="my-2">
+          <p class="fw-bold mb-0 text-success mt-2">ধন্যবাদ, আবার আসবেন</p>
         </div>
       </div>
       <div class="modal-footer d-flex justify-content-between">
         <div>
           <button type="button" onclick="printReceipt()" class="btn btn-outline-dark me-1">
-            <i class="fa-solid fa-print me-1"></i> পস প্রিন্ট (Print)
+            <i class="fa-solid fa-print me-1"></i> পস প্রিন্ট (১ কপি)
           </button>
           <button type="button" onclick="sendWhatsAppReceipt()" class="btn btn-success">
             <i class="fa-brands fa-whatsapp me-1"></i> WhatsApp
           </button>
         </div>
-        <!-- এড়িয়ে যান (Skip) বাটন -->
         <button type="button" class="btn btn-secondary fw-semibold" data-bs-dismiss="modal">
           <i class="fa-solid fa-forward me-1"></i> এড়িয়ে যান
         </button>
@@ -340,7 +356,6 @@
     document.getElementById('stationeryFields').style.display = category === 'Stationery' ? 'block' : 'none';
   }
 
-  // নিরাপদ বিবরণ ডিকোডার (Base64 ডিকোড অথবা প্লেইন টেক্সট সাপোর্ট)
   function safeDecode(str) {
     if (!str) return '';
     try {
@@ -480,7 +495,7 @@
     }
   });
 
-  // **ডাটা রিডার: আগের সব ফরম্যাটের ডাটা সঠিক উপায়ে রিড করবে**
+  // ডাটা রিডার: আগের সকল ডাটা লোড করবে
   function _0x3a12() {
     _db.ref(`users/${_user.uid}/transactions`).on('value', (snap) => {
       _cache = [];
@@ -488,10 +503,8 @@
         snap.forEach((child) => {
           let item = child.val();
           
-          // ID অনুপস্থিত থাকলে key কে ID হিসেবে ব্যবহার করবে
           if (!item.id) item.id = child.key;
 
-          // আগের সমস্ত নাম কাঠামোর (cat, amt, prf, time, trxType) ব্যাকওয়ার্ড কমপ্যাটিবিলিটি
           let cat = item.category || item.cat || 'General';
           let type = item.type || item.trxType || 'Cash In';
           let amt = (item.amount !== undefined) ? item.amount : (item.amt || 0);
