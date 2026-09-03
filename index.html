@@ -355,15 +355,6 @@
     document.getElementById('stationeryFields').style.display = category === 'Stationery' ? 'block' : 'none';
   }
 
-  function safeDecode(str) {
-    if (!str) return '';
-    try {
-      return decodeURIComponent(escape(atob(str)));
-    } catch (e) {
-      return str;
-    }
-  }
-
   _auth.onAuthStateChanged(async (u) => {
     toggleLoader(true);
     if (u) {
@@ -449,28 +440,21 @@
         quantity: category === 'Stationery' ? qty : 0,
         customerPhone: customerPhone,
         type: type,
-        description: btoa(unescape(encodeURIComponent(rawDesc))),
+        description: rawDesc,
         amount: rawAmount,
         profit: rawProfit
       };
 
       await newTxRef.set(payload);
 
-      currentReceiptData = {
-        date: englishDate,
-        category: category,
-        desc: rawDesc,
-        amount: rawAmount,
-        phone: customerPhone
-      };
-
-      showReceiptModal(currentReceiptData);
-
       document.getElementById('transactionForm').reset();
       toggleStationeryFields();
 
-    } catch (error) {
-      alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + error.message);
+      currentReceiptData = payload;
+      showReceiptModal(payload);
+
+    } catch (err) {
+      alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + err.message);
     } finally {
       toggleLoader(false);
     }
@@ -492,28 +476,33 @@
   }
 
   function _0x7b1c() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
     const dateVal = document.getElementById('dateFilter').value;
 
     _filteredCache = _cache.filter(item => {
-      const descText = safeDecode(item.description).toLowerCase();
-      const catText = (item.category || '').toLowerCase();
-      const phoneText = (item.customerPhone || '').toLowerCase();
-      const matchesQuery = descText.includes(q) || catText.includes(q) || phoneText.includes(q);
-
-      let matchesDate = true;
-      if (dateVal) {
-        const itemDate = new Date(item.timestamp);
-        const filterDate = new Date(dateVal);
-        matchesDate = itemDate.getFullYear() === filterDate.getFullYear() &&
-                      itemDate.getMonth() === filterDate.getMonth() &&
-                      itemDate.getDate() === filterDate.getDate();
+      let matchSearch = true;
+      if (q) {
+        matchSearch = (item.description && item.description.toLowerCase().includes(q)) ||
+                      (item.category && item.category.toLowerCase().includes(q)) ||
+                      (item.productName && item.productName.toLowerCase().includes(q)) ||
+                      (item.customerPhone && item.customerPhone.includes(q)) ||
+                      (item.amount && item.amount.toString().includes(q));
       }
 
-      return matchesQuery && matchesDate;
+      let matchDate = true;
+      if (dateVal) {
+        const itemDateObj = new Date(item.timestamp);
+        const yyyy = itemDateObj.getFullYear();
+        const mm = String(itemDateObj.getMonth() + 1).padStart(2, '0');
+        const dd = String(itemDateObj.getDate()).padStart(2, '0');
+        const formattedItemDate = `${yyyy}-${mm}-${dd}`;
+        matchDate = (formattedItemDate === dateVal);
+      }
+
+      return matchSearch && matchDate;
     });
 
-    _0x9b3f();
+    renderUI();
   }
 
   function clearDateFilter() {
@@ -521,150 +510,152 @@
     _0x7b1c();
   }
 
-  function _0x9b3f() {
+  function renderUI() {
+    let totIn = 0;
+    let totOut = 0;
+    let tInToday = 0;
+    let tOutToday = 0;
+
+    const todayStr = new Date().toLocaleDateString('en-US');
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
 
-    let totIn = 0, totOut = 0, totProfit = 0;
-    let todayIn = 0, todayOut = 0;
+    const inventoryMap = {};
 
-    const todayStr = new Date().toLocaleDateString('en-US');
-
-    let inventoryMap = {};
-
-    // Filtered data calculation for dashboard cards
-    _filteredCache.forEach(item => {
-      const isCashIn = item.type === 'Cash In';
-      const amt = Number(item.amount) || 0;
-      const prf = Number(item.profit) || 0;
-
-      if (isCashIn) totIn += amt;
-      else totOut += amt;
-      totProfit += prf;
+    _cache.forEach(item => {
+      const amt = item.amount || 0;
+      if (item.type === 'Cash In') {
+        totIn += amt;
+      } else {
+        totOut += amt;
+      }
 
       const itemDateStr = new Date(item.timestamp).toLocaleDateString('en-US');
       if (itemDateStr === todayStr) {
-        if (isCashIn) todayIn += amt;
-        else todayOut += amt;
+        if (item.type === 'Cash In') tInToday += amt;
+        else tOutToday += amt;
       }
 
       if (item.category === 'Stationery' && item.productName) {
-        const pName = item.productName.toUpperCase();
+        const pName = item.productName;
         if (!inventoryMap[pName]) inventoryMap[pName] = 0;
-        if (isCashIn) {
-          inventoryMap[pName] -= (Number(item.quantity) || 0);
-        } else {
-          inventoryMap[pName] += (Number(item.quantity) || 0);
+        if (item.type === 'Cash Out') {
+          inventoryMap[pName] += (item.quantity || 0);
+        } else if (item.type === 'Cash In') {
+          inventoryMap[pName] -= (item.quantity || 0);
         }
       }
     });
 
+    // ** পরিবর্তন: সর্বমোট নিট লাভ/ক্ষতি = (সর্বমোট জমা - সর্বমোট খরচ) **
+    const netProfitLoss = totIn - totOut;
+
+    document.getElementById('todayIn').innerText = `৳ ${tInToday.toFixed(2)}`;
+    document.getElementById('todayOut').innerText = `৳ ${tOutToday.toFixed(2)}`;
     document.getElementById('totalIn').innerText = `৳ ${totIn.toFixed(2)}`;
     document.getElementById('totalOut').innerText = `৳ ${totOut.toFixed(2)}`;
-    document.getElementById('totalProfit').innerText = `৳ ${totProfit.toFixed(2)}`;
-    document.getElementById('todayIn').innerText = `৳ ${todayIn.toFixed(2)}`;
-    document.getElementById('todayOut').innerText = `৳ ${todayOut.toFixed(2)}`;
 
-    const invTbody = document.getElementById('inventoryTableBody');
-    invTbody.innerHTML = '';
-    const invKeys = Object.keys(inventoryMap);
-    if (invKeys.length === 0) {
-      invTbody.innerHTML = '<tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>';
+    const totalProfitEl = document.getElementById('totalProfit');
+    totalProfitEl.innerText = `৳ ${netProfitLoss.toFixed(2)}`;
+    if (netProfitLoss < 0) {
+      totalProfitEl.className = "fw-bold mt-2 mb-0 text-danger";
     } else {
-      invKeys.forEach(k => {
-        const qty = inventoryMap[k];
-        const statusBadge = qty <= 0 
-          ? '<span class="badge bg-danger">স্টক শেষ</span>' 
-          : '<span class="badge bg-success">পর্যাপ্ত</span>';
-        invTbody.innerHTML += `
-          <tr>
-            <td class="fw-semibold">${k}</td>
-            <td>${qty}</td>
-            <td>${statusBadge}</td>
-          </tr>`;
-      });
+      totalProfitEl.className = "fw-bold mt-2 mb-0 text-primary";
     }
 
+    renderInventoryTable(inventoryMap);
+
     if (_filteredCache.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">কোনো রেকর্ড পাওয়া যায়নি</td></tr>';
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">কোনো তথ্য পাওয়া যায়নি</td></tr>`;
       return;
     }
 
     _filteredCache.forEach(item => {
       let badgeClass = 'badge-mfs';
-      if (item.category === 'Print & Photo') badgeClass = 'badge-print';
-      else if (item.category === 'Stationery') badgeClass = 'badge-stationery';
-      else if (item.category === 'Expense') badgeClass = 'badge-expense';
+      if(item.category === 'Print & Photo') badgeClass = 'badge-print';
+      else if(item.category === 'Stationery') badgeClass = 'badge-stationery';
+      else if(item.category === 'Expense') badgeClass = 'badge-expense';
 
       const typeBadge = item.type === 'Cash In' 
-        ? '<span class="badge bg-success">ক্যাশ ইন</span>' 
-        : '<span class="badge bg-danger">ক্যাশ আউট</span>';
+        ? `<span class="badge bg-success-subtle text-success border border-success">ক্যাশ ইন</span>`
+        : `<span class="badge bg-danger-subtle text-danger border border-danger">ক্যাশ আউট</span>`;
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td class="small text-muted">${item.date || ''}</td>
+        <td class="small">${item.date || ''}</td>
         <td><span class="badge ${badgeClass}">${item.category}</span></td>
         <td>
-          <div class="fw-semibold">${safeDecode(item.description)}</div>
-          ${item.customerPhone ? `<small class="text-muted"><i class="fa-brands fa-whatsapp text-success me-1"></i>${item.customerPhone}</small>` : ''}
-          ${item.productName ? `<div class="small text-secondary">পণ্য: ${item.productName} (${item.quantity} Pcs)</div>` : ''}
+          <div class="fw-bold">${item.description || ''}</div>
+          ${item.productName ? `<small class="text-muted">পণ্য: ${item.productName} (${item.quantity || 0} Pcs)</small><br>` : ''}
+          ${item.customerPhone ? `<small class="text-primary"><i class="fa-brands fa-whatsapp"></i> ${item.customerPhone}</small>` : ''}
         </td>
         <td>${typeBadge}</td>
-        <td class="fw-bold">৳ ${Number(item.amount || 0).toFixed(2)}</td>
-        <td class="fw-bold ${Number(item.profit || 0) >= 0 ? 'text-success' : 'text-danger'}">৳ ${Number(item.profit || 0).toFixed(2)}</td>
+        <td class="fw-bold">৳ ${(item.amount || 0).toFixed(2)}</td>
+        <td class="text-muted">৳ ${(item.profit || 0).toFixed(2)}</td>
         <td class="text-center">
-          <button onclick="deleteTx('${item.id}')" class="btn btn-outline-danger btn-sm" title="মুছে ফেলুন">
-            <i class="fa-solid fa-trash"></i>
-          </button>
+          <button onclick="reprintReceipt('${item.id}')" class="btn btn-sm btn-outline-primary me-1" title="রিসিট প্রিন্ট"><i class="fa-solid fa-print"></i></button>
+          <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger" title="ডিলিট"><i class="fa-solid fa-trash"></i></button>
         </td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  async function deleteTx(id) {
-    if (!_user || !id) return;
-    if (confirm('আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান?')) {
-      toggleLoader(true);
-      try {
-        await _db.ref(`users/${_user.uid}/transactions/${id}`).remove();
-      } catch (e) {
-        alert('মুছে ফেলতে সমস্যা হয়েছে: ' + e.message);
-      } finally {
-        toggleLoader(false);
-      }
-    }
-  }
+  function renderInventoryTable(invMap) {
+    const invTbody = document.getElementById('inventoryTableBody');
+    invTbody.innerHTML = '';
+    const keys = Object.keys(invMap);
 
-  function _0x1e8a() {
-    if (_filteredCache.length === 0) {
-      alert('এক্সপোর্ট করার মতো কোনো ডাটা নেই!');
+    if (keys.length === 0) {
+      invTbody.innerHTML = `<tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>`;
       return;
     }
-    const exportData = _filteredCache.map(i => ({
-      'তারিখ': i.date,
-      'বিভাগ': i.category,
-      'বিবরণ': safeDecode(i.description),
-      'মোবাইল': i.customerPhone || '',
-      'টাইপ': i.type,
-      'পরিমাণ': i.amount,
-      'লাভ/ক্ষতি': i.profit
-    }));
 
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Transactions");
-    XLSX.writeFile(wb, `CashBook_Report_${Date.now()}.xlsx`);
+    keys.forEach(pName => {
+      const stock = invMap[pName];
+      let statusBadge = stock <= 2 
+        ? `<span class="badge bg-danger">লো স্টক</span>` 
+        : `<span class="badge bg-success">স্টক ওকে</span>`;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="text-capitalize">${pName}</td>
+        <td class="fw-bold">${stock}</td>
+        <td>${statusBadge}</td>
+      `;
+      invTbody.appendChild(tr);
+    });
+  }
+
+  async function deleteTx(id) {
+    if (!confirm('আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান?')) return;
+    if (!_user) return;
+    toggleLoader(true);
+    try {
+      await _db.ref(`users/${_user.uid}/transactions/${id}`).remove();
+    } catch (e) {
+      alert("ডিলিট করতে ব্যর্থ হয়েছে: " + e.message);
+    } finally {
+      toggleLoader(false);
+    }
   }
 
   function showReceiptModal(data) {
     document.getElementById('rDate').innerText = data.date;
     document.getElementById('rCategory').innerText = data.category;
-    document.getElementById('rDesc').innerText = data.desc;
-    document.getElementById('rAmount').innerText = data.amount.toFixed(2);
-    
-    const receiptModal = new bootstrap.Modal(document.getElementById('receiptModal'));
-    receiptModal.show();
+    document.getElementById('rDesc').innerText = data.description;
+    document.getElementById('rAmount').innerText = (data.amount || 0).toFixed(2);
+
+    const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
+    modal.show();
+  }
+
+  function reprintReceipt(id) {
+    const item = _cache.find(x => x.id === id);
+    if (item) {
+      currentReceiptData = item;
+      showReceiptModal(item);
+    }
   }
 
   function printReceipt() {
@@ -672,23 +663,51 @@
   }
 
   function sendWhatsAppReceipt() {
-    if (!currentReceiptData || !currentReceiptData.phone) {
-      alert('গ্রাহকের হোয়াটসঅ্যাপ নম্বর দেওয়া হয়নি!');
+    if (!currentReceiptData || !currentReceiptData.customerPhone) {
+      alert("গ্রাহকের কোনো হোয়াটসঅ্যাপ নম্বর পাওয়া যায়নি!");
       return;
     }
-    let phone = currentReceiptData.phone.replace(/[^0-9]/g, '');
+
+    let phone = currentReceiptData.customerPhone.replace(/[^0-9]/g, '');
     if (phone.startsWith('0')) {
       phone = '88' + phone;
     }
-    const text = `*ডিজিটাল ক্যাশ বুক - পেমেন্ট স্লিপ*\n\n` +
-                 `📅 তারিখ: ${currentReceiptData.date}\n` +
-                 `📂 বিভাগ: ${currentReceiptData.category}\n` +
-                 `📝 বিবরণ: ${currentReceiptData.desc}\n` +
-                 `💰 পরিমাণ: ৳ ${currentReceiptData.amount}\n\n` +
-                 `ধন্যবাদ, আবার আসবেন!`;
-    
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+
+    const msg = `*ডিজিটাল ক্যাশ বুক - পেমেন্ট স্লিপ*\n` +
+                `তারিখ: ${currentReceiptData.date}\n` +
+                `বিভাগ: ${currentReceiptData.category}\n` +
+                `বিবরণ: ${currentReceiptData.description}\n` +
+                `পরিমাণ: ৳${(currentReceiptData.amount || 0).toFixed(2)}\n\n` +
+                `ধন্যবাদ, আবার আসবেন!`;
+
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  }
+
+  function _0x1e8a() {
+    if (_filteredCache.length === 0) {
+      alert("এক্সপোর্ট করার জন্য কোনো ডাটা নেই!");
+      return;
+    }
+
+    const exportData = _filteredCache.map(item => ({
+      'তারিখ ও সময়': item.date || '',
+      'ক্যাটাগরি': item.category || '',
+      'বিবরণ': item.description || '',
+      'পণ্যের নাম': item.productName || '',
+      'পরিমাণ (Pcs)': item.quantity || 0,
+      'ফোন নম্বর': item.customerPhone || '',
+      'টাইপ': item.type || '',
+      'পরিমাণ (৳)': item.amount || 0,
+      'লাভ / ক্ষতি (৳)': item.profit || 0
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "CashBook");
+    XLSX.writeFile(workbook, `CashBook_Report_${Date.now()}.xlsx`);
   }
 </script>
+
 </body>
 </html>
