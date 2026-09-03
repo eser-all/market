@@ -132,19 +132,19 @@
         </div>
         <div class="col-6 col-lg-2">
           <div class="card card-custom p-3 bg-white stat-card stat-in">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-down text-success me-1"></i> সর্বমোট জমা / বিক্রি</div>
+            <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-down text-success me-1"></i> ফিল্টার করা সর্বমোট জমা</div>
             <h5 class="text-success fw-bold mt-2 mb-0" id="totalIn">৳ 0.00</h5>
           </div>
         </div>
         <div class="col-6 col-lg-2">
           <div class="card card-custom p-3 bg-white stat-card stat-out">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-up text-danger me-1"></i> সর্বমোট খরচ / ক্রয়</div>
+            <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-up text-danger me-1"></i> ফিল্টার করা সর্বমোট খরচ</div>
             <h5 class="text-danger fw-bold mt-2 mb-0" id="totalOut">৳ 0.00</h5>
           </div>
         </div>
         <div class="col-12 col-lg-2">
           <div class="card card-custom p-3 bg-white stat-card stat-profit">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-chart-pie text-primary me-1"></i> সর্বমোট নিট লাভ/ক্ষতি</div>
+            <div class="text-muted small fw-bold"><i class="fa-solid fa-chart-pie text-primary me-1"></i> ফিল্টার করা নিট লাভ/ক্ষতি</div>
             <h5 class="fw-bold mt-2 mb-0" id="totalProfit">৳ 0.00</h5>
           </div>
         </div>
@@ -233,7 +233,7 @@
             <!-- Search & Date Filter Bar -->
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
               <div class="d-flex flex-wrap gap-2 align-items-center">
-                <input type="text" id="searchInput" onkeyup="_0x7b1c()" class="form-control form-control-sm shadow-sm" style="width: 180px;" placeholder="🔍 অনুসন্ধান করুন...">
+                <input type="text" id="searchInput" onkeyup="_0x7b1c()" class="form-control form-control-sm shadow-sm" style="width: 220px;" placeholder="🔍 ক্যাটাগরি, বিবরণ, টাইপ বা নম্বর...">
                 <div class="d-flex align-items-center gap-1">
                   <span class="small fw-bold text-muted">তারিখ:</span>
                   <input type="date" id="dateFilter" onchange="_0x7b1c()" class="form-control form-control-sm shadow-sm" style="width: 140px;">
@@ -492,8 +492,12 @@
         const prod = (item.productName || '').toLowerCase();
         const phone = (item.customerPhone || '');
         const amt = (item.amount || '').toString();
+        const typeRaw = (item.type || '').toLowerCase(); // Cash In / Cash Out
+        
+        // বাংলা কি-ওয়ার্ড দিয়েও যেন ক্যাশ ইন / ক্যাশ আউট সার্চ করা যায়
+        let typeBangla = typeRaw === 'cash in' ? 'ক্যাশ ইন' : (typeRaw === 'cash out' ? 'ক্যাশ আউট' : '');
 
-        matchSearch = desc.includes(q) || cat.includes(q) || prod.includes(q) || phone.includes(q) || amt.includes(q);
+        matchSearch = desc.includes(q) || cat.includes(q) || prod.includes(q) || phone.includes(q) || amt.includes(q) || typeRaw.includes(q) || typeBangla.includes(q);
       }
 
       let matchDate = true;
@@ -523,7 +527,6 @@
     let tInToday = 0;
     let tOutToday = 0;
 
-    // আজকের তারিখ নিশ্চিতভাবে মেলানোর নিয়ম
     const now = new Date();
     const todayY = now.getFullYear();
     const todayM = now.getMonth();
@@ -534,23 +537,16 @@
 
     const inventoryMap = {};
 
+    // ১. সর্বমোট ক্যাশ হিসেব (আজকের ডেটা) সকল অরিজিনাল ক্যাশ থেকে আসবে
     _cache.forEach(item => {
-      const amt = item.amount || 0;
-      if (item.type === 'Cash In') {
-        totIn += amt;
-      } else {
-        totOut += amt;
-      }
-
-      // টাইমস্ট্যাম্প বা তারিখ থেকে আজকের দিনের ডাটা হিসাব
       const itemDate = new Date(item.timestamp || item.date);
       if (
         itemDate.getFullYear() === todayY &&
         itemDate.getMonth() === todayM &&
         itemDate.getDate() === todayD
       ) {
-        if (item.type === 'Cash In') tInToday += amt;
-        else tOutToday += amt;
+        if (item.type === 'Cash In') tInToday += (item.amount || 0);
+        else tOutToday += (item.amount || 0);
       }
 
       if (item.category === 'Stationery' && item.productName) {
@@ -561,6 +557,16 @@
         } else if (item.type === 'Cash In') {
           inventoryMap[pName] -= (item.quantity || 0);
         }
+      }
+    });
+
+    // ২. ফিল্টার করা ক্যাশ হিসেব (সর্বমোট জমা, খরচ ও নিট লাভ/ক্ষতি) ফিল্টারড ডাটা থেকে ডাইনামিকালি হবে
+    _filteredCache.forEach(item => {
+      const amt = item.amount || 0;
+      if (item.type === 'Cash In') {
+        totIn += amt;
+      } else {
+        totOut += amt;
       }
     });
 
