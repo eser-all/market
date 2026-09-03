@@ -49,22 +49,22 @@
     }
     .app-footer span { color: #00d2ff; }
 
+    /* প্রিন্ট অপ্টিমাইজেশন - শুধুমাত্র ১ পেজ রিসিট প্রিন্ট হবে */
     @media print {
-      @page {
-        size: auto;
-        margin: 0;
-      }
-      body * { visibility: hidden; }
-      #printableReceipt, #printableReceipt * { visibility: visible; }
+      body * { display: none !important; }
+      #receiptModal, #receiptModal * { display: block !important; }
+      #printableReceipt, #printableReceipt * { display: block !important; visibility: visible !important; }
       #printableReceipt { 
-        position: absolute; 
-        left: 0; 
-        top: 0; 
-        width: 100%; 
-        padding: 15px; 
-        page-break-after: avoid;
-        page-break-inside: avoid;
+        position: fixed !important; 
+        left: 0 !important; 
+        top: 0 !important; 
+        width: 100% !important; 
+        padding: 10px !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
       }
+      .modal-backdrop, .modal-header, .modal-footer, .btn-close { display: none !important; }
     }
   </style>
 </head>
@@ -196,14 +196,9 @@
                 <input type="text" id="description" class="form-control shadow-sm" placeholder="যেমন: ১০ কপি ফটোকপি / কলম ক্রয়" required>
               </div>
 
-              <div class="mb-3">
+              <div class="mb-4">
                 <label class="form-label fw-semibold">পরিমাণ (৳)</label>
                 <input type="number" id="amount" class="form-control shadow-sm" placeholder="0.00" min="0" step="any" required>
-              </div>
-
-              <div class="mb-4">
-                <label class="form-label fw-semibold">লাভ / ক্ষতি (৳)</label>
-                <input type="number" id="profit" class="form-control shadow-sm" placeholder="0.00" value="0" step="any">
               </div>
 
               <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2">
@@ -261,7 +256,6 @@
                     <th>বিবরণ ও ট্র্যাকিং</th>
                     <th>টাইপ</th>
                     <th>পরিমাণ</th>
-                    <th>লাভ / ক্ষতি</th>
                     <th class="text-center">অ্যাকশন</th>
                   </tr>
                 </thead>
@@ -355,7 +349,6 @@
     document.getElementById('stationeryFields').style.display = category === 'Stationery' ? 'block' : 'none';
   }
 
-  // নিরাপদ ডিকোড করার ফাংশন (যদি ডাটা এনকোড করা থাকে)
   function safeDecode(str) {
     if (!str) return '';
     try {
@@ -428,7 +421,6 @@
     const customerPhone = document.getElementById('customerPhone').value.trim();
     const rawDesc = document.getElementById('description').value.trim();
     const rawAmount = Number(parseFloat(document.getElementById('amount').value).toFixed(2)) || 0;
-    const rawProfit = Number(parseFloat(document.getElementById('profit').value).toFixed(2)) || 0;
 
     toggleLoader(true);
 
@@ -452,7 +444,7 @@
         type: type,
         description: rawDesc,
         amount: rawAmount,
-        profit: rawProfit
+        profit: 0
       };
 
       await newTxRef.set(payload);
@@ -478,7 +470,6 @@
       if (val) {
         Object.keys(val).forEach(k => {
           let item = val[k];
-          // ডাটা লোড করার সময় স্পষ্ট বাংলা পাওয়ার জন্য safeDecode প্রক্রিয়াকরণ
           item.description = safeDecode(item.description);
           item.productName = safeDecode(item.productName);
           _cache.push(item);
@@ -581,7 +572,7 @@
     renderInventoryTable(inventoryMap);
 
     if (_filteredCache.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">কোনো তথ্য পাওয়া যায়নি</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">কোনো তথ্য পাওয়া যায়নি</td></tr>`;
       return;
     }
 
@@ -595,7 +586,6 @@
         ? `<span class="badge bg-success-subtle text-success border border-success">ক্যাশ ইন</span>`
         : `<span class="badge bg-danger-subtle text-danger border border-danger">ক্যাশ আউট</span>`;
 
-      // এখানে safeDecode দিয়ে নিশ্চিত করে বিবরণ ও নাম প্রদর্শন করা হচ্ছে
       const displayDesc = safeDecode(item.description);
       const displayProdName = safeDecode(item.productName);
 
@@ -610,7 +600,6 @@
         </td>
         <td>${typeBadge}</td>
         <td class="fw-bold">৳ ${(item.amount || 0).toFixed(2)}</td>
-        <td class="text-muted">৳ ${(item.profit || 0).toFixed(2)}</td>
         <td class="text-center">
           <button onclick="reprintReceipt('${item.id}')" class="btn btn-sm btn-outline-primary me-1" title="রিসিট প্রিন্ট"><i class="fa-solid fa-print"></i></button>
           <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger" title="ডিলিট"><i class="fa-solid fa-trash"></i></button>
@@ -717,8 +706,7 @@
       'পরিমাণ (Pcs)': item.quantity || 0,
       'ফোন নম্বর': item.customerPhone || '',
       'টাইপ': item.type || '',
-      'পরিমাণ (৳)': item.amount || 0,
-      'লাভ / ক্ষতি (৳)': item.profit || 0
+      'পরিমাণ (৳)': item.amount || 0
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
