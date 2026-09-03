@@ -355,6 +355,16 @@
     document.getElementById('stationeryFields').style.display = category === 'Stationery' ? 'block' : 'none';
   }
 
+  // নিরাপদ ডিকোড করার ফাংশন (যদি ডাটা এনকোড করা থাকে)
+  function safeDecode(str) {
+    if (!str) return '';
+    try {
+      return decodeURIComponent(escape(atob(str)));
+    } catch (e) {
+      return str;
+    }
+  }
+
   _auth.onAuthStateChanged(async (u) => {
     toggleLoader(true);
     if (u) {
@@ -413,10 +423,10 @@
     
     const category = document.getElementById('category').value;
     const type = document.getElementById('type').value;
-    const productName = document.getElementById('productName').value.trim().toLowerCase();
+    const productName = document.getElementById('productName').value.trim();
     const qty = Number(document.getElementById('quantity').value) || 0;
     const customerPhone = document.getElementById('customerPhone').value.trim();
-    const rawDesc = document.getElementById('description').value;
+    const rawDesc = document.getElementById('description').value.trim();
     const rawAmount = Number(parseFloat(document.getElementById('amount').value).toFixed(2)) || 0;
     const rawProfit = Number(parseFloat(document.getElementById('profit').value).toFixed(2)) || 0;
 
@@ -467,7 +477,11 @@
       const val = snap.val();
       if (val) {
         Object.keys(val).forEach(k => {
-          _cache.push(val[k]);
+          let item = val[k];
+          // ডাটা লোড করার সময় স্পষ্ট বাংলা পাওয়ার জন্য safeDecode প্রক্রিয়াকরণ
+          item.description = safeDecode(item.description);
+          item.productName = safeDecode(item.productName);
+          _cache.push(item);
         });
         _cache.sort((a, b) => b.timestamp - a.timestamp);
       }
@@ -482,11 +496,13 @@
     _filteredCache = _cache.filter(item => {
       let matchSearch = true;
       if (q) {
-        matchSearch = (item.description && item.description.toLowerCase().includes(q)) ||
-                      (item.category && item.category.toLowerCase().includes(q)) ||
-                      (item.productName && item.productName.toLowerCase().includes(q)) ||
-                      (item.customerPhone && item.customerPhone.includes(q)) ||
-                      (item.amount && item.amount.toString().includes(q));
+        const desc = (item.description || '').toLowerCase();
+        const cat = (item.category || '').toLowerCase();
+        const prod = (item.productName || '').toLowerCase();
+        const phone = (item.customerPhone || '');
+        const amt = (item.amount || '').toString();
+
+        matchSearch = desc.includes(q) || cat.includes(q) || prod.includes(q) || phone.includes(q) || amt.includes(q);
       }
 
       let matchDate = true;
@@ -547,7 +563,6 @@
       }
     });
 
-    // ** পরিবর্তন: সর্বমোট নিট লাভ/ক্ষতি = (সর্বমোট জমা - সর্বমোট খরচ) **
     const netProfitLoss = totIn - totOut;
 
     document.getElementById('todayIn').innerText = `৳ ${tInToday.toFixed(2)}`;
@@ -580,13 +595,17 @@
         ? `<span class="badge bg-success-subtle text-success border border-success">ক্যাশ ইন</span>`
         : `<span class="badge bg-danger-subtle text-danger border border-danger">ক্যাশ আউট</span>`;
 
+      // এখানে safeDecode দিয়ে নিশ্চিত করে বিবরণ ও নাম প্রদর্শন করা হচ্ছে
+      const displayDesc = safeDecode(item.description);
+      const displayProdName = safeDecode(item.productName);
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td class="small">${item.date || ''}</td>
         <td><span class="badge ${badgeClass}">${item.category}</span></td>
         <td>
-          <div class="fw-bold">${item.description || ''}</div>
-          ${item.productName ? `<small class="text-muted">পণ্য: ${item.productName} (${item.quantity || 0} Pcs)</small><br>` : ''}
+          <div class="fw-bold">${displayDesc}</div>
+          ${displayProdName ? `<small class="text-muted">পণ্য: ${displayProdName} (${item.quantity || 0} Pcs)</small><br>` : ''}
           ${item.customerPhone ? `<small class="text-primary"><i class="fa-brands fa-whatsapp"></i> ${item.customerPhone}</small>` : ''}
         </td>
         <td>${typeBadge}</td>
@@ -619,7 +638,7 @@
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td class="text-capitalize">${pName}</td>
+        <td class="text-capitalize">${safeDecode(pName)}</td>
         <td class="fw-bold">${stock}</td>
         <td>${statusBadge}</td>
       `;
@@ -643,7 +662,7 @@
   function showReceiptModal(data) {
     document.getElementById('rDate').innerText = data.date;
     document.getElementById('rCategory').innerText = data.category;
-    document.getElementById('rDesc').innerText = data.description;
+    document.getElementById('rDesc').innerText = safeDecode(data.description);
     document.getElementById('rAmount').innerText = (data.amount || 0).toFixed(2);
 
     const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
@@ -676,7 +695,7 @@
     const msg = `*ডিজিটাল ক্যাশ বুক - পেমেন্ট স্লিপ*\n` +
                 `তারিখ: ${currentReceiptData.date}\n` +
                 `বিভাগ: ${currentReceiptData.category}\n` +
-                `বিবরণ: ${currentReceiptData.description}\n` +
+                `বিবরণ: ${safeDecode(currentReceiptData.description)}\n` +
                 `পরিমাণ: ৳${(currentReceiptData.amount || 0).toFixed(2)}\n\n` +
                 `ধন্যবাদ, আবার আসবেন!`;
 
@@ -693,8 +712,8 @@
     const exportData = _filteredCache.map(item => ({
       'তারিখ ও সময়': item.date || '',
       'ক্যাটাগরি': item.category || '',
-      'বিবরণ': item.description || '',
-      'পণ্যের নাম': item.productName || '',
+      'বিবরণ': safeDecode(item.description),
+      'পণ্যের নাম': safeDecode(item.productName),
       'পরিমাণ (Pcs)': item.quantity || 0,
       'ফোন নম্বর': item.customerPhone || '',
       'টাইপ': item.type || '',
