@@ -125,9 +125,9 @@
           </div>
         </div>
         <div class="col-6 col-lg-3">
-          <div class="card card-custom p-3 bg-white stat-card stat-today">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-sack-dollar text-warning me-1"></i> আজকের লাভ (Today)</div>
-            <h4 class="text-warning fw-bold mt-2 mb-0" id="todayProfit">৳ 0.00</h4>
+          <div class="card card-custom p-3 bg-white stat-card stat-out">
+            <div class="text-muted small fw-bold"><i class="fa-solid fa-cart-shopping text-danger me-1"></i> আজকের খরচ / ক্রয় (Today)</div>
+            <h4 class="text-danger fw-bold mt-2 mb-0" id="todayOut">৳ 0.00</h4>
           </div>
         </div>
         <div class="col-6 col-lg-2">
@@ -526,13 +526,14 @@
     tbody.innerHTML = '';
 
     let totIn = 0, totOut = 0, totProfit = 0;
-    let todayIn = 0, todayProfit = 0;
+    let todayIn = 0, todayOut = 0;
 
     const todayStr = new Date().toLocaleDateString('en-US');
 
     let inventoryMap = {};
 
-    _cache.forEach(item => {
+    // Filtered data calculation for dashboard cards
+    _filteredCache.forEach(item => {
       const isCashIn = item.type === 'Cash In';
       const amt = Number(item.amount) || 0;
       const prf = Number(item.profit) || 0;
@@ -544,7 +545,7 @@
       const itemDateStr = new Date(item.timestamp).toLocaleDateString('en-US');
       if (itemDateStr === todayStr) {
         if (isCashIn) todayIn += amt;
-        todayProfit += prf;
+        else todayOut += amt;
       }
 
       if (item.category === 'Stationery' && item.productName) {
@@ -562,7 +563,7 @@
     document.getElementById('totalOut').innerText = `৳ ${totOut.toFixed(2)}`;
     document.getElementById('totalProfit').innerText = `৳ ${totProfit.toFixed(2)}`;
     document.getElementById('todayIn').innerText = `৳ ${todayIn.toFixed(2)}`;
-    document.getElementById('todayProfit').innerText = `৳ ${todayProfit.toFixed(2)}`;
+    document.getElementById('todayOut').innerText = `৳ ${todayOut.toFixed(2)}`;
 
     const invTbody = document.getElementById('inventoryTableBody');
     invTbody.innerHTML = '';
