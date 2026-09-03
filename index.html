@@ -523,7 +523,12 @@
     let tInToday = 0;
     let tOutToday = 0;
 
-    const todayStr = new Date().toLocaleDateString('en-US');
+    // আজকের তারিখ নিশ্চিতভাবে মেলানোর নিয়ম
+    const now = new Date();
+    const todayY = now.getFullYear();
+    const todayM = now.getMonth();
+    const todayD = now.getDate();
+
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
 
@@ -537,8 +542,13 @@
         totOut += amt;
       }
 
-      const itemDateStr = new Date(item.timestamp).toLocaleDateString('en-US');
-      if (itemDateStr === todayStr) {
+      // টাইমস্ট্যাম্প বা তারিখ থেকে আজকের দিনের ডাটা হিসাব
+      const itemDate = new Date(item.timestamp || item.date);
+      if (
+        itemDate.getFullYear() === todayY &&
+        itemDate.getMonth() === todayM &&
+        itemDate.getDate() === todayD
+      ) {
         if (item.type === 'Cash In') tInToday += amt;
         else tOutToday += amt;
       }
