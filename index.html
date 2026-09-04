@@ -124,14 +124,14 @@
     <div class="container-fluid px-md-4">
       
       <!-- MFS Wallets Row -->
-      <div class="row g-2 mb-3">
+      <div class="row g-2 mb-1">
         <div class="col-12 col-md-4">
           <div class="wallet-card wallet-bkash d-flex justify-content-between align-items-center shadow-sm">
             <div>
               <div class="small fw-bold opacity-75">bKash (বিকাশ) বর্তমান ব্যালেন্স</div>
               <h4 class="fw-bold mb-0" id="bkashBalance">৳ 0.00</h4>
             </div>
-            <button onclick="setInitialBalance('bKash')" class="btn btn-sm btn-light py-0 px-2 text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স সেট করুন">+ সেট</button>
+            <button id="btnSetBkash" onclick="setInitialBalance('bKash')" class="btn btn-sm btn-light py-0 px-2 text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স সেট করুন">+ সেট</button>
           </div>
         </div>
         <div class="col-12 col-md-4">
@@ -140,7 +140,7 @@
               <div class="small fw-bold opacity-75">Nagad (নগদ) বর্তমান ব্যালেন্স</div>
               <h4 class="fw-bold mb-0" id="nagadBalance">৳ 0.00</h4>
             </div>
-            <button onclick="setInitialBalance('Nagad')" class="btn btn-sm btn-light py-0 px-2 text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স সেট করুন">+ সেট</button>
+            <button id="btnSetNagad" onclick="setInitialBalance('Nagad')" class="btn btn-sm btn-light py-0 px-2 text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স সেট করুন">+ সেট</button>
           </div>
         </div>
         <div class="col-12 col-md-4">
@@ -149,9 +149,14 @@
               <div class="small fw-bold opacity-75">Rocket (রকেট) বর্তমান ব্যালেন্স</div>
               <h4 class="fw-bold mb-0" id="rocketBalance">৳ 0.00</h4>
             </div>
-            <button onclick="setInitialBalance('Rocket')" class="btn btn-sm btn-light py-0 px-2 text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স সেট করুন">+ সেট</button>
+            <button id="btnSetRocket" onclick="setInitialBalance('Rocket')" class="btn btn-sm btn-light py-0 px-2 text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স সেট করুন">+ সেট</button>
           </div>
         </div>
+      </div>
+
+      <!-- Option to reset initial balances if hidden -->
+      <div class="text-end mb-3">
+        <a href="javascript:void(0)" onclick="resetInitialBalances()" class="text-muted small text-decoration-none"><i class="fa-solid fa-gear me-1"></i>প্রারম্ভিক ব্যালেন্স পরিবর্তন করতে ক্লিক করুন</a>
       </div>
 
       <!-- Main Summary Cards -->
@@ -421,7 +426,7 @@
   let _filteredCache = [];
   let _sessionRef = null;
   let currentReceiptData = null;
-  let walletInitialBalances = { bKash: 0, Nagad: 0, Rocket: 0 };
+  let walletInitialBalances = { bKash: null, Nagad: null, Rocket: null };
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
@@ -502,13 +507,19 @@
   }
 
   async function setInitialBalance(provider) {
-    const current = walletInitialBalances[provider] || 0;
+    const current = walletInitialBalances[provider] !== null ? walletInitialBalances[provider] : 0;
     const val = prompt(`${provider}-এর প্রারম্ভিক ক্যাশ/ডিজিটাল ব্যালেন্স লিখুন:`, current);
     if (val !== null && !isNaN(val)) {
       const num = parseFloat(val) || 0;
       walletInitialBalances[provider] = num;
       await _db.ref(`users/${_user.uid}/wallet_initials`).set(walletInitialBalances);
     }
+  }
+
+  function resetInitialBalances() {
+    document.getElementById('btnSetBkash').style.display = 'inline-block';
+    document.getElementById('btnSetNagad').style.display = 'inline-block';
+    document.getElementById('btnSetRocket').style.display = 'inline-block';
   }
 
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
@@ -647,6 +658,11 @@
       Rocket: walletInitialBalances.Rocket || 0
     };
 
+    // Auto-Hide button if initial balance is set
+    document.getElementById('btnSetBkash').style.display = walletInitialBalances.bKash !== null ? 'none' : 'inline-block';
+    document.getElementById('btnSetNagad').style.display = walletInitialBalances.Nagad !== null ? 'none' : 'inline-block';
+    document.getElementById('btnSetRocket').style.display = walletInitialBalances.Rocket !== null ? 'none' : 'inline-block';
+
     const now = new Date();
     const todayY = now.getFullYear();
     const todayM = now.getMonth();
@@ -665,10 +681,8 @@
       // MFS Balance & Commission Calculation
       if (item.category === 'Mobile Banking' && item.subProvider) {
         if (item.type === 'Cash In') {
-          // Cash In reduces digit balance, adds commission directly to MFS wallet
           walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) - amt + comm;
         } else if (item.type === 'Cash Out') {
-          // Cash Out increases digit balance, adds commission directly to MFS wallet
           walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) + amt + comm;
         }
       }
