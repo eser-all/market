@@ -25,16 +25,41 @@
     .content-wrapper { flex: 1; }
     .header-banner { background: var(--primary-gradient); color: white; padding: 18px 0; border-radius: 0 0 20px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
     .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.25s ease-in-out; }
-    .stat-card { border-left: 5px solid; padding: 12px !important; }
+    .stat-card { border-left: 5px solid; padding: 10px !important; }
     .stat-in { border-color: #198754; }
     .stat-out { border-color: #dc3545; }
     .stat-profit { border-color: #0d6efd; }
     .stat-today { border-color: #ffc107; }
     
-    .wallet-card { border-radius: 10px; color: white; padding: 12px; position: relative; overflow: hidden; }
+    /* Compact Mini Wallets */
+    .wallet-card { 
+      border-radius: 8px; 
+      color: white; 
+      padding: 8px 10px; 
+      position: relative; 
+      overflow: hidden; 
+    }
+    .wallet-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      opacity: 0.9;
+      white-space: nowrap;
+    }
+    .wallet-amount {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0;
+    }
+
     .wallet-bkash { background: linear-gradient(135deg, #e2136e, #a00c4e); }
     .wallet-nagad { background: linear-gradient(135deg, #f7921e, #c26900); }
     .wallet-rocket { background: linear-gradient(135deg, #8c3494, #571a5d); }
+    
+    .wallet-gp { background: linear-gradient(135deg, #00A3E0, #006699); }
+    .wallet-bl { background: linear-gradient(135deg, #FF5000, #B33800); }
+    .wallet-robi { background: linear-gradient(135deg, #E20613, #990000); }
+    .wallet-airtel { background: linear-gradient(135deg, #ED1C24, #990000); }
+    .wallet-teletalk { background: linear-gradient(135deg, #7CB042, #496E22); }
     
     .badge-mfs { background-color: #e2136e; color: white; }
     .badge-recharge { background-color: #0dcaf0; color: #000; }
@@ -55,6 +80,12 @@
       margin-top: auto;
     }
     .app-footer span { color: #00d2ff; }
+
+    .btn-set-bal {
+      font-size: 0.65rem;
+      padding: 1px 5px;
+      line-height: 1.2;
+    }
 
     @media print {
       body * { display: none !important; }
@@ -123,40 +154,96 @@
 
     <div class="container-fluid px-md-4">
       
-      <!-- MFS Wallets Row -->
-      <div class="row g-2 mb-1">
-        <div class="col-12 col-md-4">
-          <div class="wallet-card wallet-bkash d-flex justify-content-between align-items-center shadow-sm">
-            <div>
-              <div class="small fw-bold opacity-75">bKash (বিকাশ) বর্তমান ব্যালেন্স</div>
-              <h4 class="fw-bold mb-0" id="bkashBalance">৳ 0.00</h4>
-            </div>
-            <button id="btnSetBkash" onclick="setInitialBalance('bKash')" class="btn btn-sm btn-light py-0 px-2 text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স সেট করুন">+ সেট</button>
-          </div>
-        </div>
-        <div class="col-12 col-md-4">
-          <div class="wallet-card wallet-nagad d-flex justify-content-between align-items-center shadow-sm">
-            <div>
-              <div class="small fw-bold opacity-75">Nagad (নগদ) বর্তমান ব্যালেন্স</div>
-              <h4 class="fw-bold mb-0" id="nagadBalance">৳ 0.00</h4>
-            </div>
-            <button id="btnSetNagad" onclick="setInitialBalance('Nagad')" class="btn btn-sm btn-light py-0 px-2 text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স সেট করুন">+ সেট</button>
-          </div>
-        </div>
-        <div class="col-12 col-md-4">
-          <div class="wallet-card wallet-rocket d-flex justify-content-between align-items-center shadow-sm">
-            <div>
-              <div class="small fw-bold opacity-75">Rocket (রকেট) বর্তমান ব্যালেন্স</div>
-              <h4 class="fw-bold mb-0" id="rocketBalance">৳ 0.00</h4>
-            </div>
-            <button id="btnSetRocket" onclick="setInitialBalance('Rocket')" class="btn btn-sm btn-light py-0 px-2 text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স সেট করুন">+ সেট</button>
-          </div>
-        </div>
+      <!-- Top Title Bar with Reset Icon -->
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-secondary small"><i class="fa-solid fa-wallet me-1"></i> ডিজিটাল ওয়ালেট ব্যালেন্স ট্র্যাকার</span>
+        <button onclick="resetInitialBalances()" class="btn btn-sm btn-light text-secondary border shadow-sm py-0 px-2" title="প্রারম্ভিক ব্যালেন্স রিসেট/পরিবর্তন করুন">
+          <i class="fa-solid fa-gear"></i>
+        </button>
       </div>
 
-      <!-- Option to reset initial balances if hidden -->
-      <div class="text-end mb-3">
-        <a href="javascript:void(0)" onclick="resetInitialBalances()" class="text-muted small text-decoration-none"><i class="fa-solid fa-gear me-1"></i>প্রারম্ভিক ব্যালেন্স পরিবর্তন করতে ক্লিক করুন</a>
+      <!-- Compact 8 Wallets Row -->
+      <div class="row g-2 mb-3">
+        <!-- bKash -->
+        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
+          <div class="wallet-card wallet-bkash shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="wallet-title">bKash (বিকাশ)</span>
+              <button id="btnSetBkash" onclick="setInitialBalance('bKash')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+            </div>
+            <div class="wallet-amount" id="bkashBalance">৳ 0.00</div>
+          </div>
+        </div>
+        <!-- Nagad -->
+        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
+          <div class="wallet-card wallet-nagad shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="wallet-title">Nagad (নগদ)</span>
+              <button id="btnSetNagad" onclick="setInitialBalance('Nagad')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+            </div>
+            <div class="wallet-amount" id="nagadBalance">৳ 0.00</div>
+          </div>
+        </div>
+        <!-- Rocket -->
+        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
+          <div class="wallet-card wallet-rocket shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="wallet-title">Rocket (রকেট)</span>
+              <button id="btnSetRocket" onclick="setInitialBalance('Rocket')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+            </div>
+            <div class="wallet-amount" id="rocketBalance">৳ 0.00</div>
+          </div>
+        </div>
+        <!-- GP -->
+        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
+          <div class="wallet-card wallet-gp shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="wallet-title">GP (গ্রামীণফোন)</span>
+              <button id="btnSetGP" onclick="setInitialBalance('GP')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+            </div>
+            <div class="wallet-amount" id="gpBalance">৳ 0.00</div>
+          </div>
+        </div>
+        <!-- Banglalink -->
+        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
+          <div class="wallet-card wallet-bl shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="wallet-title">Banglalink</span>
+              <button id="btnSetBanglalink" onclick="setInitialBalance('Banglalink')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+            </div>
+            <div class="wallet-amount" id="banglalinkBalance">৳ 0.00</div>
+          </div>
+        </div>
+        <!-- Robi -->
+        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
+          <div class="wallet-card wallet-robi shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="wallet-title">Robi (রবি)</span>
+              <button id="btnSetRobi" onclick="setInitialBalance('Robi')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+            </div>
+            <div class="wallet-amount" id="robiBalance">৳ 0.00</div>
+          </div>
+        </div>
+        <!-- Airtel -->
+        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
+          <div class="wallet-card wallet-airtel shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="wallet-title">Airtel (এয়ারটেল)</span>
+              <button id="btnSetAirtel" onclick="setInitialBalance('Airtel')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+            </div>
+            <div class="wallet-amount" id="airtelBalance">৳ 0.00</div>
+          </div>
+        </div>
+        <!-- Teletalk -->
+        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
+          <div class="wallet-card wallet-teletalk shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="wallet-title">Teletalk (টেলিটক)</span>
+              <button id="btnSetTeletalk" onclick="setInitialBalance('Teletalk')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+            </div>
+            <div class="wallet-amount" id="teletalkBalance">৳ 0.00</div>
+          </div>
+        </div>
       </div>
 
       <!-- Main Summary Cards -->
@@ -426,7 +513,10 @@
   let _filteredCache = [];
   let _sessionRef = null;
   let currentReceiptData = null;
-  let walletInitialBalances = { bKash: null, Nagad: null, Rocket: null };
+  let walletInitialBalances = { 
+    bKash: null, Nagad: null, Rocket: null,
+    GP: null, Banglalink: null, Robi: null, Airtel: null, Teletalk: null
+  };
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
@@ -467,7 +557,7 @@
       // Load Initial Wallet Balances
       _db.ref(`users/${_user.uid}/wallet_initials`).on('value', (snap) => {
         if (snap.val()) {
-          walletInitialBalances = snap.val();
+          walletInitialBalances = { ...walletInitialBalances, ...snap.val() };
         }
         renderUI();
       });
@@ -508,7 +598,7 @@
 
   async function setInitialBalance(provider) {
     const current = walletInitialBalances[provider] !== null ? walletInitialBalances[provider] : 0;
-    const val = prompt(`${provider}-এর প্রারম্ভিক ক্যাশ/ডিজিটাল ব্যালেন্স লিখুন:`, current);
+    const val = prompt(`${provider}-এর প্রারম্ভিক ব্যালেন্স লিখুন:`, current);
     if (val !== null && !isNaN(val)) {
       const num = parseFloat(val) || 0;
       walletInitialBalances[provider] = num;
@@ -517,9 +607,10 @@
   }
 
   function resetInitialBalances() {
-    document.getElementById('btnSetBkash').style.display = 'inline-block';
-    document.getElementById('btnSetNagad').style.display = 'inline-block';
-    document.getElementById('btnSetRocket').style.display = 'inline-block';
+    ['Bkash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'].forEach(p => {
+      const el = document.getElementById(`btnSet${p}`);
+      if(el) el.style.display = 'inline-block';
+    });
   }
 
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
@@ -655,13 +746,22 @@
     let walletBalances = {
       bKash: walletInitialBalances.bKash || 0,
       Nagad: walletInitialBalances.Nagad || 0,
-      Rocket: walletInitialBalances.Rocket || 0
+      Rocket: walletInitialBalances.Rocket || 0,
+      GP: walletInitialBalances.GP || 0,
+      Banglalink: walletInitialBalances.Banglalink || 0,
+      Robi: walletInitialBalances.Robi || 0,
+      Airtel: walletInitialBalances.Airtel || 0,
+      Teletalk: walletInitialBalances.Teletalk || 0
     };
 
-    // Auto-Hide button if initial balance is set
-    document.getElementById('btnSetBkash').style.display = walletInitialBalances.bKash !== null ? 'none' : 'inline-block';
-    document.getElementById('btnSetNagad').style.display = walletInitialBalances.Nagad !== null ? 'none' : 'inline-block';
-    document.getElementById('btnSetRocket').style.display = walletInitialBalances.Rocket !== null ? 'none' : 'inline-block';
+    // Auto-Hide buttons if initial balance is set
+    const providers = ['Bkash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'];
+    const pKeys = ['bKash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'];
+    
+    pKeys.forEach((key, idx) => {
+      const btn = document.getElementById(`btnSet${providers[idx]}`);
+      if(btn) btn.style.display = walletInitialBalances[key] !== null ? 'none' : 'inline-block';
+    });
 
     const now = new Date();
     const todayY = now.getFullYear();
@@ -678,11 +778,13 @@
       const amt = item.amount || 0;
       const comm = item.commission || 0;
 
-      // MFS Balance & Commission Calculation
-      if (item.category === 'Mobile Banking' && item.subProvider) {
+      // Wallet Balance Calculation (MFS & Recharge)
+      if ((item.category === 'Mobile Banking' || item.category === 'Mobile Recharge') && item.subProvider) {
         if (item.type === 'Cash In') {
+          // Recharge/Cashin decrease SIM/Wallet balance, gain commission
           walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) - amt + comm;
         } else if (item.type === 'Cash Out') {
+          // Buying balance increases wallet/SIM balance
           walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) + amt + comm;
         }
       }
@@ -709,10 +811,15 @@
       }
     });
 
-    // Update Wallet Displays
+    // Update All Wallet Displays
     document.getElementById('bkashBalance').innerText = `৳ ${(walletBalances.bKash || 0).toFixed(2)}`;
     document.getElementById('nagadBalance').innerText = `৳ ${(walletBalances.Nagad || 0).toFixed(2)}`;
     document.getElementById('rocketBalance').innerText = `৳ ${(walletBalances.Rocket || 0).toFixed(2)}`;
+    document.getElementById('gpBalance').innerText = `৳ ${(walletBalances.GP || 0).toFixed(2)}`;
+    document.getElementById('banglalinkBalance').innerText = `৳ ${(walletBalances.Banglalink || 0).toFixed(2)}`;
+    document.getElementById('robiBalance').innerText = `৳ ${(walletBalances.Robi || 0).toFixed(2)}`;
+    document.getElementById('airtelBalance').innerText = `৳ ${(walletBalances.Airtel || 0).toFixed(2)}`;
+    document.getElementById('teletalkBalance').innerText = `৳ ${(walletBalances.Teletalk || 0).toFixed(2)}`;
 
     // Filtered Cash Calculation
     _filteredCache.forEach(item => {
