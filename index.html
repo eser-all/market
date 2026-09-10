@@ -2,1003 +2,526 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ডিজিটাল ক্যাশ বুক - এন্টারপ্রাইজ এডিশন</title>
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smart WiFi Zone</title>
+  <!-- HTML5 QR Code Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
     :root {
-      --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-      --accent-color: #0d6efd;
-    }
-    body { 
-      background-color: #f4f7f6; 
-      font-family: 'Hind Siliguri', sans-serif; 
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .content-wrapper { flex: 1; }
-    .header-banner { background: var(--primary-gradient); color: white; padding: 18px 0; border-radius: 0 0 20px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
-    .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.25s ease-in-out; }
-    .stat-card { border-left: 5px solid; padding: 10px !important; }
-    .stat-in { border-color: #198754; }
-    .stat-out { border-color: #dc3545; }
-    .stat-profit { border-color: #0d6efd; }
-    .stat-today { border-color: #ffc107; }
-    
-    /* Compact Mini Wallets */
-    .wallet-card { 
-      border-radius: 8px; 
-      color: white; 
-      padding: 8px 10px; 
-      position: relative; 
-      overflow: hidden; 
-    }
-    .wallet-title {
-      font-size: 0.72rem;
-      font-weight: 600;
-      opacity: 0.9;
-      white-space: nowrap;
-    }
-    .wallet-amount {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0;
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success-color: #16a34a;
+      --success-hover: #15803d;
+      --bkash-color: #e2136e;
+      --bkash-hover: #c20f5d;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
     }
 
-    .wallet-bkash { background: linear-gradient(135deg, #e2136e, #a00c4e); }
-    .wallet-nagad { background: linear-gradient(135deg, #f7921e, #c26900); }
-    .wallet-rocket { background: linear-gradient(135deg, #8c3494, #571a5d); }
-    
-    .wallet-gp { background: linear-gradient(135deg, #00A3E0, #006699); }
-    .wallet-bl { background: linear-gradient(135deg, #FF5000, #B33800); }
-    .wallet-robi { background: linear-gradient(135deg, #E20613, #990000); }
-    .wallet-airtel { background: linear-gradient(135deg, #ED1C24, #990000); }
-    .wallet-teletalk { background: linear-gradient(135deg, #7CB042, #496E22); }
-    
-    .badge-mfs { background-color: #e2136e; color: white; }
-    .badge-recharge { background-color: #0dcaf0; color: #000; }
-    .badge-print { background-color: #0d6efd; color: white; }
-    .badge-stationery { background-color: #198754; color: white; }
-    .badge-expense { background-color: #dc3545; color: white; }
-    
-    .table-container { background: white; border-radius: 12px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .auth-container { max-width: 420px; margin: 70px auto; border-top: 5px solid #0d6efd; }
-    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
-    
-    .app-footer {
-      background: var(--primary-gradient);
-      color: #ffffff;
-      text-align: center;
-      padding: 12px 0;
-      font-size: 0.9rem;
-      margin-top: auto;
-    }
-    .app-footer span { color: #00d2ff; }
-
-    .btn-set-bal {
-      font-size: 0.65rem;
-      padding: 1px 5px;
-      line-height: 1.2;
-    }
-
-    @media print {
-      body * { display: none !important; }
-      #receiptModal, #receiptModal * { display: block !important; }
-      #printableReceipt, #printableReceipt * { display: block !important; visibility: visible !important; }
-      #printableReceipt { 
-        position: fixed !important; 
-        left: 0 !important; 
-        top: 0 !important; 
-        width: 100% !important; 
-        padding: 10px !important;
-        margin: 0 !important;
-        box-shadow: none !important;
-        border: none !important;
+    /* System Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #0f172a;
+        --card-bg: #1e293b;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --border-color: #334155;
       }
-      .modal-backdrop, .modal-header, .modal-footer, .btn-close { display: none !important; }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 12px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 380px;
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+      border: none; /* নো বর্ডার */
+    }
+
+    /* Live Network Status Indicator */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(22, 163, 74, 0.12);
+      color: var(--success-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--success-color);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--success-color);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    /* Header & Large Typography */
+    .brand-icon {
+      font-size: 32px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .header-title {
+      color: var(--text-main);
+      font-size: 26px; /* বড় সাইজ */
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px; /* বড় সাইজ */
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: 22px;
+    }
+
+    /* Tab Navigation (No Borders) */
+    .tab-container {
+      display: flex;
+      background: rgba(0, 0, 0, 0.05);
+      border: none;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      background: transparent;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 9px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--card-bg);
+      color: var(--primary-color);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Form Elements & Inputs */
+    .form-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 14px; /* বড় ও স্পষ্ট */
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    input[type="text"], 
+    input[type="tel"], 
+    input[type="password"] {
+      width: 100%;
+      height: 48px;
+      padding: 0 40px 0 14px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 16px; /* টাইপ করার সময় চমৎকার স্পষ্টতা */
+      outline: none;
+      background: var(--card-bg);
+      color: var(--text-main);
+      transition: border-color 0.2s ease;
+      -webkit-appearance: none;
+    }
+
+    input[type="text"]:focus, 
+    input[type="tel"]:focus,
+    input[type="password"]:focus {
+      border-color: var(--primary-color);
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 16px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .pin-input-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .pin-input {
+      text-align: center;
+      font-size: 18px !important;
+      letter-spacing: 2px;
+      font-weight: 700;
+      padding-right: 120px !important;
+    }
+
+    .pin-actions {
+      position: absolute;
+      right: 6px;
+      display: flex;
+      gap: 5px;
+    }
+
+    .action-icon-btn {
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--primary-color);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Smart Package Cards (Grid View) */
+    .package-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .package-card {
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .package-card.selected {
+      border-color: var(--bkash-color);
+      background: rgba(226, 19, 110, 0.05);
+    }
+
+    .pkg-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .pkg-price {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--bkash-color);
+      margin-top: 2px;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      height: 50px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px; /* বড় বাটন টেক্সট */
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-green { background: var(--success-color); color: #fff; }
+    .btn-green:hover { background: var(--success-hover); }
+    .btn-bkash { background: var(--bkash-color); color: #fff; }
+    .btn-bkash:hover { background: var(--bkash-hover); }
+
+    /* Support Floating Bar */
+    .support-bar {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .support-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px dashed var(--border-color);
+      padding-top: 12px;
     }
   </style>
 </head>
 <body>
 
-<div id="loader" class="loading-overlay">
-  <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status"></div>
-</div>
+  <div class="card">
+    <div class="status-badge">
+      <span class="status-dot"></span> হাই-স্পিড নেটওয়ার্ক অ্যাক্টিভ
+    </div>
+    
+    <span class="brand-icon">📶</span>
+    <h1 class="header-title">Smart WiFi Zone</h1>
+    <p class="subtitle">ইন্টারনেট কানেক্ট করতে পিন বা পেমেন্ট বেছে নিন</p>
 
-<div class="content-wrapper">
-  <!-- Auth Container -->
-  <div id="authSection" class="container">
-    <div class="card card-custom p-4 auth-container bg-white">
-      <div class="text-center mb-4">
-        <i class="fa-solid fa-shield-halved fa-3x text-primary mb-2"></i>
-        <h4 class="fw-bold" id="authTitle">নিরাপদ লগইন</h4>
-        <p class="text-muted small">সিস্টেমে প্রবেশ করতে আপনার তথ্য প্রদান করুন</p>
-      </div>
-      <form id="authForm">
-        <div class="mb-3">
-          <label class="form-label fw-semibold">ইমেইল এড্রেস</label>
-          <input type="email" id="authEmail" class="form-control" autocomplete="off" placeholder="name@domain.com" required>
+    <!-- Tab Navigation -->
+    <div class="tab-container">
+      <button type="button" class="tab-btn active" onclick="switchTab('voucher')">🎟️ ১০ ডিজিটের পিন</button>
+      <button type="button" class="tab-btn" onclick="switchTab('online')">💳 বিকাশ / অনলাইন</button>
+    </div>
+
+    <!-- TAB 1: VOUCHER LOGIN -->
+    <div id="voucher-tab" class="tab-content active">
+      <form name="login" id="loginForm" action="$(link-login-only)" method="post" onsubmit="return handleVoucherLogin(event)">
+        <input type="hidden" name="dst" value="$(link-orig)" />
+        <input type="hidden" name="popup" value="true" />
+        <input type="hidden" id="username" name="username" />
+        <input type="hidden" id="password" name="password" />
+
+        <div class="form-group">
+          <label for="user_phone">মোবাইল নম্বর:</label>
+          <div class="input-wrapper">
+            <input type="tel" id="user_phone" placeholder="017XXXXXXXX" maxlength="11" pattern="[0-9]{11}" required autocomplete="off" oninput="toggleClearBtn(this, 'phone_clear')">
+            <button type="button" id="phone_clear" class="clear-btn" onclick="clearInput('user_phone', 'phone_clear')">✕</button>
+          </div>
         </div>
-        <div class="mb-3">
-          <label class="form-label fw-semibold">পাসওয়ার্ড</label>
-          <input type="password" id="authPassword" class="form-control" placeholder="••••••••" minlength="6" required>
+
+        <div class="form-group">
+          <label for="pin_code">১০ ডিজিটের পিন (PIN) কোড:</label>
+          <div class="pin-input-group">
+            <input type="password" id="pin_code" class="pin-input" placeholder="9847201834" maxlength="10" pattern="[0-9]{10}" required autocomplete="off">
+            <div class="pin-actions">
+              <button type="button" class="action-icon-btn" onclick="togglePinVisibility()">👁️</button>
+              <button type="button" class="action-icon-btn" onclick="startScanner()">📷 স্ক্যান</button>
+            </div>
+          </div>
         </div>
-        <div id="authError" class="alert alert-danger py-2 small mb-3 text-center" style="display: none;"></div>
-        <button type="submit" id="authSubmitBtn" class="btn btn-primary w-100 fw-bold py-2 mb-3 shadow-sm">প্রবেশ করুন</button>
+
+        <!-- Smart QR Scanner Box -->
+        <div id="qr-reader-wrapper" style="display:none; margin-bottom:14px;">
+          <div id="reader"></div>
+          <button type="button" class="action-icon-btn" style="width:100%; margin-top:8px;" onclick="stopScanner()">ক্যামেরা বন্ধ করুন</button>
+        </div>
+
+        <button type="submit" class="btn btn-green" id="submitBtn">ইন্টারনেট চালু করুন</button>
       </form>
     </div>
-  </div>
 
-  <!-- Dashboard Section -->
-  <div id="dashboardSection" style="display: none;">
-    <div class="header-banner mb-3">
-      <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
-        <div>
-          <h4 class="fw-bold mb-0"><i class="fa-solid fa-vault me-2"></i>স্মার্ট ক্যাশ বুক এনভায়রনমেন্ট</h4>
-          <p class="mb-0 opacity-75 small">সুরক্ষিত ডাটাবেস ও রিয়েলটাইম ক্যাশ ট্র্যাকিং সার্ভিস</p>
+    <!-- TAB 2: ONLINE PAYMENT -->
+    <div id="online-tab" class="tab-content">
+      <form action="https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/initiatePayment" method="POST">
+        <input type="hidden" name="mac" value="$(mac)">
+        <input type="hidden" name="ip" value="$(ip)">
+        <input type="hidden" name="package_id" id="selected_package_id" value="pkg_200tk_1m">
+
+        <div class="form-group">
+          <label for="online_phone">মোবাইল নম্বর:</label>
+          <div class="input-wrapper">
+            <input type="tel" name="phone" id="online_phone" placeholder="017XXXXXXXX" maxlength="11" pattern="[0-9]{11}" required autocomplete="off" oninput="toggleClearBtn(this, 'online_phone_clear')">
+            <button type="button" id="online_phone_clear" class="clear-btn" onclick="clearInput('online_phone', 'online_phone_clear')">✕</button>
+          </div>
         </div>
-        <div class="d-flex align-items-center gap-2">
-          <span id="userDisplayEmail" class="badge bg-light text-dark d-none d-md-inline-block py-2 px-3"></span>
-          <button onclick="_0x4f2a()" class="btn btn-outline-light btn-sm fw-bold">
-            <i class="fa-solid fa-power-off me-1"></i> লগআউট
-          </button>
+
+        <!-- Package Grid Cards -->
+        <div class="form-group">
+          <label>প্যাকেজ নির্বাচন করুন:</label>
+          <div class="package-grid">
+            <div class="package-card" onclick="selectPackage('pkg_10tk_1hr', this)">
+              <div class="pkg-title">১ ঘণ্টা</div>
+              <div class="pkg-price">৳ ১০</div>
+            </div>
+            <div class="package-card" onclick="selectPackage('pkg_20tk_3hr', this)">
+              <div class="pkg-title">৩ ঘণ্টা</div>
+              <div class="pkg-price">৳ ২০</div>
+            </div>
+            <div class="package-card" onclick="selectPackage('pkg_50tk_3day', this)">
+              <div class="pkg-title">৩ দিন</div>
+              <div class="pkg-price">৳ ৫০</div>
+            </div>
+            <div class="package-card selected" onclick="selectPackage('pkg_200tk_1m', this)">
+              <div class="pkg-title">১ মাস ⭐</div>
+              <div class="pkg-price">৳ ২০০</div>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <button type="submit" class="btn btn-bkash">bKash দিয়ে পেমেন্ট করুন</button>
+      </form>
     </div>
 
-    <div class="container-fluid px-md-4">
-      
-      <!-- Top Title Bar with Reset Icon -->
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <span class="fw-bold text-secondary small"><i class="fa-solid fa-wallet me-1"></i> ডিজিটাল ওয়ালেট ব্যালেন্স ট্র্যাকার</span>
-        <button onclick="resetInitialBalances()" class="btn btn-sm btn-light text-secondary border shadow-sm py-0 px-2" title="প্রারম্ভিক ব্যালেন্স রিসেট/পরিবর্তন করুন">
-          <i class="fa-solid fa-gear"></i>
-        </button>
-      </div>
+    <!-- Live Helpdesk -->
+    <div class="support-bar">
+      <a href="https://wa.me/8801700000000" target="_blank" class="support-item">💬 WhatsApp</a>
+      <a href="tel:01700000000" class="support-item">📞 হেল্পলাইন</a>
+    </div>
 
-      <!-- Compact 8 Wallets Row -->
-      <div class="row g-2 mb-3">
-        <!-- bKash -->
-        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-bkash shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">bKash (বিকাশ)</span>
-              <button id="btnSetBkash" onclick="setInitialBalance('bKash')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
-            </div>
-            <div class="wallet-amount" id="bkashBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <!-- Nagad -->
-        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-nagad shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Nagad (নগদ)</span>
-              <button id="btnSetNagad" onclick="setInitialBalance('Nagad')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
-            </div>
-            <div class="wallet-amount" id="nagadBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <!-- Rocket -->
-        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-rocket shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Rocket (রকেট)</span>
-              <button id="btnSetRocket" onclick="setInitialBalance('Rocket')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
-            </div>
-            <div class="wallet-amount" id="rocketBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <!-- GP -->
-        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-gp shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">GP (গ্রামীণফোন)</span>
-              <button id="btnSetGP" onclick="setInitialBalance('GP')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
-            </div>
-            <div class="wallet-amount" id="gpBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <!-- Banglalink -->
-        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-bl shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Banglalink</span>
-              <button id="btnSetBanglalink" onclick="setInitialBalance('Banglalink')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
-            </div>
-            <div class="wallet-amount" id="banglalinkBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <!-- Robi -->
-        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-robi shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Robi (রবি)</span>
-              <button id="btnSetRobi" onclick="setInitialBalance('Robi')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
-            </div>
-            <div class="wallet-amount" id="robiBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <!-- Airtel -->
-        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-airtel shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Airtel (এয়ারটেল)</span>
-              <button id="btnSetAirtel" onclick="setInitialBalance('Airtel')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
-            </div>
-            <div class="wallet-amount" id="airtelBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <!-- Teletalk -->
-        <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-teletalk shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Teletalk (টেলিটক)</span>
-              <button id="btnSetTeletalk" onclick="setInitialBalance('Teletalk')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
-            </div>
-            <div class="wallet-amount" id="teletalkBalance">৳ 0.00</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Main Summary Cards -->
-      <div class="row g-2 mb-3 text-center">
-        <div class="col-6 col-lg-2">
-          <div class="card card-custom stat-card stat-today bg-white">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-calendar-day text-warning me-1"></i>আজকের বিক্রি</div>
-            <h5 class="text-warning fw-bold mt-1 mb-0" id="todayIn">৳ 0.00</h5>
-          </div>
-        </div>
-        <div class="col-6 col-lg-2">
-          <div class="card card-custom stat-card stat-out bg-white">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-cart-shopping text-danger me-1"></i>আজকের খরচ</div>
-            <h5 class="text-danger fw-bold mt-1 mb-0" id="todayOut">৳ 0.00</h5>
-          </div>
-        </div>
-        <div class="col-6 col-lg-2">
-          <div class="card card-custom stat-card stat-in bg-white">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-down text-success me-1"></i>ফিল্টার মোট জমা</div>
-            <h6 class="text-success fw-bold mt-1 mb-0" id="totalIn">৳ 0.00</h6>
-          </div>
-        </div>
-        <div class="col-6 col-lg-2">
-          <div class="card card-custom stat-card stat-out bg-white">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-up text-danger me-1"></i>ফিল্টার মোট খরচ</div>
-            <h6 class="text-danger fw-bold mt-1 mb-0" id="totalOut">৳ 0.00</h6>
-          </div>
-        </div>
-        <div class="col-12 col-lg-4">
-          <div class="card card-custom stat-card stat-profit bg-white">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-chart-pie text-primary me-1"></i>ফিল্টার করা নিট লাভ/ক্ষতি</div>
-            <h5 class="fw-bold mt-1 mb-0" id="totalProfit">৳ 0.00</h5>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <!-- Input Panel -->
-        <div class="col-lg-4 mb-4">
-          <div class="card card-custom p-3">
-            <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-square-plus me-2 text-primary"></i>নতুন ডাটা এন্ট্রি</h6>
-            <form id="transactionForm">
-              <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1">বিভাগ</label>
-                <select id="category" class="form-select form-select-sm shadow-sm" onchange="toggleCategoryFields()" required>
-                  <option value="Mobile Banking">মোবাইল ব্যাংকিং (বিকাশ/নগদ/রকেট)</option>
-                  <option value="Mobile Recharge">মোবাইল রিচার্জ</option>
-                  <option value="Print & Photo">প্রিন্ট ও ফটোকপি</option>
-                  <option value="Stationery">স্টেশনারি পণ্য</option>
-                  <option value="Expense">অন্যান্য খরচ</option>
-                </select>
-              </div>
-
-              <!-- MFS Specific Fields -->
-              <div id="mfsFields" class="p-2 bg-light rounded border mb-2">
-                <div class="row g-2">
-                  <div class="col-6">
-                    <label class="form-label fw-semibold small mb-1">অপারেটর</label>
-                    <select id="mfsProvider" class="form-select form-select-sm shadow-sm">
-                      <option value="bKash">বিকাশ (bKash)</option>
-                      <option value="Nagad">নগদ (Nagad)</option>
-                      <option value="Rocket">রকেট (Rocket)</option>
-                    </select>
-                  </div>
-                  <div class="col-6">
-                    <label class="form-label fw-semibold small mb-1">কমিশন (৳)</label>
-                    <input type="number" id="mfsCommission" class="form-control form-control-sm shadow-sm" placeholder="0.00" step="any" value="0">
-                  </div>
-                </div>
-              </div>
-
-              <!-- Mobile Recharge Specific Fields -->
-              <div id="rechargeFields" style="display: none;" class="p-2 bg-light rounded border mb-2">
-                <div class="row g-2">
-                  <div class="col-6">
-                    <label class="form-label fw-semibold small mb-1">অপারেটর</label>
-                    <select id="rechargeOperator" class="form-select form-select-sm shadow-sm">
-                      <option value="GP">গ্রামীণফোন (GP)</option>
-                      <option value="Banglalink">বাংলালিংক</option>
-                      <option value="Robi">রবি (Robi)</option>
-                      <option value="Airtel">এয়ারটেল</option>
-                      <option value="Teletalk">টেলিটক</option>
-                    </select>
-                  </div>
-                  <div class="col-6">
-                    <label class="form-label fw-semibold small mb-1">কমিশন/ডিসকাউন্ট (৳)</label>
-                    <input type="number" id="rechargeCommission" class="form-control form-control-sm shadow-sm" placeholder="0.00" step="any" value="0">
-                  </div>
-                </div>
-              </div>
-
-              <!-- Stationary Specific Fields -->
-              <div id="stationeryFields" style="display: none;" class="p-2 bg-light rounded border mb-2">
-                <div class="mb-1">
-                  <label class="form-label fw-semibold small mb-1">পণ্যের নাম (Product Name)</label>
-                  <input type="text" id="productName" class="form-control form-control-sm shadow-sm" placeholder="যেমন: A4 Paper, Pen">
-                </div>
-                <div class="mb-1">
-                  <label class="form-label fw-semibold small mb-1">পরিমাণ (Pcs)</label>
-                  <input type="number" id="quantity" class="form-control form-control-sm shadow-sm" placeholder="1" min="1" value="1">
-                </div>
-              </div>
-
-              <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1">গ্রাহকের ফোন / হোয়াটসঅ্যাপ নম্বর</label>
-                <input type="text" id="customerPhone" class="form-control form-control-sm shadow-sm" placeholder="01712345678 (ঐচ্ছিক)">
-              </div>
-
-              <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1">লেনদেনের ধরন</label>
-                <select id="type" class="form-select form-select-sm shadow-sm" required>
-                  <option value="Cash In">ক্যাশ-ইন / বিক্রি (জমা)</option>
-                  <option value="Cash Out">ক্যাশ-আউট / খরচ (মাল/ব্যালেন্স ক্রয়)</option>
-                </select>
-              </div>
-
-              <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1">বিবরণ / নোটিং</label>
-                <input type="text" id="description" class="form-control form-control-sm shadow-sm" placeholder="যেমন: ক্যাশইন / ১০০ টাকা রিচার্জ / ফটোকপি" required>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold small mb-1">টাকার পরিমাণ (৳)</label>
-                <input type="number" id="amount" class="form-control form-control-sm shadow-sm" placeholder="0.00" min="0" step="any" required>
-              </div>
-
-              <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2 btn-sm">
-                <i class="fa-solid fa-cloud-arrow-up me-1"></i> এন্ট্রি সেভ করুন
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <!-- Table & Inventory Panel -->
-        <div class="col-lg-8">
-          <!-- Live Stock Summary -->
-          <div class="card card-custom p-3 mb-3 bg-white">
-            <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-boxes-stacked text-success me-2"></i>স্টেশনারি বর্তমান স্টক</h6>
-            <div class="table-responsive" style="max-height: 120px;">
-              <table class="table table-sm table-bordered text-center align-middle mb-0 small">
-                <thead class="table-light">
-                  <tr>
-                    <th>পণ্যের নাম</th>
-                    <th>বর্তমান স্টক (Pcs)</th>
-                    <th>স্ট্যাটাস</th>
-                  </tr>
-                </thead>
-                <tbody id="inventoryTableBody">
-                  <tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="table-container mb-4">
-            <!-- Search & Range Date Filter Bar -->
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-              <div class="d-flex flex-wrap gap-2 align-items-center">
-                <input type="text" id="searchInput" onkeyup="_0x7b1c()" class="form-control form-control-sm shadow-sm" style="width: 170px;" placeholder="🔍 খুঁজুন...">
-                
-                <div class="d-flex align-items-center gap-1 bg-light p-1 rounded border">
-                  <span class="small fw-bold text-muted">হতে:</span>
-                  <input type="date" id="startDateFilter" onchange="_0x7b1c()" class="form-control form-control-sm shadow-sm" style="width: 125px;">
-                  <span class="small fw-bold text-muted">পর্যন্ত:</span>
-                  <input type="date" id="endDateFilter" onchange="_0x7b1c()" class="form-control form-control-sm shadow-sm" style="width: 125px;">
-                  <button onclick="clearDateFilter()" class="btn btn-outline-secondary btn-sm py-0" title="ফিল্টার রিসেট"><i class="fa-solid fa-rotate-left"></i></button>
-                </div>
-              </div>
-              <div>
-                <button onclick="_0x1e8a()" class="btn btn-outline-success btn-sm fw-bold">
-                  <i class="fa-solid fa-file-excel me-1"></i> Excel
-                </button>
-              </div>
-            </div>
-
-            <div class="table-responsive">
-              <table class="table table-hover align-middle small" id="transactionTable">
-                <thead class="table-light">
-                  <tr>
-                    <th>তারিখ ও সময়</th>
-                    <th>ক্যাটাগরি</th>
-                    <th>বিবরণ ও বিস্তারিত</th>
-                    <th>টাইপ</th>
-                    <th>পরিমাণ</th>
-                    <th class="text-center">অ্যাকশন</th>
-                  </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="footer">
+      Device MAC: $(mac) | Powered by Smart WiFi
     </div>
   </div>
-</div>
 
-<!-- Receipt Action Modal -->
-<div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white py-2">
-        <h6 class="modal-title fw-bold"><i class="fa-solid fa-receipt me-2"></i>গ্রাহক রিসিট নিশ্চিতকরণ</h6>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="printableReceipt" class="p-3 border rounded bg-light text-center">
-          <div class="mb-3">
-            <h5 class="fw-bold mb-0">ডিজিটাল ক্যাশ বুক</h5>
-            <small class="text-muted">পেমেন্ট স্লিপ ও টোকেন</small>
-            <hr class="my-2">
-          </div>
-          <div class="text-start">
-            <p class="mb-1"><strong>তারিখ:</strong> <span id="rDate"></span></p>
-            <p class="mb-1"><strong>বিভাগ:</strong> <span id="rCategory"></span></p>
-            <p class="mb-1"><strong>বিবরণ:</strong> <span id="rDesc"></span></p>
-            <p class="mb-1"><strong>পরিমাণ:</strong> ৳ <span id="rAmount"></span></p>
-          </div>
-          <hr class="my-2">
-          <p class="fw-bold mb-0 text-success mt-2">ধন্যবাদ, আবার আসবেন</p>
-        </div>
-      </div>
-      <div class="modal-footer d-flex justify-content-between py-2">
-        <div>
-          <button type="button" onclick="printReceipt()" class="btn btn-outline-dark btn-sm me-1">
-            <i class="fa-solid fa-print me-1"></i> প্রিন্ট
-          </button>
-          <button type="button" onclick="sendWhatsAppReceipt()" class="btn btn-success btn-sm">
-            <i class="fa-brands fa-whatsapp me-1"></i> WhatsApp
-          </button>
-        </div>
-        <button type="button" class="btn btn-secondary btn-sm fw-semibold" data-bs-dismiss="modal">
-          এড়িয়ে যান
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+  <script>
+    const FIREBASE_USER_SAVE_URL = "https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/saveUserData";
+    let html5QrcodeScanner = null;
 
-<footer class="app-footer">
-  <div class="container">
-    <p class="mb-0 fw-semibold">Developed by <span>Antu</span></p>
-  </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<script>
-  const _0x99a = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXNlYXBwLmNvbQ==", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI4NmEx", "Rz1XQktKTEdNM0hE"];
-  const _0x3b = (idx) => atob(_0x99a[idx]);
-
-  const _0x4d21 = {
-    apiKey: _0x3b(0), authDomain: _0x3b(1), databaseURL: _0x3b(2),
-    projectId: _0x3b(3), storageBucket: _0x3b(4), messagingSenderId: _0x3b(5),
-    appId: _0x3b(6), measurementId: _0x3b(7)
-  };
-
-  firebase.initializeApp(_0x4d21);
-  const _auth = firebase.auth();
-  const _db = firebase.database();
-
-  let _user = null;
-  let _cache = [];
-  let _filteredCache = [];
-  let _sessionRef = null;
-  let currentReceiptData = null;
-  let walletInitialBalances = { 
-    bKash: null, Nagad: null, Rocket: null,
-    GP: null, Banglalink: null, Robi: null, Airtel: null, Teletalk: null
-  };
-
-  const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
-
-  function toggleCategoryFields() {
-    const category = document.getElementById('category').value;
-    document.getElementById('mfsFields').style.display = category === 'Mobile Banking' ? 'block' : 'none';
-    document.getElementById('rechargeFields').style.display = category === 'Mobile Recharge' ? 'block' : 'none';
-    document.getElementById('stationeryFields').style.display = category === 'Stationery' ? 'block' : 'none';
-  }
-
-  function safeDecode(str) {
-    if (!str) return '';
-    try {
-      return decodeURIComponent(escape(atob(str)));
-    } catch (e) {
-      return str;
-    }
-  }
-
-  _auth.onAuthStateChanged(async (u) => {
-    toggleLoader(true);
-    if (u) {
-      _user = u;
-      const sId = 'sess_' + Date.now();
-      _sessionRef = _db.ref(`users/${_user.uid}/active_session`);
-      await _sessionRef.set(sId);
-      _sessionRef.on('value', (snap) => {
-        if (snap.val() && snap.val() !== sId) {
-          alert('অন্য একটি ডিভাইস অথবা ট্যাব থেকে লগইন করা হয়েছে!');
-          _auth.signOut();
-        }
-      });
-
-      document.getElementById('authSection').style.display = 'none';
-      document.getElementById('dashboardSection').style.display = 'block';
-      document.getElementById('userDisplayEmail').innerText = _user.email;
-      
-      // Load Initial Wallet Balances
-      _db.ref(`users/${_user.uid}/wallet_initials`).on('value', (snap) => {
-        if (snap.val()) {
-          walletInitialBalances = { ...walletInitialBalances, ...snap.val() };
-        }
-        renderUI();
-      });
-
-      _0x3a12();
-    } else {
-      if(_sessionRef) _sessionRef.off();
-      _user = null;
-      document.getElementById('authSection').style.display = 'block';
-      document.getElementById('dashboardSection').style.display = 'none';
-    }
-    toggleLoader(false);
-  });
-
-  document.getElementById('authForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    toggleLoader(true);
-    const errorEl = document.getElementById('authError');
-    errorEl.style.display = 'none';
-
-    try {
-      await _auth.signInWithEmailAndPassword(
-        document.getElementById('authEmail').value,
-        document.getElementById('authPassword').value
-      );
-    } catch (e) {
-      errorEl.style.display = 'block';
-      errorEl.innerText = "পাসওয়ার্ডটি ভুল হয়েছে!";
-    } finally {
-      toggleLoader(false);
-    }
-  });
-
-  function _0x4f2a() {
-    if(_user && _sessionRef) _sessionRef.remove();
-    _auth.signOut();
-  }
-
-  async function setInitialBalance(provider) {
-    const current = walletInitialBalances[provider] !== null ? walletInitialBalances[provider] : 0;
-    const val = prompt(`${provider}-এর প্রারম্ভিক ব্যালেন্স লিখুন:`, current);
-    if (val !== null && !isNaN(val)) {
-      const num = parseFloat(val) || 0;
-      walletInitialBalances[provider] = num;
-      await _db.ref(`users/${_user.uid}/wallet_initials`).set(walletInitialBalances);
-    }
-  }
-
-  function resetInitialBalances() {
-    ['Bkash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'].forEach(p => {
-      const el = document.getElementById(`btnSet${p}`);
-      if(el) el.style.display = 'inline-block';
-    });
-  }
-
-  document.getElementById('transactionForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!_user) return;
-    
-    const category = document.getElementById('category').value;
-    const type = document.getElementById('type').value;
-    const productName = document.getElementById('productName').value.trim();
-    const qty = Number(document.getElementById('quantity').value) || 0;
-    const customerPhone = document.getElementById('customerPhone').value.trim();
-    const rawDesc = document.getElementById('description').value.trim();
-    const rawAmount = Number(parseFloat(document.getElementById('amount').value).toFixed(2)) || 0;
-
-    let subProvider = '';
-    let commission = 0;
-
-    if (category === 'Mobile Banking') {
-      subProvider = document.getElementById('mfsProvider').value;
-      commission = Number(parseFloat(document.getElementById('mfsCommission').value).toFixed(2)) || 0;
-    } else if (category === 'Mobile Recharge') {
-      subProvider = document.getElementById('rechargeOperator').value;
-      commission = Number(parseFloat(document.getElementById('rechargeCommission').value).toFixed(2)) || 0;
+    /* Toggle PIN Visibility */
+    function togglePinVisibility() {
+      const pinInput = document.getElementById('pin_code');
+      pinInput.type = pinInput.type === 'password' ? 'text' : 'password';
     }
 
-    toggleLoader(true);
-
-    const englishDate = new Date().toLocaleString('en-US', { 
-      year: 'numeric', month: '2-digit', day: '2-digit', 
-      hour: '2-digit', minute: '2-digit', hour12: true 
-    });
-
-    try {
-      const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
-      const uniqueTxId = newTxRef.key;
-
-      const payload = {
-        id: uniqueTxId,
-        date: englishDate,
-        timestamp: Date.now(),
-        category: category,
-        subProvider: subProvider,
-        commission: commission,
-        productName: category === 'Stationery' ? productName : '',
-        quantity: category === 'Stationery' ? qty : 0,
-        customerPhone: customerPhone,
-        type: type,
-        description: rawDesc,
-        amount: rawAmount
-      };
-
-      await newTxRef.set(payload);
-
-      document.getElementById('transactionForm').reset();
-      toggleCategoryFields();
-
-      currentReceiptData = payload;
-      showReceiptModal(payload);
-
-    } catch (err) {
-      alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + err.message);
-    } finally {
-      toggleLoader(false);
+    /* Select Package Card */
+    function selectPackage(pkgId, element) {
+      document.querySelectorAll('.package-card').forEach(card => card.classList.remove('selected'));
+      element.classList.add('selected');
+      document.getElementById('selected_package_id').value = pkgId;
     }
-  });
 
-  function _0x3a12() {
-    if (!_user) return;
-    _db.ref(`users/${_user.uid}/transactions`).on('value', (snap) => {
-      _cache = [];
-      const val = snap.val();
-      if (val) {
-        Object.keys(val).forEach(k => {
-          let item = val[k];
-          item.description = safeDecode(item.description);
-          item.productName = safeDecode(item.productName);
-          _cache.push(item);
-        });
-        _cache.sort((a, b) => b.timestamp - a.timestamp);
-      }
-      _0x7b1c();
-    });
-  }
+    function switchTab(tabName) {
+      document.getElementById('voucher-tab').classList.remove('active');
+      document.getElementById('online-tab').classList.remove('active');
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons[0].classList.remove('active');
+      buttons[1].classList.remove('active');
 
-  function _0x7b1c() {
-    const q = document.getElementById('searchInput').value.toLowerCase().trim();
-    const startDate = document.getElementById('startDateFilter').value;
-    const endDate = document.getElementById('endDateFilter').value;
-
-    _filteredCache = _cache.filter(item => {
-      let matchSearch = true;
-      if (q) {
-        const desc = (item.description || '').toLowerCase();
-        const cat = (item.category || '').toLowerCase();
-        const sub = (item.subProvider || '').toLowerCase();
-        const prod = (item.productName || '').toLowerCase();
-        const phone = (item.customerPhone || '');
-        const amt = (item.amount || '').toString();
-        const typeRaw = (item.type || '').toLowerCase();
-        
-        let typeBangla = typeRaw === 'cash in' ? 'ক্যাশ ইন' : (typeRaw === 'cash out' ? 'ক্যাশ আউট' : '');
-
-        matchSearch = desc.includes(q) || cat.includes(q) || sub.includes(q) || prod.includes(q) || phone.includes(q) || amt.includes(q) || typeRaw.includes(q) || typeBangla.includes(q);
-      }
-
-      let matchDate = true;
-      if (startDate || endDate) {
-        const itemDateObj = new Date(item.timestamp);
-        const itemYMD = itemDateObj.getFullYear() + '-' + String(itemDateObj.getMonth() + 1).padStart(2, '0') + '-' + String(itemDateObj.getDate()).padStart(2, '0');
-
-        if (startDate && itemYMD < startDate) matchDate = false;
-        if (endDate && itemYMD > endDate) matchDate = false;
-      }
-
-      return matchSearch && matchDate;
-    });
-
-    renderUI();
-  }
-
-  function clearDateFilter() {
-    document.getElementById('startDateFilter').value = '';
-    document.getElementById('endDateFilter').value = '';
-    _0x7b1c();
-  }
-
-  function renderUI() {
-    let totIn = 0;
-    let totOut = 0;
-    let tInToday = 0;
-    let tOutToday = 0;
-
-    let walletBalances = {
-      bKash: walletInitialBalances.bKash || 0,
-      Nagad: walletInitialBalances.Nagad || 0,
-      Rocket: walletInitialBalances.Rocket || 0,
-      GP: walletInitialBalances.GP || 0,
-      Banglalink: walletInitialBalances.Banglalink || 0,
-      Robi: walletInitialBalances.Robi || 0,
-      Airtel: walletInitialBalances.Airtel || 0,
-      Teletalk: walletInitialBalances.Teletalk || 0
-    };
-
-    // Auto-Hide buttons if initial balance is set
-    const providers = ['Bkash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'];
-    const pKeys = ['bKash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'];
-    
-    pKeys.forEach((key, idx) => {
-      const btn = document.getElementById(`btnSet${providers[idx]}`);
-      if(btn) btn.style.display = walletInitialBalances[key] !== null ? 'none' : 'inline-block';
-    });
-
-    const now = new Date();
-    const todayY = now.getFullYear();
-    const todayM = now.getMonth();
-    const todayD = now.getDate();
-
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
-
-    const inventoryMap = {};
-
-    _cache.forEach(item => {
-      const itemDate = new Date(item.timestamp || item.date);
-      const amt = item.amount || 0;
-      const comm = item.commission || 0;
-
-      // Wallet Balance Calculation (MFS & Recharge)
-      if ((item.category === 'Mobile Banking' || item.category === 'Mobile Recharge') && item.subProvider) {
-        if (item.type === 'Cash In') {
-          // Recharge/Cashin decrease SIM/Wallet balance, gain commission
-          walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) - amt + comm;
-        } else if (item.type === 'Cash Out') {
-          // Buying balance increases wallet/SIM balance
-          walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) + amt + comm;
-        }
-      }
-
-      // Today's Sales/Expense calculation
-      if (
-        itemDate.getFullYear() === todayY &&
-        itemDate.getMonth() === todayM &&
-        itemDate.getDate() === todayD
-      ) {
-        if (item.type === 'Cash In') tInToday += amt;
-        else tOutToday += amt;
-      }
-
-      // Inventory Tracking
-      if (item.category === 'Stationery' && item.productName) {
-        const pName = item.productName;
-        if (!inventoryMap[pName]) inventoryMap[pName] = 0;
-        if (item.type === 'Cash Out') {
-          inventoryMap[pName] += (item.quantity || 0);
-        } else if (item.type === 'Cash In') {
-          inventoryMap[pName] -= (item.quantity || 0);
-        }
-      }
-    });
-
-    // Update All Wallet Displays
-    document.getElementById('bkashBalance').innerText = `৳ ${(walletBalances.bKash || 0).toFixed(2)}`;
-    document.getElementById('nagadBalance').innerText = `৳ ${(walletBalances.Nagad || 0).toFixed(2)}`;
-    document.getElementById('rocketBalance').innerText = `৳ ${(walletBalances.Rocket || 0).toFixed(2)}`;
-    document.getElementById('gpBalance').innerText = `৳ ${(walletBalances.GP || 0).toFixed(2)}`;
-    document.getElementById('banglalinkBalance').innerText = `৳ ${(walletBalances.Banglalink || 0).toFixed(2)}`;
-    document.getElementById('robiBalance').innerText = `৳ ${(walletBalances.Robi || 0).toFixed(2)}`;
-    document.getElementById('airtelBalance').innerText = `৳ ${(walletBalances.Airtel || 0).toFixed(2)}`;
-    document.getElementById('teletalkBalance').innerText = `৳ ${(walletBalances.Teletalk || 0).toFixed(2)}`;
-
-    // Filtered Cash Calculation
-    _filteredCache.forEach(item => {
-      const amt = item.amount || 0;
-      if (item.type === 'Cash In') {
-        totIn += amt;
+      if(tabName === 'voucher') {
+        document.getElementById('voucher-tab').classList.add('active');
+        buttons[0].classList.add('active');
       } else {
-        totOut += amt;
+        document.getElementById('online-tab').classList.add('active');
+        buttons[1].classList.add('active');
+        stopScanner();
       }
-    });
-
-    const netProfitLoss = totIn - totOut;
-
-    document.getElementById('todayIn').innerText = `৳ ${tInToday.toFixed(2)}`;
-    document.getElementById('todayOut').innerText = `৳ ${tOutToday.toFixed(2)}`;
-    document.getElementById('totalIn').innerText = `৳ ${totIn.toFixed(2)}`;
-    document.getElementById('totalOut').innerText = `৳ ${totOut.toFixed(2)}`;
-
-    const totalProfitEl = document.getElementById('totalProfit');
-    totalProfitEl.innerText = `৳ ${netProfitLoss.toFixed(2)}`;
-    if (netProfitLoss < 0) {
-      totalProfitEl.className = "fw-bold mt-1 mb-0 text-danger";
-    } else {
-      totalProfitEl.className = "fw-bold mt-1 mb-0 text-primary";
     }
 
-    renderInventoryTable(inventoryMap);
-
-    if (_filteredCache.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">কোনো তথ্য পাওয়া যায়নি</td></tr>`;
-      return;
+    function toggleClearBtn(input, btnId) {
+      document.getElementById(btnId).style.display = input.value.length > 0 ? 'block' : 'none';
     }
 
-    _filteredCache.forEach(item => {
-      let badgeClass = 'badge-mfs';
-      if(item.category === 'Mobile Recharge') badgeClass = 'badge-recharge';
-      else if(item.category === 'Print & Photo') badgeClass = 'badge-print';
-      else if(item.category === 'Stationery') badgeClass = 'badge-stationery';
-      else if(item.category === 'Expense') badgeClass = 'badge-expense';
-
-      const typeBadge = item.type === 'Cash In' 
-        ? `<span class="badge bg-success-subtle text-success border border-success">ক্যাশ ইন</span>`
-        : `<span class="badge bg-danger-subtle text-danger border border-danger">ক্যাশ আউট</span>`;
-
-      const displayDesc = safeDecode(item.description);
-      const displayProdName = safeDecode(item.productName);
-
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="small">${item.date || ''}</td>
-        <td>
-          <span class="badge ${badgeClass}">${item.category}</span>
-          ${item.subProvider ? `<br><small class="fw-bold text-dark">${item.subProvider}</small>` : ''}
-        </td>
-        <td>
-          <div class="fw-bold">${displayDesc}</div>
-          ${item.commission ? `<small class="text-success fw-bold">কমিশন: ৳${item.commission}</small><br>` : ''}
-          ${displayProdName ? `<small class="text-muted">পণ্য: ${displayProdName} (${item.quantity || 0} Pcs)</small><br>` : ''}
-          ${item.customerPhone ? `<small class="text-primary"><i class="fa-brands fa-whatsapp"></i> ${item.customerPhone}</small>` : ''}
-        </td>
-        <td>${typeBadge}</td>
-        <td class="fw-bold">৳ ${(item.amount || 0).toFixed(2)}</td>
-        <td class="text-center">
-          <button onclick="reprintReceipt('${item.id}')" class="btn btn-sm btn-outline-primary me-1" title="রিসিট প্রিন্ট"><i class="fa-solid fa-print"></i></button>
-          <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger" title="ডিলিট"><i class="fa-solid fa-trash"></i></button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  function renderInventoryTable(invMap) {
-    const invTbody = document.getElementById('inventoryTableBody');
-    invTbody.innerHTML = '';
-    const keys = Object.keys(invMap);
-
-    if (keys.length === 0) {
-      invTbody.innerHTML = `<tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>`;
-      return;
+    function clearInput(inputId, btnId) {
+      document.getElementById(inputId).value = '';
+      document.getElementById(btnId).style.display = 'none';
     }
 
-    keys.forEach(pName => {
-      const stock = invMap[pName];
-      let statusBadge = stock <= 2 
-        ? `<span class="badge bg-danger">লো স্টক</span>` 
-        : `<span class="badge bg-success">স্টক ওকে</span>`;
-
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="text-capitalize">${safeDecode(pName)}</td>
-        <td class="fw-bold">${stock}</td>
-        <td>${statusBadge}</td>
-      `;
-      invTbody.appendChild(tr);
-    });
-  }
-
-  async function deleteTx(id) {
-    if (!confirm('আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান?')) return;
-    if (!_user) return;
-    toggleLoader(true);
-    try {
-      await _db.ref(`users/${_user.uid}/transactions/${id}`).remove();
-    } catch (e) {
-      alert("ডিলিট করতে ব্যর্থ হয়েছে: " + e.message);
-    } finally {
-      toggleLoader(false);
-    }
-  }
-
-  function showReceiptModal(data) {
-    document.getElementById('rDate').innerText = data.date;
-    document.getElementById('rCategory').innerText = data.category + (data.subProvider ? ` (${data.subProvider})` : '');
-    document.getElementById('rDesc').innerText = safeDecode(data.description);
-    document.getElementById('rAmount').innerText = (data.amount || 0).toFixed(2);
-
-    const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
-    modal.show();
-  }
-
-  function reprintReceipt(id) {
-    const item = _cache.find(x => x.id === id);
-    if (item) {
-      currentReceiptData = item;
-      showReceiptModal(item);
-    }
-  }
-
-  function printReceipt() {
-    window.print();
-  }
-
-  function sendWhatsAppReceipt() {
-    if (!currentReceiptData || !currentReceiptData.customerPhone) {
-      alert("গ্রাহকের কোনো হোয়াটসঅ্যাপ নম্বর পাওয়া যায়নি!");
-      return;
+    /* QR Scanner Functions */
+    function startScanner() {
+      document.getElementById('qr-reader-wrapper').style.display = 'block';
+      if (!html5QrcodeScanner) {
+        html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: { width: 180, height: 180 } });
+        html5QrcodeScanner.render((decodedText) => {
+          const extractedPin = decodedText.replace(/\D/g, '').slice(0, 10);
+          if (extractedPin.length === 10) {
+            document.getElementById('pin_code').value = extractedPin;
+            if (navigator.vibrate) navigator.vibrate(100);
+            stopScanner();
+          }
+        });
+      }
     }
 
-    let phone = currentReceiptData.customerPhone.replace(/[^0-9]/g, '');
-    if (phone.startsWith('0')) {
-      phone = '88' + phone;
+    function stopScanner() {
+      if (html5QrcodeScanner) {
+        html5QrcodeScanner.clear().then(() => {
+          html5QrcodeScanner = null;
+          document.getElementById('qr-reader-wrapper').style.display = 'none';
+        });
+      }
     }
 
-    const msg = `*ডিজিটাল ক্যাশ বুক - পেমেন্ট স্লিপ*\n` +
-                `তারিখ: ${currentReceiptData.date}\n` +
-                `বিভাগ: ${currentReceiptData.category} ${currentReceiptData.subProvider ? '('+currentReceiptData.subProvider+')' : ''}\n` +
-                `বিবরণ: ${safeDecode(currentReceiptData.description)}\n` +
-                `পরিমাণ: ৳${(currentReceiptData.amount || 0).toFixed(2)}\n\n` +
-                `ধন্যবাদ, আবার আসবেন!`;
+    async function handleVoucherLogin(event) {
+      event.preventDefault();
+      const phone = document.getElementById('user_phone').value.trim();
+      const pin = document.getElementById('pin_code').value.trim();
+      const mac = "$(mac)";
+      const submitBtn = document.getElementById('submitBtn');
 
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank');
-  }
+      if (phone.length !== 11 || pin.length !== 10) {
+        alert("সঠিক ১১ ডিজিটের মোবাইল নম্বর এবং ১০ ডিজিটের পিন কোড দিন!");
+        return false;
+      }
 
-  function _0x1e8a() {
-    if (_filteredCache.length === 0) {
-      alert("এক্সপোর্ট করার জন্য কোনো ডাটা নেই!");
-      return;
+      submitBtn.innerText = "যাচাই করা হচ্ছে...";
+      submitBtn.disabled = true;
+
+      try {
+        await fetch(FIREBASE_USER_SAVE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mac: mac, phone: phone })
+        });
+      } catch (error) {
+        console.log("Firebase sync warning:", error);
+      }
+
+      document.getElementById('username').value = pin;
+      document.getElementById('password').value = pin;
+      document.getElementById('loginForm').submit();
     }
-
-    const exportData = _filteredCache.map(item => ({
-      'তারিখ ও সময়': item.date || '',
-      'ক্যাটাগরি': item.category || '',
-      'অপারেটর/সাব-প্রোভাইডার': item.subProvider || '',
-      'বিবরণ': safeDecode(item.description),
-      'কমিশন (৳)': item.commission || 0,
-      'পণ্যের নাম': safeDecode(item.productName),
-      'পরিমাণ (Pcs)': item.quantity || 0,
-      'ফোন নম্বর': item.customerPhone || '',
-      'টাইপ': item.type || '',
-      'পরিমাণ (৳)': item.amount || 0
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "CashBook");
-    XLSX.writeFile(workbook, `CashBook_Report_${Date.now()}.xlsx`);
-  }
-</script>
-
+  </script>
 </body>
 </html>
