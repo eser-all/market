@@ -571,7 +571,6 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
-  // Enable Firebase Offline Persistence (ডাটা অফলাইনে ব্যাকআপ থাকবে)
   try {
     _db.ref().keepSynced(true);
   } catch (e) { console.log("Persistence setup", e); }
@@ -590,7 +589,6 @@
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
-  // --- Theme Controller (Dark Mode) ---
   function toggleDarkMode() {
     const currentTheme = document.documentElement.getAttribute('data-bs-theme');
     const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -606,7 +604,6 @@
     }
   }
 
-  // Load Saved Theme
   window.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('appTheme') || 'light';
     document.documentElement.setAttribute('data-bs-theme', savedTheme);
@@ -617,7 +614,6 @@
         : '<i class="fa-solid fa-moon me-1"></i> ডার্ক মোড';
     }
 
-    // Network status listener
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
     updateNetworkStatus();
@@ -629,7 +625,7 @@
       alertBox.style.display = 'block';
     } else {
       alertBox.style.display = 'none';
-      syncOfflineDrafts(); // নেট চালু হলে ড্রাফট সিন্ক হবে
+      syncOfflineDrafts();
     }
   }
 
@@ -864,7 +860,6 @@
         payload.id = newTxRef.key;
         await newTxRef.set(payload);
       } else {
-        // Save to LocalStorage Backup if Offline
         let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
         pending.push(payload);
         localStorage.setItem('pending_tx', JSON.stringify(pending));
@@ -886,7 +881,6 @@
     }
   });
 
-  // Local Storage Draft Synchronization
   async function syncOfflineDrafts() {
     if (!navigator.onLine || !_user) return;
     let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
@@ -1033,7 +1027,6 @@
         else tOutToday += amt;
       }
 
-      // Multi-Item Stock Calculation
       if (item.category === 'Stationery') {
         if (item.items && item.items.length > 0) {
           item.items.forEach(stItem => {
