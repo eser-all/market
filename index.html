@@ -31,7 +31,6 @@
     .stat-profit { border-color: #0d6efd; }
     .stat-today { border-color: #ffc107; }
     
-    /* Compact Mini Wallets */
     .wallet-card { 
       border-radius: 8px; 
       color: white; 
@@ -164,7 +163,6 @@
 
       <!-- Compact 8 Wallets Row -->
       <div class="row g-2 mb-3">
-        <!-- bKash -->
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-bkash shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
@@ -174,7 +172,6 @@
             <div class="wallet-amount" id="bkashBalance">৳ 0.00</div>
           </div>
         </div>
-        <!-- Nagad -->
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-nagad shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
@@ -184,7 +181,6 @@
             <div class="wallet-amount" id="nagadBalance">৳ 0.00</div>
           </div>
         </div>
-        <!-- Rocket -->
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-rocket shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
@@ -194,7 +190,6 @@
             <div class="wallet-amount" id="rocketBalance">৳ 0.00</div>
           </div>
         </div>
-        <!-- GP -->
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-gp shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
@@ -204,7 +199,6 @@
             <div class="wallet-amount" id="gpBalance">৳ 0.00</div>
           </div>
         </div>
-        <!-- Banglalink -->
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-bl shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
@@ -214,7 +208,6 @@
             <div class="wallet-amount" id="banglalinkBalance">৳ 0.00</div>
           </div>
         </div>
-        <!-- Robi -->
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-robi shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
@@ -224,7 +217,6 @@
             <div class="wallet-amount" id="robiBalance">৳ 0.00</div>
           </div>
         </div>
-        <!-- Airtel -->
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-airtel shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
@@ -234,7 +226,6 @@
             <div class="wallet-amount" id="airtelBalance">৳ 0.00</div>
           </div>
         </div>
-        <!-- Teletalk -->
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-teletalk shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
@@ -335,15 +326,39 @@
                 </div>
               </div>
 
-              <!-- Stationary Specific Fields -->
+              <!-- Multi-Item Stationery Specific Fields -->
               <div id="stationeryFields" style="display: none;" class="p-2 bg-light rounded border mb-2">
-                <div class="mb-1">
-                  <label class="form-label fw-semibold small mb-1">পণ্যের নাম (Product Name)</label>
+                <div class="mb-2">
+                  <label class="form-label fw-semibold small mb-1">পণ্যের নাম</label>
                   <input type="text" id="productName" class="form-control form-control-sm shadow-sm" placeholder="যেমন: A4 Paper, Pen">
                 </div>
-                <div class="mb-1">
-                  <label class="form-label fw-semibold small mb-1">পরিমাণ (Pcs)</label>
-                  <input type="number" id="quantity" class="form-control form-control-sm shadow-sm" placeholder="1" min="1" value="1">
+                <div class="row g-2 mb-2">
+                  <div class="col-6">
+                    <label class="form-label fw-semibold small mb-1">পরিমাণ (Pcs)</label>
+                    <input type="number" id="quantity" class="form-control form-control-sm shadow-sm" placeholder="1" min="1" value="1">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label fw-semibold small mb-1">একক দাম (৳)</label>
+                    <input type="number" id="unitPrice" class="form-control form-control-sm shadow-sm" placeholder="0.00" min="0" step="any">
+                  </div>
+                </div>
+                <button type="button" onclick="addStationeryItem()" class="btn btn-sm btn-outline-success w-100 fw-bold mb-2">
+                  <i class="fa-solid fa-plus me-1"></i> আইটেম যোগ করুন
+                </button>
+
+                <!-- Stationery Cart Table -->
+                <div id="stationeryCartWrapper" style="display:none;">
+                  <table class="table table-sm table-bordered text-center align-middle bg-white mb-1 small">
+                    <thead class="table-light">
+                      <tr>
+                        <th>পণ্য</th>
+                        <th>পরিমাণ</th>
+                        <th>মোট</th>
+                        <th>#</th>
+                      </tr>
+                    </thead>
+                    <tbody id="stationeryCartBody"></tbody>
+                  </table>
                 </div>
               </div>
 
@@ -366,7 +381,7 @@
               </div>
 
               <div class="mb-3">
-                <label class="form-label fw-semibold small mb-1">টাকার পরিমাণ (৳)</label>
+                <label class="form-label fw-semibold small mb-1">মোট টাকার পরিমাণ (৳)</label>
                 <input type="number" id="amount" class="form-control form-control-sm shadow-sm" placeholder="0.00" min="0" step="any" required>
               </div>
 
@@ -460,7 +475,23 @@
             <p class="mb-1"><strong>তারিখ:</strong> <span id="rDate"></span></p>
             <p class="mb-1"><strong>বিভাগ:</strong> <span id="rCategory"></span></p>
             <p class="mb-1"><strong>বিবরণ:</strong> <span id="rDesc"></span></p>
-            <p class="mb-1"><strong>পরিমাণ:</strong> ৳ <span id="rAmount"></span></p>
+            
+            <!-- Stationery Items Detailed Table -->
+            <div id="rItemsWrapper" class="my-2" style="display:none;">
+              <table class="table table-sm table-bordered text-center small mb-1">
+                <thead class="table-secondary">
+                  <tr>
+                    <th>পণ্য</th>
+                    <th>পরিমাণ</th>
+                    <th>একক দাম</th>
+                    <th>মোট</th>
+                  </tr>
+                </thead>
+                <tbody id="rItemsBody"></tbody>
+              </table>
+            </div>
+
+            <p class="mb-1 fw-bold fs-6"><strong>সর্বমোট পরিমাণ:</strong> ৳ <span id="rAmount"></span></p>
           </div>
           <hr class="my-2">
           <p class="fw-bold mb-0 text-success mt-2">ধন্যবাদ, আবার আসবেন</p>
@@ -513,6 +544,8 @@
   let _filteredCache = [];
   let _sessionRef = null;
   let currentReceiptData = null;
+  let stationeryCart = []; // Temporarily holds multi-stationery items
+
   let walletInitialBalances = { 
     bKash: null, Nagad: null, Rocket: null,
     GP: null, Banglalink: null, Robi: null, Airtel: null, Teletalk: null
@@ -525,6 +558,78 @@
     document.getElementById('mfsFields').style.display = category === 'Mobile Banking' ? 'block' : 'none';
     document.getElementById('rechargeFields').style.display = category === 'Mobile Recharge' ? 'block' : 'none';
     document.getElementById('stationeryFields').style.display = category === 'Stationery' ? 'block' : 'none';
+    
+    const amountField = document.getElementById('amount');
+    if (category === 'Stationery') {
+      amountField.readOnly = stationeryCart.length > 0;
+    } else {
+      amountField.readOnly = false;
+    }
+  }
+
+  function addStationeryItem() {
+    const pName = document.getElementById('productName').value.trim();
+    const qty = Number(document.getElementById('quantity').value) || 1;
+    const unitPrice = Number(parseFloat(document.getElementById('unitPrice').value).toFixed(2)) || 0;
+
+    if (!pName) {
+      alert('অনুগ্রহ করে পণ্যের নাম লিখুন!');
+      return;
+    }
+
+    const total = Number((qty * unitPrice).toFixed(2));
+    stationeryCart.push({ productName: pName, quantity: qty, unitPrice: unitPrice, total: total });
+
+    document.getElementById('productName').value = '';
+    document.getElementById('quantity').value = '1';
+    document.getElementById('unitPrice').value = '';
+
+    renderStationeryCart();
+  }
+
+  function removeStationeryItem(index) {
+    stationeryCart.splice(index, 1);
+    renderStationeryCart();
+  }
+
+  function renderStationeryCart() {
+    const cartWrapper = document.getElementById('stationeryCartWrapper');
+    const cartBody = document.getElementById('stationeryCartBody');
+    const amountField = document.getElementById('amount');
+    const descField = document.getElementById('description');
+
+    if (stationeryCart.length === 0) {
+      cartWrapper.style.display = 'none';
+      amountField.readOnly = false;
+      return;
+    }
+
+    cartWrapper.style.display = 'block';
+    cartBody.innerHTML = '';
+
+    let grandTotal = 0;
+    let descNames = [];
+
+    stationeryCart.forEach((item, index) => {
+      grandTotal += item.total;
+      descNames.push(`${item.productName} (${item.quantity}Pcs)`);
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.productName}</td>
+        <td>${item.quantity}</td>
+        <td>৳${item.total.toFixed(2)}</td>
+        <td><button type="button" onclick="removeStationeryItem(${index})" class="btn btn-sm text-danger p-0"><i class="fa-solid fa-xmark"></i></button></td>
+      `;
+      cartBody.appendChild(tr);
+    });
+
+    amountField.value = grandTotal.toFixed(2);
+    amountField.readOnly = true;
+
+    if(!descField.value || descField.value.startsWith('স্টেশনারি ক্রয়:')) {
+      descField.value = 'স্টেশনারি ক্রয়: ' + descNames.join(', ');
+    }
   }
 
   function safeDecode(str) {
@@ -554,7 +659,6 @@
       document.getElementById('dashboardSection').style.display = 'block';
       document.getElementById('userDisplayEmail').innerText = _user.email;
       
-      // Load Initial Wallet Balances
       _db.ref(`users/${_user.uid}/wallet_initials`).on('value', (snap) => {
         if (snap.val()) {
           walletInitialBalances = { ...walletInitialBalances, ...snap.val() };
@@ -619,14 +723,13 @@
     
     const category = document.getElementById('category').value;
     const type = document.getElementById('type').value;
-    const productName = document.getElementById('productName').value.trim();
-    const qty = Number(document.getElementById('quantity').value) || 0;
     const customerPhone = document.getElementById('customerPhone').value.trim();
     const rawDesc = document.getElementById('description').value.trim();
     const rawAmount = Number(parseFloat(document.getElementById('amount').value).toFixed(2)) || 0;
 
     let subProvider = '';
     let commission = 0;
+    let items = [];
 
     if (category === 'Mobile Banking') {
       subProvider = document.getElementById('mfsProvider').value;
@@ -634,6 +737,16 @@
     } else if (category === 'Mobile Recharge') {
       subProvider = document.getElementById('rechargeOperator').value;
       commission = Number(parseFloat(document.getElementById('rechargeCommission').value).toFixed(2)) || 0;
+    } else if (category === 'Stationery') {
+      if (stationeryCart.length > 0) {
+        items = [...stationeryCart];
+      } else {
+        const pName = document.getElementById('productName').value.trim();
+        const qty = Number(document.getElementById('quantity').value) || 1;
+        if (pName) {
+          items.push({ productName: pName, quantity: qty, unitPrice: rawAmount / qty, total: rawAmount });
+        }
+      }
     }
 
     toggleLoader(true);
@@ -654,8 +767,9 @@
         category: category,
         subProvider: subProvider,
         commission: commission,
-        productName: category === 'Stationery' ? productName : '',
-        quantity: category === 'Stationery' ? qty : 0,
+        items: items, // Multi-items array added
+        productName: items.length === 1 ? items[0].productName : '',
+        quantity: items.length === 1 ? items[0].quantity : 0,
         customerPhone: customerPhone,
         type: type,
         description: rawDesc,
@@ -664,7 +778,9 @@
 
       await newTxRef.set(payload);
 
+      stationeryCart = [];
       document.getElementById('transactionForm').reset();
+      renderStationeryCart();
       toggleCategoryFields();
 
       currentReceiptData = payload;
@@ -687,6 +803,9 @@
           let item = val[k];
           item.description = safeDecode(item.description);
           item.productName = safeDecode(item.productName);
+          if(item.items) {
+            item.items = item.items.map(it => ({ ...it, productName: safeDecode(it.productName) }));
+          }
           _cache.push(item);
         });
         _cache.sort((a, b) => b.timestamp - a.timestamp);
@@ -711,9 +830,14 @@
         const amt = (item.amount || '').toString();
         const typeRaw = (item.type || '').toLowerCase();
         
+        let itemNamesMatch = false;
+        if(item.items && item.items.length > 0) {
+          itemNamesMatch = item.items.some(i => (i.productName || '').toLowerCase().includes(q));
+        }
+
         let typeBangla = typeRaw === 'cash in' ? 'ক্যাশ ইন' : (typeRaw === 'cash out' ? 'ক্যাশ আউট' : '');
 
-        matchSearch = desc.includes(q) || cat.includes(q) || sub.includes(q) || prod.includes(q) || phone.includes(q) || amt.includes(q) || typeRaw.includes(q) || typeBangla.includes(q);
+        matchSearch = desc.includes(q) || cat.includes(q) || sub.includes(q) || prod.includes(q) || itemNamesMatch || phone.includes(q) || amt.includes(q) || typeRaw.includes(q) || typeBangla.includes(q);
       }
 
       let matchDate = true;
@@ -754,7 +878,6 @@
       Teletalk: walletInitialBalances.Teletalk || 0
     };
 
-    // Auto-Hide buttons if initial balance is set
     const providers = ['Bkash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'];
     const pKeys = ['bKash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'];
     
@@ -778,18 +901,14 @@
       const amt = item.amount || 0;
       const comm = item.commission || 0;
 
-      // Wallet Balance Calculation (MFS & Recharge)
       if ((item.category === 'Mobile Banking' || item.category === 'Mobile Recharge') && item.subProvider) {
         if (item.type === 'Cash In') {
-          // Recharge/Cashin decrease SIM/Wallet balance, gain commission
           walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) - amt + comm;
         } else if (item.type === 'Cash Out') {
-          // Buying balance increases wallet/SIM balance
           walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) + amt + comm;
         }
       }
 
-      // Today's Sales/Expense calculation
       if (
         itemDate.getFullYear() === todayY &&
         itemDate.getMonth() === todayM &&
@@ -799,19 +918,32 @@
         else tOutToday += amt;
       }
 
-      // Inventory Tracking
-      if (item.category === 'Stationery' && item.productName) {
-        const pName = item.productName;
-        if (!inventoryMap[pName]) inventoryMap[pName] = 0;
-        if (item.type === 'Cash Out') {
-          inventoryMap[pName] += (item.quantity || 0);
-        } else if (item.type === 'Cash In') {
-          inventoryMap[pName] -= (item.quantity || 0);
+      // Multi-Item Stock Calculation
+      if (item.category === 'Stationery') {
+        if (item.items && item.items.length > 0) {
+          item.items.forEach(stItem => {
+            const pName = stItem.productName;
+            if (pName) {
+              if (!inventoryMap[pName]) inventoryMap[pName] = 0;
+              if (item.type === 'Cash Out') {
+                inventoryMap[pName] += (stItem.quantity || 0);
+              } else if (item.type === 'Cash In') {
+                inventoryMap[pName] -= (stItem.quantity || 0);
+              }
+            }
+          });
+        } else if (item.productName) {
+          const pName = item.productName;
+          if (!inventoryMap[pName]) inventoryMap[pName] = 0;
+          if (item.type === 'Cash Out') {
+            inventoryMap[pName] += (item.quantity || 0);
+          } else if (item.type === 'Cash In') {
+            inventoryMap[pName] -= (item.quantity || 0);
+          }
         }
       }
     });
 
-    // Update All Wallet Displays
     document.getElementById('bkashBalance').innerText = `৳ ${(walletBalances.bKash || 0).toFixed(2)}`;
     document.getElementById('nagadBalance').innerText = `৳ ${(walletBalances.Nagad || 0).toFixed(2)}`;
     document.getElementById('rocketBalance').innerText = `৳ ${(walletBalances.Rocket || 0).toFixed(2)}`;
@@ -821,7 +953,6 @@
     document.getElementById('airtelBalance').innerText = `৳ ${(walletBalances.Airtel || 0).toFixed(2)}`;
     document.getElementById('teletalkBalance').innerText = `৳ ${(walletBalances.Teletalk || 0).toFixed(2)}`;
 
-    // Filtered Cash Calculation
     _filteredCache.forEach(item => {
       const amt = item.amount || 0;
       if (item.type === 'Cash In') {
@@ -865,7 +996,14 @@
         : `<span class="badge bg-danger-subtle text-danger border border-danger">ক্যাশ আউট</span>`;
 
       const displayDesc = safeDecode(item.description);
-      const displayProdName = safeDecode(item.productName);
+      
+      let itemDetailsHTML = '';
+      if (item.items && item.items.length > 0) {
+        let itemListStr = item.items.map(i => `${safeDecode(i.productName)} (${i.quantity}Pcs)`).join(', ');
+        itemDetailsHTML = `<small class="text-muted">আইটেম: ${itemListStr}</small><br>`;
+      } else if (item.productName) {
+        itemDetailsHTML = `<small class="text-muted">পণ্য: ${safeDecode(item.productName)} (${item.quantity || 0} Pcs)</small><br>`;
+      }
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -877,7 +1015,7 @@
         <td>
           <div class="fw-bold">${displayDesc}</div>
           ${item.commission ? `<small class="text-success fw-bold">কমিশন: ৳${item.commission}</small><br>` : ''}
-          ${displayProdName ? `<small class="text-muted">পণ্য: ${displayProdName} (${item.quantity || 0} Pcs)</small><br>` : ''}
+          ${itemDetailsHTML}
           ${item.customerPhone ? `<small class="text-primary"><i class="fa-brands fa-whatsapp"></i> ${item.customerPhone}</small>` : ''}
         </td>
         <td>${typeBadge}</td>
@@ -936,6 +1074,27 @@
     document.getElementById('rDesc').innerText = safeDecode(data.description);
     document.getElementById('rAmount').innerText = (data.amount || 0).toFixed(2);
 
+    const itemsWrapper = document.getElementById('rItemsWrapper');
+    const itemsBody = document.getElementById('rItemsBody');
+
+    if (data.items && data.items.length > 0) {
+      itemsWrapper.style.display = 'block';
+      itemsBody.innerHTML = '';
+      data.items.forEach(it => {
+        const uPrice = it.unitPrice || (it.total / it.quantity);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${safeDecode(it.productName)}</td>
+          <td>${it.quantity}</td>
+          <td>৳${uPrice.toFixed(2)}</td>
+          <td>৳${(it.total || 0).toFixed(2)}</td>
+        `;
+        itemsBody.appendChild(tr);
+      });
+    } else {
+      itemsWrapper.style.display = 'none';
+    }
+
     const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
     modal.show();
   }
@@ -963,11 +1122,20 @@
       phone = '88' + phone;
     }
 
+    let itemsListTxt = '';
+    if (currentReceiptData.items && currentReceiptData.items.length > 0) {
+      itemsListTxt = `\n*পণ্যসমূহ:*\n` + currentReceiptData.items.map((it, idx) => 
+        `${idx + 1}. ${safeDecode(it.productName)} - ${it.quantity} Pcs x ৳${(it.unitPrice || (it.total/it.quantity)).toFixed(2)} = ৳${(it.total || 0).toFixed(2)}`
+      ).join('\n') + '\n';
+    }
+
     const msg = `*ডিজিটাল ক্যাশ বুক - পেমেন্ট স্লিপ*\n` +
                 `তারিখ: ${currentReceiptData.date}\n` +
                 `বিভাগ: ${currentReceiptData.category} ${currentReceiptData.subProvider ? '('+currentReceiptData.subProvider+')' : ''}\n` +
                 `বিবরণ: ${safeDecode(currentReceiptData.description)}\n` +
-                `পরিমাণ: ৳${(currentReceiptData.amount || 0).toFixed(2)}\n\n` +
+                itemsListTxt +
+                `--------------------------\n` +
+                `*সর্বমোট: ৳${(currentReceiptData.amount || 0).toFixed(2)}*\n\n` +
                 `ধন্যবাদ, আবার আসবেন!`;
 
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
@@ -980,18 +1148,28 @@
       return;
     }
 
-    const exportData = _filteredCache.map(item => ({
-      'তারিখ ও সময়': item.date || '',
-      'ক্যাটাগরি': item.category || '',
-      'অপারেটর/সাব-প্রোভাইডার': item.subProvider || '',
-      'বিবরণ': safeDecode(item.description),
-      'কমিশন (৳)': item.commission || 0,
-      'পণ্যের নাম': safeDecode(item.productName),
-      'পরিমাণ (Pcs)': item.quantity || 0,
-      'ফোন নম্বর': item.customerPhone || '',
-      'টাইপ': item.type || '',
-      'পরিমাণ (৳)': item.amount || 0
-    }));
+    const exportData = _filteredCache.map(item => {
+      let itemNames = safeDecode(item.productName);
+      let itemQtys = item.quantity || 0;
+
+      if(item.items && item.items.length > 0) {
+        itemNames = item.items.map(i => safeDecode(i.productName)).join(', ');
+        itemQtys = item.items.reduce((acc, i) => acc + (i.quantity || 0), 0);
+      }
+
+      return {
+        'তারিখ ও সময়': item.date || '',
+        'ক্যাটাগরি': item.category || '',
+        'অপারেটর/সাব-প্রোভাইডার': item.subProvider || '',
+        'বিবরণ': safeDecode(item.description),
+        'কমিশন (৳)': item.commission || 0,
+        'পণ্যের নাম': itemNames,
+        'পরিমাণ (Pcs)': itemQtys,
+        'ফোন নম্বর': item.customerPhone || '',
+        'টাইপ': item.type || '',
+        'পরিমাণ (৳)': item.amount || 0
+      };
+    });
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
