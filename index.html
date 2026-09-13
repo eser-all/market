@@ -97,7 +97,7 @@
       padding: 2px 8px;
     }
 
-    /* --- নতুন আকর্ষণীয় রিসিট ডিজাইন (স্ক্রিন ভার্সন) --- */
+    /* --- রিসিট ডিজাইন (স্ক্রিন ভার্সন) --- */
     .receipt-box {
       background-color: #ffffff;
       color: #000000;
@@ -145,7 +145,7 @@
       margin-top: 8px;
     }
 
-    /* --- নিখুঁত প্রিন্ট স্টাইলিং (পিওএস থার্মাল ও সাধারণ প্রিণ্টার ফ্রেন্ডলি) --- */
+    /* --- থার্মাল ও প্রিন্টার স্টাইলিং --- */
     @media print {
       body * {
         visibility: hidden !important;
@@ -177,17 +177,25 @@
         border: none !important;
         box-shadow: none !important;
         width: 100% !important;
-        max-width: 80mm !important; /* স্ট্যান্ডার্ড থার্মাল পেপার সাইজ */
+        max-width: 80mm !important;
         margin: 0 auto !important;
         padding: 5px !important;
         color: #000 !important;
       }
+      #rItemsWrapper {
+        display: block !important;
+      }
+      .receipt-table th, .receipt-table td {
+        color: #000 !important;
+        border-bottom: 1px solid #000 !important;
+      }
       .receipt-divider {
-        border-top: 1px solid #000 !important;
+        border-top: 1px dashed #000 !important;
       }
       .receipt-total {
         background: none !important;
         border: 1px solid #000 !important;
+        color: #000 !important;
       }
     }
   </style>
@@ -477,15 +485,16 @@
                 <input type="text" id="description" class="form-control form-control-sm shadow-sm" placeholder="যেমন: ক্যাশইন / ১০০ টাকা রিচার্জ / ফটোকপি" required>
               </div>
 
-              <!-- Quick Amount Helper Buttons -->
+              <!-- Quick Amount Helper Buttons (Updated to: 20, 30, 40, 50, 100, 200) -->
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">দ্রুত পরিমাণ বাছাই করুন (৳):</label>
                 <div class="d-flex flex-wrap gap-1">
                   <button type="button" onclick="setQuickAmount(20)" class="btn btn-outline-secondary btn-sm quick-amt-btn">২০</button>
+                  <button type="button" onclick="setQuickAmount(30)" class="btn btn-outline-secondary btn-sm quick-amt-btn">৩০</button>
+                  <button type="button" onclick="setQuickAmount(40)" class="btn btn-outline-secondary btn-sm quick-amt-btn">৪০</button>
                   <button type="button" onclick="setQuickAmount(50)" class="btn btn-outline-secondary btn-sm quick-amt-btn">৫০</button>
                   <button type="button" onclick="setQuickAmount(100)" class="btn btn-outline-secondary btn-sm quick-amt-btn">১০০</button>
-                  <button type="button" onclick="setQuickAmount(500)" class="btn btn-outline-secondary btn-sm quick-amt-btn">৫০০</button>
-                  <button type="button" onclick="setQuickAmount(1000)" class="btn btn-outline-secondary btn-sm quick-amt-btn">১০০০</button>
+                  <button type="button" onclick="setQuickAmount(200)" class="btn btn-outline-secondary btn-sm quick-amt-btn">২০০</button>
                 </div>
               </div>
 
@@ -565,7 +574,7 @@
   </div>
 </div>
 
-<!-- Modern & POS Friendly Receipt Action Modal -->
+<!-- POS Friendly Receipt Action Modal -->
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -575,7 +584,7 @@
       </div>
       <div class="modal-body p-3">
         
-        <!-- পেশাদার নতুন রিসিট লেআউট -->
+        <!-- পেশাদার রিসিট লেআউট -->
         <div id="printableReceipt" class="receipt-box">
           <div class="receipt-header text-center">
             <h5 class="mb-0"><i class="fa-solid fa-store me-1"></i> ডিজিটাল ক্যাশ বুক</h5>
@@ -669,7 +678,6 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
-  // Enable Firebase Offline Persistence (ডাটা অফলাইনে ব্যাকআপ থাকবে)
   try {
     _db.ref().keepSynced(true);
   } catch (e) { console.log("Persistence setup", e); }
@@ -688,7 +696,6 @@
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
-  // --- Theme Controller (Dark Mode) ---
   function toggleDarkMode() {
     const currentTheme = document.documentElement.getAttribute('data-bs-theme');
     const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -704,7 +711,6 @@
     }
   }
 
-  // Load Saved Theme
   window.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('appTheme') || 'light';
     document.documentElement.setAttribute('data-bs-theme', savedTheme);
@@ -715,7 +721,6 @@
         : '<i class="fa-solid fa-moon me-1"></i> ডার্ক মোড';
     }
 
-    // Network status listener
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
     updateNetworkStatus();
@@ -727,7 +732,7 @@
       alertBox.style.display = 'block';
     } else {
       alertBox.style.display = 'none';
-      syncOfflineDrafts(); // নেট চালু হলে ড্রাফট সিন্ক হবে
+      syncOfflineDrafts();
     }
   }
 
@@ -962,7 +967,6 @@
         payload.id = newTxRef.key;
         await newTxRef.set(payload);
       } else {
-        // Save to LocalStorage Backup if Offline
         let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
         pending.push(payload);
         localStorage.setItem('pending_tx', JSON.stringify(pending));
@@ -984,7 +988,6 @@
     }
   });
 
-  // Local Storage Draft Synchronization
   async function syncOfflineDrafts() {
     if (!navigator.onLine || !_user) return;
     let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
@@ -1131,7 +1134,6 @@
         else tOutToday += amt;
       }
 
-      // Multi-Item Stock Calculation
       if (item.category === 'Stationery') {
         if (item.items && item.items.length > 0) {
           item.items.forEach(stItem => {
@@ -1281,7 +1283,7 @@
     }
   }
 
-  /* --- আপডেট করা আধুনিক রিসিট ডিসপ্লে লজিক --- */
+  /* --- স্টেশনারিসহ সঠিক রিসিট ডিসপ্লে ও প্রিন্ট লজিক --- */
   function showReceiptModal(data) {
     document.getElementById('rDate').innerText = data.date;
     document.getElementById('rCategory').innerText = data.category + (data.subProvider ? ` (${data.subProvider})` : '');
@@ -1307,6 +1309,7 @@
       });
     } else {
       itemsWrapper.style.display = 'none';
+      itemsBody.innerHTML = '';
     }
 
     const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
