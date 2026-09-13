@@ -145,7 +145,7 @@
       margin-top: 8px;
     }
 
-    /* --- থার্মাল ও প্রিন্টার স্টাইলিং --- */
+    /* --- প্রিন্ট স্টাইলিং (পিওএস থার্মাল ও প্রিন্টার) --- */
     @media print {
       body * {
         visibility: hidden !important;
@@ -161,6 +161,9 @@
         margin: 0 !important;
         padding: 0 !important;
         background: #fff !important;
+      }
+      #rItemsWrapper {
+        display: block !important;
       }
       .modal-dialog {
         max-width: 100% !important;
@@ -182,20 +185,12 @@
         padding: 5px !important;
         color: #000 !important;
       }
-      #rItemsWrapper {
-        display: block !important;
-      }
-      .receipt-table th, .receipt-table td {
-        color: #000 !important;
-        border-bottom: 1px solid #000 !important;
-      }
       .receipt-divider {
-        border-top: 1px dashed #000 !important;
+        border-top: 1px solid #000 !important;
       }
       .receipt-total {
         background: none !important;
         border: 1px solid #000 !important;
-        color: #000 !important;
       }
     }
   </style>
@@ -239,7 +234,6 @@
           <p class="mb-0 opacity-75 small">সুরক্ষিত ডাটাবেস ও রিয়েলটাইম ক্যাশ ট্র্যাকিং সার্ভিস</p>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <!-- Dark Mode Toggle Button -->
           <button id="themeToggleBtn" onclick="toggleDarkMode()" class="btn btn-outline-light btn-sm fw-bold">
             <i class="fa-solid fa-moon me-1"></i> ডার্ক মোড
           </button>
@@ -253,12 +247,10 @@
 
     <div class="container-fluid px-md-4">
       
-      <!-- Network & Offline Status Banner -->
       <div id="offlineAlert" class="alert alert-warning py-1 px-3 mb-2 small" style="display:none;">
-        <i class="fa-solid fa-wifi me-1"></i> আপনি অফলাইনে আছেন। নতুন ইনপুট ড্রাফট হিসেবে জমা হবে এবং নেট এলে স্বয়ংক্রিয়ভাবে সিন্ক হবে।
+        <i class="fa-solid fa-wifi me-1"></i> আপনি অফলাইনে আছেন। আপনার নতুন এন্ট্রিগুলো নিরাপদে জমা থাকছে এবং ইন্টারনেট এলে স্বয়ংক্রিয়ভাবে ক্লাউডে সিন্ক হবে।
       </div>
 
-      <!-- Top Title Bar with Reset Icon -->
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="fw-bold text-secondary small"><i class="fa-solid fa-wallet me-1"></i> ডিজিটাল ওয়ালেট ব্যালেন্স ট্র্যাকার</span>
         <button onclick="resetInitialBalances()" class="btn btn-sm btn-light text-secondary border shadow-sm py-0 px-2" title="প্রারম্ভিক ব্যালেন্স রিসেট/পরিবর্তন করুন">
@@ -485,7 +477,7 @@
                 <input type="text" id="description" class="form-control form-control-sm shadow-sm" placeholder="যেমন: ক্যাশইন / ১০০ টাকা রিচার্জ / ফটোকপি" required>
               </div>
 
-              <!-- Quick Amount Helper Buttons (Updated to: 20, 30, 40, 50, 100, 200) -->
+              <!-- Quick Amount Helper Buttons -->
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">দ্রুত পরিমাণ বাছাই করুন (৳):</label>
                 <div class="d-flex flex-wrap gap-1">
@@ -574,7 +566,7 @@
   </div>
 </div>
 
-<!-- POS Friendly Receipt Action Modal -->
+<!-- Modal -->
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -584,7 +576,6 @@
       </div>
       <div class="modal-body p-3">
         
-        <!-- পেশাদার রিসিট লেআউট -->
         <div id="printableReceipt" class="receipt-box">
           <div class="receipt-header text-center">
             <h5 class="mb-0"><i class="fa-solid fa-store me-1"></i> ডিজিটাল ক্যাশ বুক</h5>
@@ -606,7 +597,7 @@
             <span id="rDesc" class="fw-semibold text-end ms-2"></span>
           </div>
 
-          <!-- Multi-Item Table (For Stationery) -->
+          <!-- Multi-Item Table -->
           <div id="rItemsWrapper" style="display:none;">
             <div class="receipt-divider"></div>
             <table class="receipt-table">
@@ -678,6 +669,7 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
+  // ডাটা যেন না হারিয়ে যায় তাই অফলাইন পারসিস্টেন্স এনাবেল করা
   try {
     _db.ref().keepSynced(true);
   } catch (e) { console.log("Persistence setup", e); }
@@ -962,15 +954,17 @@
     };
 
     try {
+      // ডাটাবেজে সেভ করার চেষ্টা
+      const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
+      payload.id = newTxRef.key;
+      
       if (navigator.onLine) {
-        const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
-        payload.id = newTxRef.key;
         await newTxRef.set(payload);
       } else {
+        // অফলাইনে থাকলে localStorage এ ড্রাই ব্যাকআপ রাখা
         let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
         pending.push(payload);
         localStorage.setItem('pending_tx', JSON.stringify(pending));
-        alert('ইন্টারনেট সংযোগ নেই! ডাটা লোকালি ড্রাফট করা হয়েছে। নেট এলে অটো সিন্ক হবে।');
       }
 
       stationeryCart = [];
@@ -979,10 +973,17 @@
       toggleCategoryFields();
 
       currentReceiptData = payload;
+      
+      // মোডাল পপ-আপ কিন্তু অটো প্রিন্ট হবে না
       showReceiptModal(payload);
 
     } catch (err) {
-      alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + err.message);
+      // কোনো কারণে নেটওয়ার্ক ফেইল করলে লোকাল ব্যাকআপে সেভ হবে
+      let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
+      pending.push(payload);
+      localStorage.setItem('pending_tx', JSON.stringify(pending));
+      
+      alert("ডাটা লোকালি নিরাপদে ব্যাকআপ করা হয়েছে! ক্লাউডে সেভ করার চেষ্টা করা হচ্ছে।");
     } finally {
       toggleLoader(false);
     }
@@ -1000,7 +1001,7 @@
           await newTxRef.set(item);
         }
         localStorage.removeItem('pending_tx');
-        console.log('অফলাইন ডাটা সিন্ক সফল হয়েছে!');
+        console.log('অফলাইন ডাটা ক্লাউডে সফলভাবে সিন্ক হয়েছে!');
       } catch (e) {
         console.error('ড্রাফট সিন্ক ফেইলড:', e);
       } finally {
@@ -1283,7 +1284,7 @@
     }
   }
 
-  /* --- স্টেশনারিসহ সঠিক রিসিট ডিসপ্লে ও প্রিন্ট লজিক --- */
+  /* --- সাধারণ ম্যানুয়াল রিসিট মোডাল (অটো প্রিন্ট বন্ধ) --- */
   function showReceiptModal(data) {
     document.getElementById('rDate').innerText = data.date;
     document.getElementById('rCategory').innerText = data.category + (data.subProvider ? ` (${data.subProvider})` : '');
@@ -1309,7 +1310,6 @@
       });
     } else {
       itemsWrapper.style.display = 'none';
-      itemsBody.innerHTML = '';
     }
 
     const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
