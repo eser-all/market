@@ -97,21 +97,98 @@
       padding: 2px 8px;
     }
 
+    /* --- নতুন আকর্ষণীয় রিসিট ডিজাইন (স্ক্রিন ভার্সন) --- */
+    .receipt-box {
+      background-color: #ffffff;
+      color: #000000;
+      border: 1px dashed #bbb;
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 380px;
+      margin: 0 auto;
+      font-family: 'Hind Siliguri', sans-serif;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .receipt-header h5 {
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 2px;
+      color: #111;
+    }
+    .receipt-divider {
+      border-top: 1px dashed #777;
+      margin: 10px 0;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      margin-bottom: 4px;
+    }
+    .receipt-table {
+      width: 100%;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      border-collapse: collapse;
+    }
+    .receipt-table th, .receipt-table td {
+      padding: 4px 2px;
+      border-bottom: 1px dashed #ddd;
+    }
+    .receipt-total {
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: #f8f9fa;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      margin-top: 8px;
+    }
+
+    /* --- নিখুঁত প্রিন্ট স্টাইলিং (পিওএস থার্মাল ও সাধারণ প্রিণ্টার ফ্রেন্ডলি) --- */
     @media print {
-      body * { display: none !important; }
-      #receiptModal, #receiptModal * { display: block !important; }
-      #printableReceipt, #printableReceipt * { display: block !important; visibility: visible !important; }
-      #printableReceipt { 
-        position: fixed !important; 
-        left: 0 !important; 
-        top: 0 !important; 
-        width: 100% !important; 
-        padding: 10px !important;
-        margin: 0 !important;
-        box-shadow: none !important;
-        border: none !important;
+      body * {
+        visibility: hidden !important;
       }
-      .modal-backdrop, .modal-header, .modal-footer, .btn-close { display: none !important; }
+      #receiptModal, #receiptModal * {
+        visibility: visible !important;
+      }
+      #receiptModal {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+      }
+      .modal-dialog {
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+      .modal-content {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .modal-header, .modal-footer {
+        display: none !important;
+      }
+      .receipt-box {
+        border: none !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        max-width: 80mm !important; /* স্ট্যান্ডার্ড থার্মাল পেপার সাইজ */
+        margin: 0 auto !important;
+        padding: 5px !important;
+        color: #000 !important;
+      }
+      .receipt-divider {
+        border-top: 1px solid #000 !important;
+      }
+      .receipt-total {
+        background: none !important;
+        border: 1px solid #000 !important;
+      }
     }
   </style>
 </head>
@@ -488,7 +565,7 @@
   </div>
 </div>
 
-<!-- Receipt Action Modal -->
+<!-- Modern & POS Friendly Receipt Action Modal -->
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -496,38 +573,59 @@
         <h6 class="modal-title fw-bold"><i class="fa-solid fa-receipt me-2"></i>গ্রাহক রিসিট নিশ্চিতকরণ</h6>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <div id="printableReceipt" class="p-3 border rounded text-center bg-body-tertiary">
-          <div class="mb-3">
-            <h5 class="fw-bold mb-0">ডিজিটাল ক্যাশ বুক</h5>
-            <small class="text-muted">পেমেন্ট স্লিপ ও টোকেন</small>
-            <hr class="my-2">
+      <div class="modal-body p-3">
+        
+        <!-- পেশাদার নতুন রিসিট লেআউট -->
+        <div id="printableReceipt" class="receipt-box">
+          <div class="receipt-header text-center">
+            <h5 class="mb-0"><i class="fa-solid fa-store me-1"></i> ডিজিটাল ক্যাশ বুক</h5>
+            <small class="text-muted d-block mb-1">পেমেন্ট মেমো ও ক্যাশ রিসিট</small>
           </div>
-          <div class="text-start">
-            <p class="mb-1"><strong>তারিখ:</strong> <span id="rDate"></span></p>
-            <p class="mb-1"><strong>বিভাগ:</strong> <span id="rCategory"></span></p>
-            <p class="mb-1"><strong>বিবরণ:</strong> <span id="rDesc"></span></p>
-            
-            <!-- Stationery Items Detailed Table -->
-            <div id="rItemsWrapper" class="my-2" style="display:none;">
-              <table class="table table-sm table-bordered text-center small mb-1">
-                <thead>
-                  <tr>
-                    <th>পণ্য</th>
-                    <th>পরিমাণ</th>
-                    <th>একক দাম</th>
-                    <th>মোট</th>
-                  </tr>
-                </thead>
-                <tbody id="rItemsBody"></tbody>
-              </table>
-            </div>
+          
+          <div class="receipt-divider"></div>
 
-            <p class="mb-1 fw-bold fs-6"><strong>সর্বমোট পরিমাণ:</strong> ৳ <span id="rAmount"></span></p>
+          <div class="receipt-row">
+            <span class="text-muted">তারিখ:</span>
+            <span id="rDate" class="fw-semibold"></span>
           </div>
-          <hr class="my-2">
-          <p class="fw-bold mb-0 text-success mt-2">ধন্যবাদ, আবার আসবেন</p>
+          <div class="receipt-row">
+            <span class="text-muted">ক্যাটাগরি:</span>
+            <span id="rCategory" class="fw-semibold"></span>
+          </div>
+          <div class="receipt-row">
+            <span class="text-muted">বিবরণ:</span>
+            <span id="rDesc" class="fw-semibold text-end ms-2"></span>
+          </div>
+
+          <!-- Multi-Item Table (For Stationery) -->
+          <div id="rItemsWrapper" style="display:none;">
+            <div class="receipt-divider"></div>
+            <table class="receipt-table">
+              <thead>
+                <tr class="text-muted">
+                  <th class="text-start">পণ্য</th>
+                  <th class="text-center">পরিমাণ</th>
+                  <th class="text-end">দর</th>
+                  <th class="text-end">মোট</th>
+                </tr>
+              </thead>
+              <tbody id="rItemsBody"></tbody>
+            </table>
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-row receipt-total align-items-center">
+            <span>সর্বমোট পরিশোধ:</span>
+            <span>৳ <span id="rAmount"></span></span>
+          </div>
+
+          <div class="text-center mt-3">
+            <small class="fw-bold d-block">ধন্যবাদ, আবার আসবেন!</small>
+            <small class="text-muted" style="font-size: 0.7rem;">Powered by Digital Cash Book</small>
+          </div>
         </div>
+
       </div>
       <div class="modal-footer d-flex justify-content-between py-2">
         <div>
@@ -571,6 +669,7 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
+  // Enable Firebase Offline Persistence (ডাটা অফলাইনে ব্যাকআপ থাকবে)
   try {
     _db.ref().keepSynced(true);
   } catch (e) { console.log("Persistence setup", e); }
@@ -589,6 +688,7 @@
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
+  // --- Theme Controller (Dark Mode) ---
   function toggleDarkMode() {
     const currentTheme = document.documentElement.getAttribute('data-bs-theme');
     const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -604,6 +704,7 @@
     }
   }
 
+  // Load Saved Theme
   window.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('appTheme') || 'light';
     document.documentElement.setAttribute('data-bs-theme', savedTheme);
@@ -614,6 +715,7 @@
         : '<i class="fa-solid fa-moon me-1"></i> ডার্ক মোড';
     }
 
+    // Network status listener
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
     updateNetworkStatus();
@@ -625,7 +727,7 @@
       alertBox.style.display = 'block';
     } else {
       alertBox.style.display = 'none';
-      syncOfflineDrafts();
+      syncOfflineDrafts(); // নেট চালু হলে ড্রাফট সিন্ক হবে
     }
   }
 
@@ -860,6 +962,7 @@
         payload.id = newTxRef.key;
         await newTxRef.set(payload);
       } else {
+        // Save to LocalStorage Backup if Offline
         let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
         pending.push(payload);
         localStorage.setItem('pending_tx', JSON.stringify(pending));
@@ -881,6 +984,7 @@
     }
   });
 
+  // Local Storage Draft Synchronization
   async function syncOfflineDrafts() {
     if (!navigator.onLine || !_user) return;
     let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
@@ -1027,6 +1131,7 @@
         else tOutToday += amt;
       }
 
+      // Multi-Item Stock Calculation
       if (item.category === 'Stationery') {
         if (item.items && item.items.length > 0) {
           item.items.forEach(stItem => {
@@ -1176,6 +1281,7 @@
     }
   }
 
+  /* --- আপডেট করা আধুনিক রিসিট ডিসপ্লে লজিক --- */
   function showReceiptModal(data) {
     document.getElementById('rDate').innerText = data.date;
     document.getElementById('rCategory').innerText = data.category + (data.subProvider ? ` (${data.subProvider})` : '');
@@ -1192,10 +1298,10 @@
         const uPrice = it.unitPrice || (it.total / it.quantity);
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${safeDecode(it.productName)}</td>
-          <td>${it.quantity}</td>
-          <td>৳${uPrice.toFixed(2)}</td>
-          <td>৳${(it.total || 0).toFixed(2)}</td>
+          <td class="text-start">${safeDecode(it.productName)}</td>
+          <td class="text-center">${it.quantity}</td>
+          <td class="text-end">৳${uPrice.toFixed(2)}</td>
+          <td class="text-end">৳${(it.total || 0).toFixed(2)}</td>
         `;
         itemsBody.appendChild(tr);
       });
