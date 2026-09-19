@@ -97,7 +97,7 @@
       padding: 2px 8px;
     }
 
-    /* রিসিট ডিজাইন */
+    /* --- রিসিট ডিজাইন (স্ক্রিন ভার্সন) --- */
     .receipt-box {
       background-color: #ffffff;
       color: #000000;
@@ -145,7 +145,7 @@
       margin-top: 8px;
     }
 
-    /* প্রিন্ট স্টাইলিং */
+    /* --- প্রিন্ট স্টাইলিং (পিওএস থার্মাল ও প্রিন্টার) --- */
     @media print {
       body * {
         visibility: hidden !important;
@@ -656,7 +656,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  const encodedKeys = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXNlYXBwLmNvbQ==", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI4NmEx", "Rz1XQktKTEdNM3E0R"];
+  const encodedKeys = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXNlYXBwLmNvbQ==", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI4NmEx", "Rz1XQktKTEdNM0hE"];
   const decodeKey = (idx) => atob(encodedKeys[idx]);
 
   const firebaseConfig = {
@@ -669,7 +669,7 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
-  // অফলাইন পারসিস্টেন্স
+  // ডাটা যেন না হারিয়ে যায় তাই অফলাইন পারসিস্টেন্স এনাবেল করা
   try {
     _db.ref().keepSynced(true);
   } catch (e) { console.log("Persistence setup", e); }
@@ -724,6 +724,7 @@
       alertBox.style.display = 'block';
     } else {
       alertBox.style.display = 'none';
+      syncOfflineDrafts();
     }
   }
 
@@ -810,10 +811,13 @@
     }
   }
 
-  // নিরাপদ টেক্সট মেথড (পুরানো ডিকোডিং দূর করে সরাসরি টেক্সট পাওয়ার ব্যবস্থা)
   function safeDecode(str) {
     if (!str) return '';
-    return str;
+    try {
+      return decodeURIComponent(escape(atob(str)));
+    } catch (e) {
+      return str;
+    }
   }
 
   _auth.onAuthStateChanged(async (u) => {
@@ -842,6 +846,7 @@
       });
 
       fetchTransactions();
+      syncOfflineDrafts();
     } else {
       if(_sessionRef) _sessionRef.off();
       _user = null;
@@ -864,7 +869,7 @@
       );
     } catch (e) {
       errorEl.style.display = 'block';
-      errorEl.innerText = "লগইন তথ্য ভুল হয়েছে: " + e.message;
+      errorEl.innerText = "পাসওয়ার্ডটি ভুল হয়েছে!";
     } finally {
       toggleLoader(false);
     }
@@ -931,9 +936,9 @@
       hour: '2-digit', minute: '2-digit', hour12: true 
     });
 
-    const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
+    const newTxId = 'tx_' + Date.now();
     const payload = {
-      id: newTxRef.key,
+      id: newTxId,
       date: englishDate,
       timestamp: Date.now(),
       category: category,
@@ -949,7 +954,18 @@
     };
 
     try {
-      await newTxRef.set(payload);
+      // ডাটাবেজে সেভ করার চেষ্টা
+      const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
+      payload.id = newTxRef.key;
+      
+      if (navigator.onLine) {
+        await newTxRef.set(payload);
+      } else {
+        // অফলাইনে থাকলে localStorage এ ড্রাই ব্যাকআপ রাখা
+        let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
+        pending.push(payload);
+        localStorage.setItem('pending_tx', JSON.stringify(pending));
+      }
 
       stationeryCart = [];
       document.getElementById('transactionForm').reset();
@@ -957,14 +973,42 @@
       toggleCategoryFields();
 
       currentReceiptData = payload;
+      
+      // মোডাল পপ-আপ কিন্তু অটো প্রিন্ট হবে না
       showReceiptModal(payload);
 
     } catch (err) {
-      alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + err.message);
+      // কোনো কারণে নেটওয়ার্ক ফেইল করলে লোকাল ব্যাকআপে সেভ হবে
+      let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
+      pending.push(payload);
+      localStorage.setItem('pending_tx', JSON.stringify(pending));
+      
+      alert("ডাটা লোকালি নিরাপদে ব্যাকআপ করা হয়েছে! ক্লাউডে সেভ করার চেষ্টা করা হচ্ছে।");
     } finally {
       toggleLoader(false);
     }
   });
+
+  async function syncOfflineDrafts() {
+    if (!navigator.onLine || !_user) return;
+    let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
+    if (pending.length > 0) {
+      toggleLoader(true);
+      try {
+        for (let item of pending) {
+          const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
+          item.id = newTxRef.key;
+          await newTxRef.set(item);
+        }
+        localStorage.removeItem('pending_tx');
+        console.log('অফলাইন ডাটা ক্লাউডে সফলভাবে সিন্ক হয়েছে!');
+      } catch (e) {
+        console.error('ড্রাফট সিন্ক ফেইলড:', e);
+      } finally {
+        toggleLoader(false);
+      }
+    }
+  }
 
   function fetchTransactions() {
     if (!_user) return;
@@ -974,7 +1018,11 @@
       if (val) {
         Object.keys(val).forEach(k => {
           let item = val[k];
-          item.id = k; // ফায়ারবেস কি আইডি নিশ্চিত রাখা
+          item.description = safeDecode(item.description);
+          item.productName = safeDecode(item.productName);
+          if(item.items) {
+            item.items = item.items.map(it => ({ ...it, productName: safeDecode(it.productName) }));
+          }
           _cache.push(item);
         });
         _cache.sort((a, b) => b.timestamp - a.timestamp);
@@ -1012,7 +1060,6 @@
       let matchDate = true;
       if (startDate || endDate) {
         const itemDateObj = new Date(item.timestamp);
-        // সঠিক প্যাডিং সহ তারিখ ফরম্যাট
         const itemYMD = itemDateObj.getFullYear() + '-' + String(itemDateObj.getMonth() + 1).padStart(2, '0') + '-' + String(itemDateObj.getDate()).padStart(2, '0');
 
         if (startDate && itemYMD < startDate) matchDate = false;
@@ -1237,6 +1284,7 @@
     }
   }
 
+  /* --- সাধারণ ম্যানুয়াল রিসিট মোডাল (অটো প্রিন্ট বন্ধ) --- */
   function showReceiptModal(data) {
     document.getElementById('rDate').innerText = data.date;
     document.getElementById('rCategory').innerText = data.category + (data.subProvider ? ` (${data.subProvider})` : '');
