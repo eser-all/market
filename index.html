@@ -14,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
-    /* --- Telegram Web Palette & Base Styling --- */
+    /* --- Dynamic Telegram Color Palette (Day & Night) --- */
     :root {
       --tg-bg: #0e1621;
       --tg-card-bg: #17212b;
@@ -25,6 +25,16 @@
       --tg-muted: #7f91a4;
     }
 
+    [data-bs-theme="light"] {
+      --tg-bg: #f0f2f5;
+      --tg-card-bg: #ffffff;
+      --tg-input-bg: #f8f9fa;
+      --tg-border: #ced4da;
+      --tg-primary: #2481cc;
+      --tg-text: #212529;
+      --tg-muted: #6c757d;
+    }
+
     body { 
       background-color: var(--tg-bg); 
       color: var(--tg-text);
@@ -32,6 +42,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     .content-wrapper { flex: 1; }
@@ -40,14 +51,14 @@
       background: var(--tg-card-bg); 
       border-bottom: 1px solid var(--tg-border);
       padding: 16px 0; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     .card-custom { 
       background-color: var(--tg-card-bg);
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid var(--tg-border);
       border-radius: 12px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       color: var(--tg-text);
     }
 
@@ -81,17 +92,8 @@
       overflow: hidden; 
       box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     }
-    .wallet-title {
-      font-size: 0.72rem;
-      font-weight: 600;
-      opacity: 0.9;
-      white-space: nowrap;
-    }
-    .wallet-amount {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0;
-    }
+    .wallet-title { font-size: 0.72rem; font-weight: 600; opacity: 0.9; white-space: nowrap; }
+    .wallet-amount { font-size: 0.95rem; font-weight: 700; margin-bottom: 0; }
 
     .wallet-bkash { background: linear-gradient(135deg, #e2136e, #800b3e); }
     .wallet-nagad { background: linear-gradient(135deg, #f7921e, #964000); }
@@ -107,7 +109,7 @@
     .table-container { border-radius: 12px; padding: 18px; }
     .table { color: var(--tg-text); --bs-table-bg: transparent; }
     .table th { border-color: var(--tg-border); color: var(--tg-muted); }
-    .table td { border-color: rgba(255,255,255,0.05); }
+    .table td { border-color: var(--tg-border); }
 
     .auth-container { max-width: 420px; margin: 70px auto; border-top: 4px solid var(--tg-primary); }
     .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.75); z-index: 9999; justify-content: center; align-items: center; }
@@ -132,95 +134,29 @@
     }
     .btn-tg:hover { background-color: #4272a3; color: white; }
 
-    /* AI Card Box */
     .ai-box {
-      background: linear-gradient(135deg, #1d2c3f 0%, #17212b 100%);
+      background: var(--tg-card-bg);
       border: 1px solid var(--tg-primary);
       border-radius: 12px;
       padding: 14px 18px;
       margin-bottom: 18px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* Print Hidden Control Elements */
     #pdfReportPrintArea, #tokenReceiptArea { display: none; }
 
-    /* --- Perfected Print CSS Settings (Fixes 60p bug and optimizes for A4) --- */
     @media print {
-      @page {
-        size: A4 portrait;
-        margin: 15mm;
-      }
-      
-      html, body {
-        background: #fff !important;
-        color: #000 !important;
-        height: auto !important;
-        min-height: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: visible !important;
-      }
-
-      /* Hide everything on screen */
-      body * {
-        display: none !important;
-      }
-
-      /* PDF Print Section */
-      body.printing-pdf #pdfReportPrintArea, 
-      body.printing-pdf #pdfReportPrintArea * { 
-        display: block !important; 
-      }
-
-      body.printing-pdf #pdfReportPrintArea {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        background: #fff !important;
-        color: #000 !important;
-        font-family: 'Hind Siliguri', sans-serif !important;
-      }
-
-      /* POS Token Receipt Print Section (Optimized on A4) */
-      body.printing-token #tokenReceiptArea, 
-      body.printing-token #tokenReceiptArea * { 
-        display: block !important; 
-      }
-
-      body.printing-token #tokenReceiptArea {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        max-width: 650px !important;
-        margin: 0 auto !important;
-        background: #fff !important;
-        color: #000 !important;
-        font-family: 'Hind Siliguri', sans-serif !important;
-      }
-
-      /* Common Print Table Improvements */
-      body.printing-pdf table, body.printing-token table {
-        display: table !important;
-      }
-      body.printing-pdf tr, body.printing-token tr {
-        display: table-row !important;
-      }
-      body.printing-pdf td, body.printing-pdf th,
-      body.printing-token td, body.printing-token th {
-        display: table-cell !important;
-      }
-      body.printing-pdf div, body.printing-token div {
-        display: block !important;
-      }
-      body.printing-pdf span, body.printing-token span {
-        display: inline !important;
-      }
-      body.printing-pdf strong, body.printing-token strong {
-        display: inline !important;
-      }
+      @page { size: A4 portrait; margin: 15mm; }
+      html, body { background: #fff !important; color: #000 !important; height: auto !important; margin: 0 !important; padding: 0 !important; }
+      body * { display: none !important; }
+      body.printing-pdf #pdfReportPrintArea, body.printing-pdf #pdfReportPrintArea * { display: block !important; }
+      body.printing-pdf #pdfReportPrintArea { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; background: #fff !important; color: #000 !important; }
+      body.printing-token #tokenReceiptArea, body.printing-token #tokenReceiptArea * { display: block !important; }
+      body.printing-token #tokenReceiptArea { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; max-width: 650px !important; margin: 0 auto !important; background: #fff !important; color: #000 !important; }
+      body.printing-pdf table, body.printing-token table { display: table !important; }
+      body.printing-pdf tr, body.printing-token tr { display: table-row !important; }
+      body.printing-pdf td, body.printing-pdf th, body.printing-token td, body.printing-token th { display: table-cell !important; }
+      body.printing-pdf div, body.printing-token div { display: block !important; }
     }
   </style>
 </head>
@@ -263,9 +199,16 @@
           <p class="mb-0 text-muted small">ডিজিটাল ক্যাশ বুক, অটো রিসিট ও টোকেন জেনারেটর</p>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <button id="aiToggleBtn" onclick="toggleAIMode()" class="btn btn-outline-info btn-sm fw-bold">
-            <i class="fa-solid fa-robot me-1"></i> AI Mood: On
+          <!-- Theme Toggle Button (Day / Night Mood) -->
+          <button id="themeToggleBtn" onclick="toggleThemeMood()" class="btn btn-outline-warning btn-sm fw-bold" title="Day/Night Mode">
+            <i class="fa-solid fa-moon me-1" id="themeIcon"></i> <span id="themeText">Night</span>
           </button>
+          
+          <!-- AI Mood Toggle Button -->
+          <button id="aiToggleBtn" onclick="toggleAIMood()" class="btn btn-outline-info btn-sm fw-bold" title="AI Mood On/Off">
+            <i class="fa-solid fa-robot me-1"></i> AI: On
+          </button>
+
           <span id="userDisplayEmail" class="badge bg-secondary d-none d-md-inline-block py-2 px-3"></span>
           <button onclick="logout()" class="btn btn-outline-danger btn-sm fw-bold">
             <i class="fa-solid fa-power-off me-1"></i> লগআউট
@@ -282,7 +225,7 @@
           <i class="fa-solid fa-brain text-info fs-4 me-2"></i>
           <h6 class="fw-bold mb-0 text-info">AI Business Insights & Assistant</h6>
         </div>
-        <div id="aiContent" class="small text-light">
+        <div id="aiContent" class="small">
           ডাটা বিশ্লেষণ করা হচ্ছে...
         </div>
       </div>
@@ -503,7 +446,7 @@
   </div>
 </div>
 
-<!-- Beautiful & Clean A4 Single Page Printable Cash Receipt/Token -->
+<!-- POS Token Receipt Print Area -->
 <div id="tokenReceiptArea">
   <div style="border: 2px solid #2b5278; border-radius: 8px; padding: 25px; background: #fff; color: #000; font-family: 'Hind Siliguri', sans-serif;">
     <div style="text-align: center; border-bottom: 2px dashed #2b5278; padding-bottom: 12px; margin-bottom: 15px;">
@@ -552,7 +495,7 @@
   </div>
 </div>
 
-<!-- Beautiful Full Monthly A4 PDF Layout Container -->
+<!-- Full Monthly A4 PDF Layout Container -->
 <div id="pdfReportPrintArea">
   <div style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
     <h2 style="margin:0; text-align:center;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
@@ -617,22 +560,42 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
-  // --- ডাটা সুরক্ষিত রাখার জন্য রিয়েল-টাইম ক্লাউড সিঙ্ক ---
-  try {
-    _db.ref().keepSynced(true);
-  } catch(e) { console.log(e); }
+  try { _db.ref().keepSynced(true); } catch(e) {}
 
   let _user = null;
   let _cache = [];
   let _filteredCache = [];
   let isAIModeOn = true;
+  let isDarkMode = true;
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
-  function toggleAIMode() {
+  // --- Day / Night Mood Handler ---
+  function toggleThemeMood() {
+    isDarkMode = !isDarkMode;
+    const htmlEl = document.documentElement;
+    const iconEl = document.getElementById('themeIcon');
+    const textEl = document.getElementById('themeText');
+    const btnEl = document.getElementById('themeToggleBtn');
+
+    if (isDarkMode) {
+      htmlEl.setAttribute('data-bs-theme', 'dark');
+      iconEl.className = 'fa-solid fa-moon me-1';
+      textEl.innerText = 'Night';
+      btnEl.className = 'btn btn-outline-warning btn-sm fw-bold';
+    } else {
+      htmlEl.setAttribute('data-bs-theme', 'light');
+      iconEl.className = 'fa-solid fa-sun me-1';
+      textEl.innerText = 'Day';
+      btnEl.className = 'btn btn-outline-dark btn-sm fw-bold';
+    }
+  }
+
+  // --- AI Mood Handler ---
+  function toggleAIMood() {
     isAIModeOn = !isAIModeOn;
     document.getElementById('aiBox').style.display = isAIModeOn ? 'block' : 'none';
-    document.getElementById('aiToggleBtn').innerHTML = isAIModeOn ? '<i class="fa-solid fa-robot me-1"></i> AI Mood: On' : '<i class="fa-solid fa-robot me-1"></i> AI Mood: Off';
+    document.getElementById('aiToggleBtn').innerHTML = isAIModeOn ? '<i class="fa-solid fa-robot me-1"></i> AI: On' : '<i class="fa-solid fa-robot me-1"></i> AI: Off';
     if(isAIModeOn) generateAIInsights();
   }
 
@@ -839,7 +802,6 @@
     profitEl.className = profit >= 0 ? "fw-bold mt-1 mb-0 text-success" : "fw-bold mt-1 mb-0 text-danger";
   }
 
-  // --- Smart AI Engine ---
   function generateAIInsights() {
     const aiEl = document.getElementById('aiContent');
     if (_cache.length === 0) {
@@ -860,17 +822,16 @@
     let topCategory = Object.keys(categories).reduce((a, b) => categories[a] > categories[b] ? a : b, 'N/A');
 
     let statusMsg = profit >= 0 
-      ? `💡 <b>বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল-এর পারফরম্যান্স চমৎকার!</b> মোট নিট লাভ: <b class="text-success">৳ ${profit.toFixed(2)}</b>.`
+      ? `💡 <b>পারফরম্যান্স চমৎকার!</b> মোট নিট লাভ: <b class="text-success">৳ ${profit.toFixed(2)}</b>.`
       : `⚠️ <b>সতর্কতা:</b> বর্তমানে খরচের পরিমাণ আয়ের চেয়ে বেশি (<b class="text-danger">৳ ${Math.abs(profit).toFixed(2)} ক্ষতি</b>)।`;
 
     aiEl.innerHTML = `
       ${statusMsg}<br>
-      📊 <b>সবচেয়ে বেশি লেনদেন ক্যাটাগরি:</b> <span class="text-info">${topCategory}</span>।<br>
+      📊 <b>সবচেয়ে বেশি লেনদেন:</b> <span class="text-info">${topCategory}</span>।<br>
       🤖 <b>AI টিপস:</b> কাস্টমারকে ডিজিটাল রিসিট ও হোয়াটসঅ্যাপ স্লিপ পাঠালে ব্যবসার পরিচিতি বৃদ্ধি পাবে।
     `;
   }
 
-  // --- Clean A4 Single Page Receipt Print Function ---
   function printTokenReceipt(id) {
     const tx = _cache.find(x => x.id === id);
     if (!tx) return;
@@ -888,7 +849,6 @@
     document.body.className = '';
   }
 
-  // --- WhatsApp Receipt Direct Message Function ---
   function sendWhatsAppReceipt(id) {
     const tx = _cache.find(x => x.id === id);
     if (!tx) return;
@@ -900,17 +860,13 @@
       phone = phone.replace(/[^0-9]/g, '');
     }
 
-    if (phone.startsWith('01')) {
-      phone = '88' + phone;
-    }
+    if (phone.startsWith('01')) phone = '88' + phone;
 
     const text = `🧾 *বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল*\n*পেমেন্ট ও মেমো রিসিট*\n-------------------------------\n🗓 *তারিখ:* ${tx.date}\n📁 *ক্যাটাগরি:* ${tx.category} ${tx.subProvider ? `(${tx.subProvider})` : ''}\n📦 *বিবরণ:* ${tx.description}\n💰 *পরিমাণ:* ৳ ${tx.amount.toFixed(2)}\n-------------------------------\nধন্যবাদ! আবার আসবেন।`;
 
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
   }
 
-  // --- PDF Font Solution (Clean Single/Multi A4 Print) ---
   function generateCleanPDF() {
     if (_filteredCache.length === 0) {
       alert("পিডিএফ তৈরি করার জন্য ফিল্টারে কোনো ডাটা পাওয়া যায়নি!");
