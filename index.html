@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ডিজিটাল ক্যাশ বুক -রিপোর্ট এডিশন</title>
+  <title>ডিজিটাল ক্যাশ বুক - টেলিগ্রাম AI ও নিখুঁত PDF এডিশন</title>
   
   <!-- CSS CDN Links -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,8 +12,6 @@
   
   <!-- JavaScript Utility Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
   <style>
     /* --- Telegram Web Palette & Base Styling --- */
@@ -104,11 +102,7 @@
     .wallet-airtel { background: linear-gradient(135deg, #ED1C24, #660000); }
     .wallet-teletalk { background: linear-gradient(135deg, #7CB042, #334d17); }
     
-    .badge-mfs { background-color: #e2136e; color: white; }
-    .badge-recharge { background-color: #0dcaf0; color: #000; }
     .badge-print { background-color: var(--tg-primary); color: white; }
-    .badge-stationery { background-color: #2ecc71; color: white; }
-    .badge-expense { background-color: #e74c3c; color: white; }
     
     .table-container { border-radius: 12px; padding: 18px; }
     .table { color: var(--tg-text); --bs-table-bg: transparent; }
@@ -148,22 +142,23 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
 
-    /* POS Receipt Styling */
-    .receipt-box {
-      background-color: #ffffff;
-      color: #000000;
-      border-radius: 8px;
-      padding: 20px;
-      max-width: 380px;
-      margin: 0 auto;
-      font-family: 'Hind Siliguri', sans-serif;
-    }
-
+    /* Print styling for PDF Generation */
+    #pdfReportPrintArea { display: none; }
     @media print {
       body * { visibility: hidden !important; }
-      #receiptModal, #receiptModal * { visibility: visible !important; }
-      #receiptModal { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; }
-      .receipt-box { border: none !important; width: 100% !important; max-width: 80mm !important; color: #000 !important; }
+      #pdfReportPrintArea, #pdfReportPrintArea * { visibility: visible !important; }
+      #pdfReportPrintArea {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        display: block !important;
+        background: white !important;
+        color: black !important;
+        padding: 20px !important;
+        font-family: 'Hind Siliguri', sans-serif !important;
+      }
+      .no-print { display: none !important; }
     }
   </style>
 </head>
@@ -203,7 +198,7 @@
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
         <div>
           <h4 class="fw-bold mb-0"><i class="fa-paper-plane me-2 text-info"></i>ডিজিটাল ক্যাশ বুক AI</h4>
-          <p class="mb-0 text-muted small">টেলিগ্রাম থিম ও অটোমেটেড মান্থলি PDF রিপোর্ট জেনারেটর</p>
+          <p class="mb-0 text-muted small">টেলিগ্রাম থিম ও অটোমেটেড নিখুঁত PDF রিপোর্ট জেনারেটর</p>
         </div>
         <div class="d-flex align-items-center gap-2">
           <button id="aiToggleBtn" onclick="toggleAIMode()" class="btn btn-outline-info btn-sm fw-bold">
@@ -228,10 +223,6 @@
         <div id="aiContent" class="small text-light">
           ডাটা বিশ্লেষণ করা হচ্ছে...
         </div>
-      </div>
-
-      <div id="offlineAlert" class="alert alert-warning py-1 px-3 mb-2 small" style="display:none;">
-        <i class="fa-solid fa-wifi me-1"></i> আপনি অফলাইনে আছেন। নতুন তথ্য নিরাপদে লোকালি সেভ করা হচ্ছে।
       </div>
 
       <!-- Compact 8 Wallets Row -->
@@ -389,8 +380,8 @@
               </div>
 
               <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1">বিবরণ</label>
-                <input type="text" id="description" class="form-control form-control-sm" placeholder="বিবরণ লিখুন" required>
+                <label class="form-label fw-semibold small mb-1">পণ্য বা লেনদেনের বিবরণ</label>
+                <input type="text" id="description" class="form-control form-control-sm" placeholder="যেমন: খাতা, কলম, কাগজ ইত্যাদি" required>
               </div>
 
               <div class="mb-3">
@@ -419,7 +410,7 @@
                 <button onclick="clearDateFilter()" class="btn btn-outline-secondary btn-sm" title="রিসেট"><i class="fa-solid fa-rotate-left"></i></button>
               </div>
               <div class="d-flex gap-2">
-                <button onclick="generateMonthlyPDF()" class="btn btn-danger btn-sm fw-bold">
+                <button onclick="generateCleanPDF()" class="btn btn-danger btn-sm fw-bold">
                   <i class="fa-solid fa-file-pdf me-1"></i> PDF রিপোর্ট
                 </button>
                 <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
@@ -434,7 +425,7 @@
                   <tr>
                     <th>তারিখ ও সময়</th>
                     <th>ক্যাটাগরি</th>
-                    <th>বিবরণ</th>
+                    <th>বিবরণ (পণ্য)</th>
                     <th>টাইপ</th>
                     <th>পরিমাণ</th>
                     <th class="text-center">অ্যাকশন</th>
@@ -450,6 +441,45 @@
   </div>
 </div>
 
+<!-- Hidden Clean PDF Print Layout Container -->
+<div id="pdfReportPrintArea">
+  <div style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
+    <h2 style="margin:0; text-align:center;">DIGITAL CASH BOOK - MONTHLY STATEMENT</h2>
+    <p style="margin:5px 0 0 0; text-align:center; font-size:14px;" id="pdfReportPeriod">রিপোর্ট সময়সীমা: -</p>
+  </div>
+
+  <div style="background-color: #f2f2f2; border: 1px solid #ccc; padding: 12px; margin-bottom: 20px; font-size: 14px;">
+    <div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+      <span><strong>মোট ক্যাশ-ইন / বিক্রি:</strong> <span id="pdfTotalIn">৳ 0.00</span></span>
+      <span><strong>মোট ক্যাশ-আউট / খরচ:</strong> <span id="pdfTotalOut">৳ 0.00</span></span>
+    </div>
+    <div style="display:flex; justify-content:space-between;">
+      <span><strong>মোট অর্জিত কমিশন:</strong> <span id="pdfTotalComm">৳ 0.00</span></span>
+      <span><strong>নিট লাভ / ক্ষতি:</strong> <strong id="pdfNetProfit" style="font-size:16px;">৳ 0.00</strong></span>
+    </div>
+  </div>
+
+  <h4 style="margin-bottom: 8px;">বিস্তারিত লেনদেনের বিবরণী:</h4>
+  <table style="width: 100%; border-collapse: collapse; font-size: 12px;" border="1" cellpadding="6">
+    <thead>
+      <tr style="background-color: #e6e6e6;">
+        <th>#</th>
+        <th>তারিখ ও সময়</th>
+        <th>ক্যাটাগরি</th>
+        <th>বিবরণ (পণ্য)</th>
+        <th>টাইপ</th>
+        <th>পরিমাণ (৳)</th>
+      </tr>
+    </thead>
+    <tbody id="pdfTableBody"></tbody>
+  </table>
+
+  <div style="margin-top: 60px; display: flex; justify-content: space-between; font-size: 14px;">
+    <div style="border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px;">প্রস্তুতকারকের স্বাক্ষর (ম্যানেজার)</div>
+    <div style="border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px;">অনুমোদনকারীর স্বাক্ষর (দোকানের মালিক)</div>
+  </div>
+</div>
+
 <footer class="app-footer">
   <div class="container">
     <p class="mb-0">Developed by <span>Antu</span> | Telegram AI & PDF Edition</p>
@@ -462,7 +492,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  // Firebase Decoder Engine
   const encodedKeys = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXNlYXBwLmNvbQ==", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI4NmEx", "Rz1XQktKTEdNM0hE"];
   const decodeKey = (idx) => atob(encodedKeys[idx]);
 
@@ -476,10 +505,10 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
-  // --- ডাটা যেন কখনো হারিয়ে না যায় সেজন্য Offline Persistence Sync ---
+  // --- ক্লাউড ও লোকাল ডাটা সুরক্ষিত রাখতে Persistence Engine ---
   try {
     _db.ref().keepSynced(true);
-  } catch(e) { console.log("Persistence Enabled", e); }
+  } catch(e) { console.log(e); }
 
   let _user = null;
   let _cache = [];
@@ -721,101 +750,56 @@
     aiEl.innerHTML = `
       ${statusMsg}<br>
       📊 <b>সবচেয়ে বেশি লেনদেন ক্যাটাগরি:</b> <span class="text-info">${topCategory}</span>।<br>
-      🤖 <b>AI টিপস:</b> নিয়মিত মাসের শেষে দোকানের মালিককে দেখানোর জন্য PDF রিপোর্ট ডাউনলোড করে আর্কাইভে সংরক্ষণ করুন।
+      🤖 <b>AI টিপস:</b> স্টেশনারি পণ্যের নাম ও বিবরণ পরিষ্কারভাবে লিখে রাখলে মাসের শেষে হিসাব মেলানো সহজ হয়।
     `;
   }
 
-  // --- Professional Monthly PDF Report Generator for Owner ---
-  function generateMonthlyPDF() {
+  // --- PDF Font Solution (Garbled Text Fix) ---
+  function generateCleanPDF() {
     if (_filteredCache.length === 0) {
       alert("পিডিএফ তৈরি করার জন্য ফিল্টারে কোনো ডাটা পাওয়া যায়নি!");
       return;
     }
 
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
     const startDate = document.getElementById('startDateFilter').value || 'শুরু হতে';
     const endDate = document.getElementById('endDateFilter').value || 'আজ পর্যন্ত';
 
-    let totalIn = 0, totalOut = 0, totalComm = 0;
+    document.getElementById('pdfReportPeriod').innerText = `রিপোর্ট সময়সীমা: ${startDate} থেকে ${endDate}`;
 
-    _filteredCache.forEach(item => {
-      if (item.type === 'Cash In') totalIn += item.amount;
-      else totalOut += item.amount;
+    let totalIn = 0, totalOut = 0, totalComm = 0;
+    const pdfTbody = document.getElementById('pdfTableBody');
+    pdfTbody.innerHTML = '';
+
+    _filteredCache.forEach((item, index) => {
+      const amt = item.amount || 0;
+      if (item.type === 'Cash In') totalIn += amt;
+      else totalOut += amt;
       if (item.commission) totalComm += item.commission;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="text-align:center;">${index + 1}</td>
+        <td>${item.date || ''}</td>
+        <td>${item.category}${item.subProvider ? ` (${item.subProvider})` : ''}</td>
+        <td>${item.description || '-'}</td>
+        <td style="text-align:center;">${item.type === 'Cash In' ? 'ক্যাশ-ইন' : 'ক্যাশ-আউট'}</td>
+        <td style="text-align:right;">৳ ${amt.toFixed(2)}</td>
+      `;
+      pdfTbody.appendChild(tr);
     });
 
     const netProfit = totalIn - totalOut;
 
-    // Header Design
-    doc.setFillColor(23, 33, 43); 
-    doc.rect(0, 0, 210, 38, 'F');
+    document.getElementById('pdfTotalIn').innerText = `৳ ${totalIn.toFixed(2)}`;
+    document.getElementById('pdfTotalOut').innerText = `৳ ${totalOut.toFixed(2)}`;
+    document.getElementById('pdfTotalComm').innerText = `৳ ${totalComm.toFixed(2)}`;
+    
+    const netEl = document.getElementById('pdfNetProfit');
+    netEl.innerText = `৳ ${netProfit.toFixed(2)}`;
+    netEl.style.color = netProfit >= 0 ? '#008000' : '#d9534f';
 
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(18);
-    doc.text("DIGITAL CASH BOOK - MONTHLY STATEMENT", 14, 18);
-
-    doc.setFontSize(10);
-    doc.text(`Statement Period: ${startDate} to ${endDate}`, 14, 28);
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 150, 28);
-
-    // Summary Box for Shop Owner
-    doc.setFillColor(240, 243, 246);
-    doc.roundedRect(14, 45, 182, 32, 3, 3, 'F');
-
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(11);
-    doc.text(`Total Sales / Income: Tk ${totalIn.toFixed(2)}`, 20, 56);
-    doc.text(`Total Expenses / Cost: Tk ${totalOut.toFixed(2)}`, 20, 66);
-
-    if(totalComm > 0) {
-      doc.text(`Total Commission Earned: Tk ${totalComm.toFixed(2)}`, 110, 56);
-    }
-
-    if (netProfit >= 0) {
-      doc.setTextColor(0, 128, 0);
-      doc.setFontSize(12);
-      doc.text(`NET PROFIT: Tk ${netProfit.toFixed(2)}`, 110, 66);
-    } else {
-      doc.setTextColor(217, 83, 79);
-      doc.setFontSize(12);
-      doc.text(`NET LOSS: Tk ${Math.abs(netProfit).toFixed(2)}`, 110, 66);
-    }
-
-    // Transactions Table
-    const tableData = _filteredCache.map((item, index) => [
-      index + 1,
-      item.date || '',
-      item.category + (item.subProvider ? ` (${item.subProvider})` : ''),
-      item.description || '-',
-      item.type || '',
-      `Tk ${item.amount.toFixed(2)}`
-    ]);
-
-    doc.autoTable({
-      startY: 85,
-      head: [['#', 'Date & Time', 'Category', 'Description', 'Type', 'Amount']],
-      body: tableData,
-      theme: 'grid',
-      headStyles: { fillColor: [36, 47, 61], textColor: [255, 255, 255], fontStyle: 'bold' },
-      styles: { fontSize: 8 }
-    });
-
-    // Signature Block at Page Bottom
-    let finalY = doc.lastAutoTable.finalY + 35;
-    if (finalY > 260) { doc.addPage(); finalY = 40; }
-
-    doc.setDrawColor(150, 150, 150);
-    doc.line(14, finalY, 70, finalY);
-    doc.setTextColor(80, 80, 80);
-    doc.setFontSize(9);
-    doc.text("Prepared By (Manager)", 14, finalY + 5);
-
-    doc.line(140, finalY, 196, finalY);
-    doc.text("Approved By (Owner Signature)", 140, finalY + 5);
-
-    doc.save(`Monthly_CashBook_Report_${Date.now()}.pdf`);
+    // Trigger Browser Print as PDF (Fixes UTF-8 Bangla Symbols Issue Completely)
+    window.print();
   }
 
   function exportToExcel() {
