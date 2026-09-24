@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ডিজিটাল ক্যাশ বুক - টেলিগ্রাম AI ও নিখুঁত PDF এডিশন</title>
+  <title>বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল - ডিজিটাল ক্যাশ বুক</title>
   
   <!-- CSS CDN Links -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -142,23 +142,40 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
 
-    /* Print styling for PDF Generation */
-    #pdfReportPrintArea { display: none; }
+    /* Print CSS Settings */
+    #pdfReportPrintArea, #tokenReceiptArea { display: none; }
+
     @media print {
       body * { visibility: hidden !important; }
-      #pdfReportPrintArea, #pdfReportPrintArea * { visibility: visible !important; }
-      #pdfReportPrintArea {
+
+      /* General PDF Print */
+      body.printing-pdf #pdfReportPrintArea, 
+      body.printing-pdf #pdfReportPrintArea * { 
+        visibility: visible !important; 
+      }
+      body.printing-pdf #pdfReportPrintArea {
         position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        display: block !important;
-        background: white !important;
-        color: black !important;
+        left: 0 !important; top: 0 !important;
+        width: 100% !important; display: block !important;
+        background: white !important; color: black !important;
         padding: 20px !important;
         font-family: 'Hind Siliguri', sans-serif !important;
       }
-      .no-print { display: none !important; }
+
+      /* POS Token Receipt Print */
+      body.printing-token #tokenReceiptArea, 
+      body.printing-token #tokenReceiptArea * { 
+        visibility: visible !important; 
+      }
+      body.printing-token #tokenReceiptArea {
+        position: absolute !important;
+        left: 0 !important; top: 0 !important;
+        width: 80mm !important; display: block !important;
+        background: white !important; color: black !important;
+        padding: 10px !important;
+        font-family: monospace, sans-serif !important;
+        font-size: 12px !important;
+      }
     }
   </style>
 </head>
@@ -174,8 +191,8 @@
     <div class="card card-custom p-4 auth-container">
       <div class="text-center mb-4">
         <i class="fa-paper-plane fa-3x text-info mb-2"></i>
-        <h4 class="fw-bold" id="authTitle">স্মার্ট ক্যাশ বুক লগইন</h4>
-        <p class="text-muted small">সুরক্ষিত ডাটাবেসে লগইন করুন</p>
+        <h4 class="fw-bold" id="authTitle">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h4>
+        <p class="text-muted small">ডিজিটাল ক্যাশ বুক - লগইন করুন</p>
       </div>
       <form id="authForm">
         <div class="mb-3">
@@ -197,8 +214,8 @@
     <div class="header-banner mb-3">
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
         <div>
-          <h4 class="fw-bold mb-0"><i class="fa-paper-plane me-2 text-info"></i>ডিজিটাল ক্যাশ বুক AI</h4>
-          <p class="mb-0 text-muted small">টেলিগ্রাম থিম ও অটোমেটেড নিখুঁত PDF রিপোর্ট জেনারেটর</p>
+          <h4 class="fw-bold mb-0"><i class="fa-paper-plane me-2 text-info"></i>বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h4>
+          <p class="mb-0 text-muted small">ডিজিটাল ক্যাশ বুক, অটো রিসিট ও টোকেন জেনারেটর</p>
         </div>
         <div class="d-flex align-items-center gap-2">
           <button id="aiToggleBtn" onclick="toggleAIMode()" class="btn btn-outline-info btn-sm fw-bold">
@@ -403,7 +420,7 @@
             <!-- Date Filter Bar with PDF & Excel -->
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
               <div class="d-flex flex-wrap gap-1 align-items-center">
-                <input type="text" id="searchInput" onkeyup="filterTransactions()" class="form-control form-control-sm" style="width: 150px;" placeholder="🔍 খুঁজুন...">
+                <input type="text" id="searchInput" onkeyup="filterTransactions()" class="form-control form-control-sm" style="width: 140px;" placeholder="🔍 খুঁজুন...">
                 <input type="date" id="startDateFilter" onchange="filterTransactions()" class="form-control form-control-sm" style="width: 120px;">
                 <span class="small text-muted">-</span>
                 <input type="date" id="endDateFilter" onchange="filterTransactions()" class="form-control form-control-sm" style="width: 120px;">
@@ -428,7 +445,7 @@
                     <th>বিবরণ (পণ্য)</th>
                     <th>টাইপ</th>
                     <th>পরিমাণ</th>
-                    <th class="text-center">অ্যাকশন</th>
+                    <th class="text-center">রিসিট / অ্যাকশন</th>
                   </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -441,11 +458,43 @@
   </div>
 </div>
 
-<!-- Hidden Clean PDF Print Layout Container -->
+<!-- Hidden POS Thermal Receipt Printing Area -->
+<div id="tokenReceiptArea">
+  <div style="text-align:center; border-bottom:1px dashed #000; padding-bottom:5px; margin-bottom:5px;">
+    <h3 style="margin:0; font-size:15px; font-weight: bold;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h3>
+    <p style="margin:2px 0; font-size:11px;">কাস্টমার পেমেন্ট স্লিপ / টোকেন</p>
+  </div>
+  <div style="font-size:11px; margin-bottom:8px;">
+    <div><strong>তারিখ:</strong> <span id="recDate"></span></div>
+    <div><strong>গ্রাহক ফোন:</strong> <span id="recPhone"></span></div>
+    <div><strong>ক্যাটাগরি:</strong> <span id="recCat"></span></div>
+  </div>
+  <table style="width:100%; border-collapse:collapse; font-size:11px; border-top:1px dashed #000; border-bottom:1px dashed #000;" cellpadding="4">
+    <thead>
+      <tr>
+        <th style="text-align:left;">বিবরণ</th>
+        <th style="text-align:right;">টাকা</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="recDesc"></td>
+        <td style="text-align:right;" id="recAmt"></td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="text-align:center; margin-top:12px; font-size:10px;">
+    <p style="margin:0;">ধন্যবাদ! আবার আসবেন।</p>
+    <p style="margin:2px 0;">*** বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল ***</p>
+  </div>
+</div>
+
+<!-- Hidden Clean Full Monthly PDF Layout Container -->
 <div id="pdfReportPrintArea">
   <div style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
-    <h2 style="margin:0; text-align:center;">DIGITAL CASH BOOK - MONTHLY STATEMENT</h2>
-    <p style="margin:5px 0 0 0; text-align:center; font-size:14px;" id="pdfReportPeriod">রিপোর্ট সময়সীমা: -</p>
+    <h2 style="margin:0; text-align:center;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
+    <p style="margin:3px 0 0 0; text-align:center; font-size:15px; font-weight:bold;">মাসিক লেনদেনের বিবরণী ও হিসেব রিপোর্ট</p>
+    <p style="margin:2px 0 0 0; text-align:center; font-size:12px;" id="pdfReportPeriod">রিপোর্ট সময়সীমা: -</p>
   </div>
 
   <div style="background-color: #f2f2f2; border: 1px solid #ccc; padding: 12px; margin-bottom: 20px; font-size: 14px;">
@@ -475,14 +524,14 @@
   </table>
 
   <div style="margin-top: 60px; display: flex; justify-content: space-between; font-size: 14px;">
-    <div style="border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px;">প্রস্তুতকারকের স্বাক্ষর (ম্যানেজার)</div>
-    <div style="border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px;">অনুমোদনকারীর স্বাক্ষর (দোকানের মালিক)</div>
+    <div style="border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px;">প্রস্তুতকারকের স্বাক্ষর</div>
+    <div style="border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px;">মালিকের স্বাক্ষর</div>
   </div>
 </div>
 
 <footer class="app-footer">
   <div class="container">
-    <p class="mb-0">Developed by <span>Antu</span> | Telegram AI & PDF Edition</p>
+    <p class="mb-0">Powered by <span>বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</span> | Developed by Antu</p>
   </div>
 </footer>
 
@@ -505,7 +554,7 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
-  // --- ক্লাউড ও লোকাল ডাটা সুরক্ষিত রাখতে Persistence Engine ---
+  // --- ডাটা সুরক্ষিত রাখার জন্য রিয়েল-টাইম ক্লাউড সিঙ্ক ---
   try {
     _db.ref().keepSynced(true);
   } catch(e) { console.log(e); }
@@ -701,12 +750,16 @@
         <td>
           <div>${item.description}</div>
           ${item.commission ? `<small class="text-success fw-bold">কমিশন: ৳${item.commission}</small>` : ''}
-          ${item.customerPhone ? `<br><small class="text-muted"><i class="fa-brands fa-whatsapp me-1"></i>${item.customerPhone}</small>` : ''}
+          ${item.customerPhone ? `<br><small class="text-muted"><i class="fa-brands fa-whatsapp me-1 text-success"></i>${item.customerPhone}</small>` : ''}
         </td>
         <td>${item.type === 'Cash In' ? '<span class="text-success fw-bold">ক্যাশ ইন</span>' : '<span class="text-danger fw-bold">ক্যাশ আউট</span>'}</td>
         <td class="fw-bold">৳ ${amt.toFixed(2)}</td>
         <td class="text-center">
-          <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+          <div class="btn-group btn-group-sm">
+            <button onclick="printTokenReceipt('${item.id}')" class="btn btn-outline-info" title="প্রিন্ট রিসিট / টোকেন"><i class="fa-solid fa-print"></i></button>
+            <button onclick="sendWhatsAppReceipt('${item.id}')" class="btn btn-outline-success" title="হোয়াটসঅ্যাপে রিসিট পাঠান"><i class="fa-brands fa-whatsapp"></i></button>
+            <button onclick="deleteTx('${item.id}')" class="btn btn-outline-danger" title="মুছে ফেলুন"><i class="fa-solid fa-trash"></i></button>
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
@@ -744,14 +797,52 @@
     let topCategory = Object.keys(categories).reduce((a, b) => categories[a] > categories[b] ? a : b, 'N/A');
 
     let statusMsg = profit >= 0 
-      ? `💡 <b>আপনার ব্যবসার পারফরম্যান্স চমৎকার!</b> ফিল্টার করা সময়ের মোট লাভ: <b class="text-success">৳ ${profit.toFixed(2)}</b>.`
+      ? `💡 <b>বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল-এর পারফরম্যান্স চমৎকার!</b> মোট নিট লাভ: <b class="text-success">৳ ${profit.toFixed(2)}</b>.`
       : `⚠️ <b>সতর্কতা:</b> বর্তমানে খরচের পরিমাণ আয়ের চেয়ে বেশি (<b class="text-danger">৳ ${Math.abs(profit).toFixed(2)} ক্ষতি</b>)।`;
 
     aiEl.innerHTML = `
       ${statusMsg}<br>
       📊 <b>সবচেয়ে বেশি লেনদেন ক্যাটাগরি:</b> <span class="text-info">${topCategory}</span>।<br>
-      🤖 <b>AI টিপস:</b> স্টেশনারি পণ্যের নাম ও বিবরণ পরিষ্কারভাবে লিখে রাখলে মাসের শেষে হিসাব মেলানো সহজ হয়।
+      🤖 <b>AI টিপস:</b> কাস্টমারকে ডিজিটাল রিসিট ও হোয়াটসঅ্যাপ স্লিপ পাঠালে ব্যবসার পরিচিতি বৃদ্ধি পাবে।
     `;
+  }
+
+  // --- POS Receipt Print Function ---
+  function printTokenReceipt(id) {
+    const tx = _cache.find(x => x.id === id);
+    if (!tx) return;
+
+    document.getElementById('recDate').innerText = tx.date || '';
+    document.getElementById('recPhone').innerText = tx.customerPhone || 'N/A';
+    document.getElementById('recCat').innerText = `${tx.category} ${tx.subProvider ? `(${tx.subProvider})` : ''}`;
+    document.getElementById('recDesc').innerText = tx.description || '-';
+    document.getElementById('recAmt').innerText = `৳ ${tx.amount.toFixed(2)}`;
+
+    document.body.className = 'printing-token';
+    window.print();
+    document.body.className = '';
+  }
+
+  // --- WhatsApp Receipt Direct Message Function ---
+  function sendWhatsAppReceipt(id) {
+    const tx = _cache.find(x => x.id === id);
+    if (!tx) return;
+
+    let phone = tx.customerPhone ? tx.customerPhone.replace(/[^0-9]/g, '') : '';
+    if (!phone) {
+      phone = prompt("গ্রাহকের হোয়াটসঅ্যাপ নম্বরটি লিখুন (যেমন: 017........):");
+      if (!phone) return;
+      phone = phone.replace(/[^0-9]/g, '');
+    }
+
+    if (phone.startsWith('01')) {
+      phone = '88' + phone;
+    }
+
+    const text = `🧾 *বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল*\n*পেমেন্ট ও মেমো রিসিট*\n-------------------------------\n🗓 *তারিখ:* ${tx.date}\n📁 *ক্যাটাগরি:* ${tx.category} ${tx.subProvider ? `(${tx.subProvider})` : ''}\n📦 *বিবরণ:* ${tx.description}\n💰 *পরিমাণ:* ৳ ${tx.amount.toFixed(2)}\n-------------------------------\nধন্যবাদ! আবার আসবেন।`;
+
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
   }
 
   // --- PDF Font Solution (Garbled Text Fix) ---
@@ -798,8 +889,9 @@
     netEl.innerText = `৳ ${netProfit.toFixed(2)}`;
     netEl.style.color = netProfit >= 0 ? '#008000' : '#d9534f';
 
-    // Trigger Browser Print as PDF (Fixes UTF-8 Bangla Symbols Issue Completely)
+    document.body.className = 'printing-pdf';
     window.print();
+    document.body.className = '';
   }
 
   function exportToExcel() {
@@ -820,8 +912,8 @@
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "CashBook");
-    XLSX.writeFile(workbook, `CashBook_Report_${Date.now()}.xlsx`);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "BismillahTrade");
+    XLSX.writeFile(workbook, `Bismillah_Trade_Report_${Date.now()}.xlsx`);
   }
 
   async function deleteTx(id) {
