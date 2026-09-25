@@ -14,7 +14,6 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
-    /* --- Dynamic Telegram Color Palette (Day & Night) --- */
     :root {
       --tg-bg: #0e1621;
       --tg-card-bg: #17212b;
@@ -50,8 +49,14 @@
     .header-banner { 
       background: var(--tg-card-bg); 
       border-bottom: 1px solid var(--tg-border);
-      padding: 16px 0; 
+      padding: 12px 0; 
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .shop-logo {
+      max-height: 55px;
+      object-fit: contain;
+      border-radius: 6px;
     }
 
     .card-custom { 
@@ -74,9 +79,7 @@
       box-shadow: 0 0 0 0.25rem rgba(82, 136, 193, 0.25) !important;
     }
 
-    .form-control::placeholder {
-      color: var(--tg-muted) !important;
-    }
+    .form-control::placeholder { color: var(--tg-muted) !important; }
 
     .stat-card { border-left: 4px solid; padding: 12px !important; }
     .stat-in { border-color: #4cd964; }
@@ -88,8 +91,6 @@
       border-radius: 10px; 
       color: white; 
       padding: 10px 12px; 
-      position: relative; 
-      overflow: hidden; 
       box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     }
     .wallet-title { font-size: 0.72rem; font-weight: 600; opacity: 0.9; white-space: nowrap; }
@@ -111,7 +112,23 @@
     .table th { border-color: var(--tg-border); color: var(--tg-muted); }
     .table td { border-color: var(--tg-border); }
 
-    .auth-container { max-width: 420px; margin: 70px auto; border-top: 4px solid var(--tg-primary); }
+    .quick-amount-btn {
+      background-color: var(--tg-input-bg);
+      border: 1px solid var(--tg-border);
+      color: var(--tg-text);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .quick-amount-btn:hover {
+      background-color: var(--tg-primary);
+      color: #fff;
+      border-color: var(--tg-primary);
+    }
+
+    .auth-container { max-width: 420px; margin: 50px auto; border-top: 4px solid var(--tg-primary); }
     .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.75); z-index: 9999; justify-content: center; align-items: center; }
     
     .app-footer {
@@ -146,17 +163,16 @@
     #pdfReportPrintArea, #tokenReceiptArea { display: none; }
 
     @media print {
-      @page { size: A4 portrait; margin: 15mm; }
-      html, body { background: #fff !important; color: #000 !important; height: auto !important; margin: 0 !important; padding: 0 !important; }
+      @page { size: A4 portrait; margin: 10mm; }
+      body, html { background: #ffffff !important; color: #000000 !important; font-family: 'Hind Siliguri', sans-serif !important; }
       body * { display: none !important; }
       body.printing-pdf #pdfReportPrintArea, body.printing-pdf #pdfReportPrintArea * { display: block !important; }
       body.printing-pdf #pdfReportPrintArea { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; background: #fff !important; color: #000 !important; }
       body.printing-token #tokenReceiptArea, body.printing-token #tokenReceiptArea * { display: block !important; }
-      body.printing-token #tokenReceiptArea { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; max-width: 650px !important; margin: 0 auto !important; background: #fff !important; color: #000 !important; }
-      body.printing-pdf table, body.printing-token table { display: table !important; }
+      body.printing-token #tokenReceiptArea { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; max-width: 100% !important; background: #fff !important; color: #000 !important; }
+      body.printing-pdf table, body.printing-token table { display: table !important; width: 100% !important; border-collapse: collapse !important; }
       body.printing-pdf tr, body.printing-token tr { display: table-row !important; }
-      body.printing-pdf td, body.printing-pdf th, body.printing-token td, body.printing-token th { display: table-cell !important; }
-      body.printing-pdf div, body.printing-token div { display: block !important; }
+      body.printing-pdf td, body.printing-pdf th, body.printing-token td, body.printing-token th { display: table-cell !important; color: #000 !important; border: 1px solid #ccc !important; padding: 6px !important; }
     }
   </style>
 </head>
@@ -170,9 +186,9 @@
   <!-- Auth Section -->
   <div id="authSection" class="container">
     <div class="card card-custom p-4 auth-container">
-      <div class="text-center mb-4">
-        <i class="fa-paper-plane fa-3x text-info mb-2"></i>
-        <h4 class="fw-bold" id="authTitle">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h4>
+      <div class="text-center mb-3">
+        <img src="1000203784.jpg" alt="Logo" class="shop-logo mb-2" style="max-height: 70px;">
+        <h4 class="fw-bold mb-0">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h4>
         <p class="text-muted small">ডিজিটাল ক্যাশ বুক - লগইন করুন</p>
       </div>
       <form id="authForm">
@@ -185,7 +201,7 @@
           <input type="password" id="authPassword" class="form-control" placeholder="••••••••" minlength="6" required>
         </div>
         <div id="authError" class="alert alert-danger py-2 small mb-3 text-center" style="display: none;"></div>
-        <button type="submit" id="authSubmitBtn" class="btn btn-tg w-100 py-2 mb-3">প্রবেশ করুন</button>
+        <button type="submit" class="btn btn-tg w-100 py-2 mb-3">প্রবেশ করুন</button>
       </form>
     </div>
   </div>
@@ -194,18 +210,19 @@
   <div id="dashboardSection" style="display: none;">
     <div class="header-banner mb-3">
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
-        <div>
-          <h4 class="fw-bold mb-0"><i class="fa-paper-plane me-2 text-info"></i>বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h4>
-          <p class="mb-0 text-muted small">ডিজিটাল ক্যাশ বুক, অটো রিসিট ও টোকেন জেনারেটর</p>
+        <div class="d-flex align-items-center gap-3">
+          <img src="1000203784.jpg" alt="Logo" class="shop-logo">
+          <div>
+            <h4 class="fw-bold mb-0">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h4>
+            <p class="mb-0 text-muted small">ডিজিটাল ক্যাশ বুক, অটো রিসিট ও টোকেন জেনারেটর</p>
+          </div>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <!-- Theme Toggle Button (Day / Night Mood) -->
-          <button id="themeToggleBtn" onclick="toggleThemeMood()" class="btn btn-outline-warning btn-sm fw-bold" title="Day/Night Mode">
+          <button id="themeToggleBtn" onclick="toggleThemeMood()" class="btn btn-outline-warning btn-sm fw-bold">
             <i class="fa-solid fa-moon me-1" id="themeIcon"></i> <span id="themeText">Night</span>
           </button>
           
-          <!-- AI Mood Toggle Button -->
-          <button id="aiToggleBtn" onclick="toggleAIMood()" class="btn btn-outline-info btn-sm fw-bold" title="AI Mood On/Off">
+          <button id="aiToggleBtn" onclick="toggleAIMood()" class="btn btn-outline-info btn-sm fw-bold">
             <i class="fa-solid fa-robot me-1"></i> AI: On
           </button>
 
@@ -225,90 +242,42 @@
           <i class="fa-solid fa-brain text-info fs-4 me-2"></i>
           <h6 class="fw-bold mb-0 text-info">AI Business Insights & Assistant</h6>
         </div>
-        <div id="aiContent" class="small">
-          ডাটা বিশ্লেষণ করা হচ্ছে...
-        </div>
+        <div id="aiContent" class="small">ডাটা বিশ্লেষণ করা হচ্ছে...</div>
       </div>
 
-      <!-- Compact 8 Wallets Row -->
+      <!-- 8 Wallets Row -->
       <div class="row g-2 mb-3">
-        <div class="col-6 col-sm-3 col-xl">
-          <div class="wallet-card wallet-bkash">
-            <div class="wallet-title">bKash (বিকাশ)</div>
-            <div class="wallet-amount" id="bkashBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <div class="col-6 col-sm-3 col-xl">
-          <div class="wallet-card wallet-nagad">
-            <div class="wallet-title">Nagad (নগদ)</div>
-            <div class="wallet-amount" id="nagadBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <div class="col-6 col-sm-3 col-xl">
-          <div class="wallet-card wallet-rocket">
-            <div class="wallet-title">Rocket (রকেট)</div>
-            <div class="wallet-amount" id="rocketBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <div class="col-6 col-sm-3 col-xl">
-          <div class="wallet-card wallet-gp">
-            <div class="wallet-title">GP (গ্রামীণফোন)</div>
-            <div class="wallet-amount" id="gpBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <div class="col-6 col-sm-3 col-xl">
-          <div class="wallet-card wallet-bl">
-            <div class="wallet-title">Banglalink</div>
-            <div class="wallet-amount" id="banglalinkBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <div class="col-6 col-sm-3 col-xl">
-          <div class="wallet-card wallet-robi">
-            <div class="wallet-title">Robi (রবি)</div>
-            <div class="wallet-amount" id="robiBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <div class="col-6 col-sm-3 col-xl">
-          <div class="wallet-card wallet-airtel">
-            <div class="wallet-title">Airtel (এয়ারটেল)</div>
-            <div class="wallet-amount" id="airtelBalance">৳ 0.00</div>
-          </div>
-        </div>
-        <div class="col-6 col-sm-3 col-xl">
-          <div class="wallet-card wallet-teletalk">
-            <div class="wallet-title">Teletalk (টেলিটক)</div>
-            <div class="wallet-amount" id="teletalkBalance">৳ 0.00</div>
-          </div>
-        </div>
+        <div class="col-6 col-sm-3 col-xl"><div class="wallet-card wallet-bkash"><div class="wallet-title">bKash (বিকাশ)</div><div class="wallet-amount" id="bkashBalance">৳ 0.00</div></div></div>
+        <div class="col-6 col-sm-3 col-xl"><div class="wallet-card wallet-nagad"><div class="wallet-title">Nagad (নগদ)</div><div class="wallet-amount" id="nagadBalance">৳ 0.00</div></div></div>
+        <div class="col-6 col-sm-3 col-xl"><div class="wallet-card wallet-rocket"><div class="wallet-title">Rocket (রকেট)</div><div class="wallet-amount" id="rocketBalance">৳ 0.00</div></div></div>
+        <div class="col-6 col-sm-3 col-xl"><div class="wallet-card wallet-gp"><div class="wallet-title">GP (গ্রামীণফোন)</div><div class="wallet-amount" id="gpBalance">৳ 0.00</div></div></div>
+        <div class="col-6 col-sm-3 col-xl"><div class="wallet-card wallet-bl"><div class="wallet-title">Banglalink</div><div class="wallet-amount" id="banglalinkBalance">৳ 0.00</div></div></div>
+        <div class="col-6 col-sm-3 col-xl"><div class="wallet-card wallet-robi"><div class="wallet-title">Robi (রবি)</div><div class="wallet-amount" id="robiBalance">৳ 0.00</div></div></div>
+        <div class="col-6 col-sm-3 col-xl"><div class="wallet-card wallet-airtel"><div class="wallet-title">Airtel (এয়ারটেল)</div><div class="wallet-amount" id="airtelBalance">৳ 0.00</div></div></div>
+        <div class="col-6 col-sm-3 col-xl"><div class="wallet-card wallet-teletalk"><div class="wallet-title">Teletalk (টেলিটক)</div><div class="wallet-amount" id="teletalkBalance">৳ 0.00</div></div></div>
       </div>
 
       <!-- Main Summary Cards -->
       <div class="row g-2 mb-3 text-center">
-        <div class="col-6 col-lg-2">
+        <div class="col-6 col-lg-3">
           <div class="card card-custom stat-card stat-today">
             <div class="text-muted small fw-bold">আজকের বিক্রি</div>
             <h5 class="text-warning fw-bold mt-1 mb-0" id="todayIn">৳ 0.00</h5>
           </div>
         </div>
-        <div class="col-6 col-lg-2">
+        <div class="col-6 col-lg-3">
           <div class="card card-custom stat-card stat-out">
             <div class="text-muted small fw-bold">আজকের খরচ</div>
             <h5 class="text-danger fw-bold mt-1 mb-0" id="todayOut">৳ 0.00</h5>
           </div>
         </div>
-        <div class="col-6 col-lg-2">
+        <div class="col-6 col-lg-3">
           <div class="card card-custom stat-card stat-in">
             <div class="text-muted small fw-bold">ফিল্টার মোট জমা</div>
             <h6 class="text-success fw-bold mt-1 mb-0" id="totalIn">৳ 0.00</h6>
           </div>
         </div>
-        <div class="col-6 col-lg-2">
-          <div class="card card-custom stat-card stat-out">
-            <div class="text-muted small fw-bold">ফিল্টার মোট খরচ</div>
-            <h6 class="text-danger fw-bold mt-1 mb-0" id="totalOut">৳ 0.00</h6>
-          </div>
-        </div>
-        <div class="col-12 col-lg-4">
+        <div class="col-6 col-lg-3">
           <div class="card card-custom stat-card stat-profit">
             <div class="text-muted small fw-bold">ফিল্টার নিট লাভ/ক্ষতি</div>
             <h5 class="fw-bold mt-1 mb-0" id="totalProfit">৳ 0.00</h5>
@@ -371,9 +340,30 @@
                 </div>
               </div>
 
+              <!-- Stationery Multiple Items Cart Section -->
+              <div id="stationeryFields" style="display: none;" class="p-2 border rounded mb-2 border-secondary">
+                <label class="form-label fw-semibold small mb-1 text-info">পণ্যের তালিকা (একাধিক যোগ করুন)</label>
+                <div id="itemRowsContainer">
+                  <div class="row g-1 mb-2 item-row">
+                    <div class="col-7">
+                      <input type="text" class="form-control form-control-sm item-name" placeholder="পণ্যের নাম (যেমন: খাতা)">
+                    </div>
+                    <div class="col-4">
+                      <input type="number" class="form-control form-control-sm item-price" placeholder="দাম" oninput="calculateStationeryTotal()">
+                    </div>
+                    <div class="col-1 d-flex align-items-center">
+                      <button type="button" class="btn btn-outline-danger btn-sm p-1" onclick="removeStationeryRow(this)"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-outline-info btn-sm w-100 py-1 mt-1" onclick="addStationeryRow()">
+                  <i class="fa-solid fa-plus me-1"></i> আরেকটি পণ্য যোগ করুন
+                </button>
+              </div>
+
               <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1">গ্রাহকের ফোন নম্বর</label>
-                <input type="text" id="customerPhone" class="form-control form-control-sm" placeholder="017........ (ঐচ্ছিক)">
+                <label class="form-label fw-semibold small mb-1">গ্রাহকের নাম ও ফোন নম্বর</label>
+                <input type="text" id="customerPhone" class="form-control form-control-sm" placeholder="নাম / 017........ (ঐচ্ছিক)">
               </div>
 
               <div class="mb-2">
@@ -384,14 +374,31 @@
                 </select>
               </div>
 
-              <div class="mb-2">
+              <div class="mb-2" id="descFieldWrapper">
                 <label class="form-label fw-semibold small mb-1">পণ্য বা লেনদেনের বিবরণ</label>
-                <input type="text" id="description" class="form-control form-control-sm" placeholder="যেমন: খাতা, কলম, কাগজ ইত্যাদি" required>
+                <input type="text" id="description" class="form-control form-control-sm" placeholder="যেমন: সেবা বা খরচ বিবরণী" required>
               </div>
 
-              <div class="mb-3">
+              <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">মোট টাকা (৳)</label>
                 <input type="number" id="amount" class="form-control form-control-sm" placeholder="0.00" step="any" required>
+              </div>
+
+              <!-- Quick Amount Selectors -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold small mb-1 text-muted">দ্রুত অ্যামাউন্ট যোগ করুন:</label>
+                <div class="d-flex flex-wrap gap-1">
+                  <button type="button" class="quick-amount-btn" onclick="addQuickAmount(10)">+১০</button>
+                  <button type="button" class="quick-amount-btn" onclick="addQuickAmount(20)">+২০</button>
+                  <button type="button" class="quick-amount-btn" onclick="addQuickAmount(30)">+৩০</button>
+                  <button type="button" class="quick-amount-btn" onclick="addQuickAmount(40)">+৪০</button>
+                  <button type="button" class="quick-amount-btn" onclick="addQuickAmount(50)">+৫০</button>
+                  <button type="button" class="quick-amount-btn" onclick="addQuickAmount(100)">+১০০</button>
+                  <button type="button" class="quick-amount-btn" onclick="addQuickAmount(200)">+২০০</button>
+                  <button type="button" class="quick-amount-btn" onclick="addQuickAmount(500)">+৫০০</button>
+                  <button type="button" class="quick-amount-btn" onclick="addQuickAmount(1000)">+১০০০</button>
+                  <button type="button" class="quick-amount-btn text-danger" onclick="resetAmount()" title="রিসেট">রিসেট</button>
+                </div>
               </div>
 
               <button type="submit" class="btn btn-tg w-100 py-2">
@@ -405,7 +412,6 @@
         <div class="col-lg-8">
           <div class="card card-custom table-container mb-4">
             
-            <!-- Date Filter Bar with PDF & Excel -->
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
               <div class="d-flex flex-wrap gap-1 align-items-center">
                 <input type="text" id="searchInput" onkeyup="filterTransactions()" class="form-control form-control-sm" style="width: 140px;" placeholder="🔍 খুঁজুন...">
@@ -448,80 +454,74 @@
 
 <!-- POS Token Receipt Print Area -->
 <div id="tokenReceiptArea">
-  <div style="border: 2px solid #2b5278; border-radius: 8px; padding: 25px; background: #fff; color: #000; font-family: 'Hind Siliguri', sans-serif;">
-    <div style="text-align: center; border-bottom: 2px dashed #2b5278; padding-bottom: 12px; margin-bottom: 15px;">
-      <h2 style="margin: 0; font-size: 22px; color: #17212b; font-weight: bold;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
-      <p style="margin: 3px 0 0 0; font-size: 13px; color: #555;">কাস্টমার মেমো ও ক্যাশ রিসিট</p>
+  <div style="border: 2px solid #2b5278; border-radius: 8px; padding: 20px; background: #fff; color: #000; font-family: 'Hind Siliguri', sans-serif;">
+    <div style="text-align: center; border-bottom: 2px dashed #2b5278; padding-bottom: 10px; margin-bottom: 15px;">
+      <img src="1000203784.jpg" alt="Logo" style="max-height: 50px; margin-bottom: 5px;">
+      <h3 style="margin: 0; font-size: 18px; color: #17212b; font-weight: bold;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h3>
+      <p style="margin: 2px 0 0 0; font-size: 12px; color: #555;">কাস্টমার মেমো ও ক্যাশ রিসিট</p>
     </div>
     
-    <div style="margin-bottom: 20px; font-size: 14px; line-height: 1.8;">
-      <div style="display: flex; justify-content: space-between;">
-        <span><strong>তারিখ ও সময়:</strong> <span id="recDate"></span></span>
-        <span><strong>রিসিট নং:</strong> #<span id="recId"></span></span>
-      </div>
-      <div style="display: flex; justify-content: space-between;">
-        <span><strong>গ্রাহকের ফোন:</strong> <span id="recPhone"></span></span>
-        <span><strong>ক্যাটাগরি:</strong> <span id="recCat"></span></span>
-      </div>
+    <div style="margin-bottom: 15px; font-size: 13px; line-height: 1.6;">
+      <div><strong>তারিখ ও সময়:</strong> <span id="recDate"></span></div>
+      <div><strong>রিসিট নং:</strong> #<span id="recId"></span></div>
+      <div><strong>গ্রাহক বিবরণ:</strong> <span id="recPhone"></span></div>
+      <div><strong>ক্যাটাগরি:</strong> <span id="recCat"></span></div>
     </div>
 
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13px;">
       <thead>
-        <tr style="background-color: #f0f4f8; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;">
-          <th style="padding: 10px; text-align: left; border-bottom: 1px solid #2b5278;">পণ্য / সেবার বিবরণ</th>
-          <th style="padding: 10px; text-align: right; border-bottom: 1px solid #2b5278;">পরিমাণ (টাকা)</th>
+        <tr style="background-color: #f0f4f8; border-bottom: 1px solid #2b5278;">
+          <th style="padding: 8px; text-align: left;">বিবরণ</th>
+          <th style="padding: 8px; text-align: right;">টাকা</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td style="padding: 12px 10px; border-bottom: 1px solid #eee;" id="recDesc"></td>
-          <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid #eee; font-weight: bold;" id="recAmt"></td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee;" id="recDesc"></td>
+          <td style="padding: 8px; text-align: right; border-bottom: 1px solid #eee; font-weight: bold;" id="recAmt"></td>
         </tr>
       </tbody>
     </table>
 
-    <div style="background-color: #f9f9f9; padding: 12px; border-radius: 6px; text-align: right; font-size: 16px; margin-bottom: 30px;">
+    <div style="text-align: right; font-size: 15px; margin-bottom: 25px;">
       <strong>সর্বমোট পরিশোধিত: <span id="recAmtTotal" style="color: #2b5278;"></span></strong>
     </div>
 
-    <div style="display: flex; justify-content: space-between; margin-top: 50px; font-size: 13px;">
-      <div style="border-top: 1px solid #000; width: 180px; text-align: center; padding-top: 5px;">গ্রাহকের স্বাক্ষর</div>
-      <div style="border-top: 1px solid #000; width: 180px; text-align: center; padding-top: 5px;">কর্তৃপক্ষের স্বাক্ষর</div>
-    </div>
-
-    <div style="text-align: center; margin-top: 25px; border-top: 1px dashed #ccc; padding-top: 10px; font-size: 12px; color: #666;">
-      ধন্যবাদ! আবার আসবেন। | বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল
+    <div style="display: flex; justify-content: space-between; margin-top: 40px; font-size: 12px;">
+      <div style="border-top: 1px solid #000; width: 150px; text-align: center; padding-top: 4px;">গ্রাহকের স্বাক্ষর</div>
+      <div style="border-top: 1px solid #000; width: 150px; text-align: center; padding-top: 4px;">কর্তৃপক্ষের স্বাক্ষর</div>
     </div>
   </div>
 </div>
 
 <!-- Full Monthly A4 PDF Layout Container -->
 <div id="pdfReportPrintArea">
-  <div style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
-    <h2 style="margin:0; text-align:center;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
-    <p style="margin:3px 0 0 0; text-align:center; font-size:15px; font-weight:bold;">মাসিক লেনদেনের বিবরণী ও হিসেব রিপোর্ট</p>
-    <p style="margin:2px 0 0 0; text-align:center; font-size:12px;" id="pdfReportPeriod">রিপোর্ট সময়সীমা: -</p>
+  <div style="border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px; text-align: center;">
+    <img src="1000203784.jpg" alt="Logo" style="max-height: 45px; margin-bottom: 4px;">
+    <h2 style="margin:0; font-size: 20px;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
+    <p style="margin:2px 0 0 0; font-size:13px; font-weight:bold;">মাসিক লেনদেনের বিবরণী ও হিসেব রিপোর্ট</p>
+    <p style="margin:2px 0 0 0; font-size:11px;" id="pdfReportPeriod">রিপোর্ট সময়সীমা: -</p>
   </div>
 
-  <div style="background-color: #f2f2f2; border: 1px solid #ccc; padding: 12px; margin-bottom: 20px; font-size: 14px;">
-    <div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+  <div style="background-color: #f9f9f9; border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; font-size: 13px;">
+    <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
       <span><strong>মোট ক্যাশ-ইন / বিক্রি:</strong> <span id="pdfTotalIn">৳ 0.00</span></span>
       <span><strong>মোট ক্যাশ-আউট / খরচ:</strong> <span id="pdfTotalOut">৳ 0.00</span></span>
     </div>
     <div style="display:flex; justify-content:space-between;">
       <span><strong>মোট অর্জিত কমিশন:</strong> <span id="pdfTotalComm">৳ 0.00</span></span>
-      <span><strong>নিট লাভ / ক্ষতি:</strong> <strong id="pdfNetProfit" style="font-size:16px;">৳ 0.00</strong></span>
+      <span><strong>নিট লাভ / ক্ষতি:</strong> <strong id="pdfNetProfit" style="font-size:15px;">৳ 0.00</strong></span>
     </div>
   </div>
 
-  <h4 style="margin-bottom: 8px;">বিস্তারিত লেনদেনের বিবরণী:</h4>
-  <table style="width: 100%; border-collapse: collapse; font-size: 12px;" border="1" cellpadding="6">
+  <h4 style="margin-bottom: 6px; font-size: 14px;">বিস্তারিত লেনদেনের বিবরণী:</h4>
+  <table style="width: 100%; border-collapse: collapse; font-size: 11px;" border="1" cellpadding="5">
     <thead>
       <tr style="background-color: #e6e6e6;">
         <th>#</th>
         <th>তারিখ ও সময়</th>
         <th>ক্যাটাগরি</th>
-        <th>বিবরণ (পণ্য)</th>
+        <th>বিবরণ</th>
         <th>টাইপ</th>
         <th>পরিমাণ (৳)</th>
       </tr>
@@ -529,9 +529,9 @@
     <tbody id="pdfTableBody"></tbody>
   </table>
 
-  <div style="margin-top: 60px; display: flex; justify-content: space-between; font-size: 14px;">
-    <div style="border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px;">প্রস্তুতকারকের স্বাক্ষর</div>
-    <div style="border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px;">মালিকের স্বাক্ষর</div>
+  <div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 13px;">
+    <div style="border-top: 1px solid #000; width: 180px; text-align: center; padding-top: 4px;">প্রস্তুতকারকের স্বাক্ষর</div>
+    <div style="border-top: 1px solid #000; width: 180px; text-align: center; padding-top: 4px;">মালিকের স্বাক্ষর</div>
   </div>
 </div>
 
@@ -547,7 +547,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  const encodedKeys = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXNlYXBwLmNvbQ==", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI4NmEx", "Rz1XQktKTEdNM0hE"];
+  const encodedKeys = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JlLmFwcA==", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI4NmEx", "Rz1XQktKTEdNM0hE"];
   const decodeKey = (idx) => atob(encodedKeys[idx]);
 
   const firebaseConfig = {
@@ -570,7 +570,6 @@
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
-  // --- Day / Night Mood Handler ---
   function toggleThemeMood() {
     isDarkMode = !isDarkMode;
     const htmlEl = document.documentElement;
@@ -591,7 +590,6 @@
     }
   }
 
-  // --- AI Mood Handler ---
   function toggleAIMood() {
     isAIModeOn = !isAIModeOn;
     document.getElementById('aiBox').style.display = isAIModeOn ? 'block' : 'none';
@@ -603,6 +601,69 @@
     const category = document.getElementById('category').value;
     document.getElementById('mfsFields').style.display = category === 'Mobile Banking' ? 'block' : 'none';
     document.getElementById('rechargeFields').style.display = category === 'Mobile Recharge' ? 'block' : 'none';
+    
+    const stationeryEl = document.getElementById('stationeryFields');
+    const descWrapper = document.getElementById('descFieldWrapper');
+    const descInput = document.getElementById('description');
+
+    if(category === 'Stationery') {
+      stationeryEl.style.display = 'block';
+      descWrapper.style.display = 'none';
+      descInput.removeAttribute('required');
+      calculateStationeryTotal();
+    } else {
+      stationeryEl.style.display = 'none';
+      descWrapper.style.display = 'block';
+      descInput.setAttribute('required', 'true');
+    }
+  }
+
+  function addStationeryRow() {
+    const container = document.getElementById('itemRowsContainer');
+    const div = document.createElement('div');
+    div.className = 'row g-1 mb-2 item-row';
+    div.innerHTML = `
+      <div class="col-7">
+        <input type="text" class="form-control form-control-sm item-name" placeholder="পণ্যের নাম">
+      </div>
+      <div class="col-4">
+        <input type="number" class="form-control form-control-sm item-price" placeholder="দাম" oninput="calculateStationeryTotal()">
+      </div>
+      <div class="col-1 d-flex align-items-center">
+        <button type="button" class="btn btn-outline-danger btn-sm p-1" onclick="removeStationeryRow(this)"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    `;
+    container.appendChild(div);
+  }
+
+  function removeStationeryRow(btn) {
+    const rows = document.querySelectorAll('.item-row');
+    if(rows.length > 1) {
+      btn.closest('.item-row').remove();
+      calculateStationeryTotal();
+    } else {
+      alert("কমপক্ষে একটি পণ্যের ঘর থাকতে হবে!");
+    }
+  }
+
+  function calculateStationeryTotal() {
+    let total = 0;
+    const priceInputs = document.querySelectorAll('.item-price');
+    priceInputs.forEach(input => {
+      const val = parseFloat(input.value) || 0;
+      total += val;
+    });
+    document.getElementById('amount').value = total > 0 ? total.toFixed(2) : '';
+  }
+
+  function addQuickAmount(val) {
+    const amtInput = document.getElementById('amount');
+    const current = parseFloat(amtInput.value) || 0;
+    amtInput.value = (current + val).toFixed(2);
+  }
+
+  function resetAmount() {
+    document.getElementById('amount').value = '';
   }
 
   _auth.onAuthStateChanged(async (u) => {
@@ -647,22 +708,39 @@
     const category = document.getElementById('category').value;
     let sub = '';
     let comm = 0;
+    let descriptionText = '';
+
     if(category === 'Mobile Banking') {
       sub = document.getElementById('mfsProvider').value;
       comm = Number(parseFloat(document.getElementById('mfsCommission').value).toFixed(2)) || 0;
+      descriptionText = document.getElementById('description').value;
     } else if(category === 'Mobile Recharge') {
       sub = document.getElementById('rechargeOperator').value;
       comm = Number(parseFloat(document.getElementById('rechargeCommission').value).toFixed(2)) || 0;
+      descriptionText = document.getElementById('description').value;
+    } else if(category === 'Stationery') {
+      let itemsList = [];
+      const itemRows = document.querySelectorAll('.item-row');
+      itemRows.forEach(row => {
+        const name = row.querySelector('.item-name').value.trim();
+        const price = row.querySelector('.item-price').value.trim();
+        if(name && price) {
+          itemsList.push(`${name} (৳${price})`);
+        }
+      });
+      descriptionText = itemsList.length > 0 ? itemsList.join(', ') : 'স্টেশনারি পণ্য বিক্রি';
+    } else {
+      descriptionText = document.getElementById('description').value;
     }
 
     const payload = {
-      date: new Date().toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true }),
+      date: new Date().toLocaleString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true }),
       timestamp: Date.now(),
       category: category,
       subProvider: sub,
       commission: comm,
       type: document.getElementById('type').value,
-      description: document.getElementById('description').value,
+      description: descriptionText,
       amount: Number(parseFloat(document.getElementById('amount').value).toFixed(2)) || 0,
       customerPhone: document.getElementById('customerPhone').value
     };
@@ -733,7 +811,6 @@
   function renderUI() {
     let totIn = 0, totOut = 0;
     let tInToday = 0, tOutToday = 0;
-
     let walletBalances = { bKash: 0, Nagad: 0, Rocket: 0, GP: 0, Banglalink: 0, Robi: 0, Airtel: 0, Teletalk: 0 };
 
     const now = new Date();
@@ -776,7 +853,7 @@
         <td>
           <div>${item.description}</div>
           ${item.commission ? `<small class="text-success fw-bold">কমিশন: ৳${item.commission}</small>` : ''}
-          ${item.customerPhone ? `<br><small class="text-muted"><i class="fa-brands fa-whatsapp me-1 text-success"></i>${item.customerPhone}</small>` : ''}
+          ${item.customerPhone ? `<br><small class="text-muted"><i class="fa-solid fa-user me-1 text-success"></i>${item.customerPhone}</small>` : ''}
         </td>
         <td>${item.type === 'Cash In' ? '<span class="text-success fw-bold">ক্যাশ ইন</span>' : '<span class="text-danger fw-bold">ক্যাশ আউট</span>'}</td>
         <td class="fw-bold">৳ ${amt.toFixed(2)}</td>
@@ -794,7 +871,6 @@
     document.getElementById('todayIn').innerText = `৳ ${tInToday.toFixed(2)}`;
     document.getElementById('todayOut').innerText = `৳ ${tOutToday.toFixed(2)}`;
     document.getElementById('totalIn').innerText = `৳ ${totIn.toFixed(2)}`;
-    document.getElementById('totalOut').innerText = `৳ ${totOut.toFixed(2)}`;
     
     const profit = totIn - totOut;
     const profitEl = document.getElementById('totalProfit');
@@ -828,7 +904,7 @@
     aiEl.innerHTML = `
       ${statusMsg}<br>
       📊 <b>সবচেয়ে বেশি লেনদেন:</b> <span class="text-info">${topCategory}</span>।<br>
-      🤖 <b>AI টিপস:</b> কাস্টমারকে ডিজিটাল রিসিট ও হোয়াটসঅ্যাপ স্লিপ পাঠালে ব্যবসার পরিচিতি বৃদ্ধি পাবে।
+      🤖 <b>AI পরামর্শ:</b> নিয়মিত দৈনিক হিসাব মিলিয়ে PDF রিপোর্ট ব্যাকআপ রাখুন।
     `;
   }
 
@@ -838,7 +914,7 @@
 
     document.getElementById('recDate').innerText = tx.date || '';
     document.getElementById('recId').innerText = id.slice(-6).toUpperCase();
-    document.getElementById('recPhone').innerText = tx.customerPhone || 'N/A';
+    document.getElementById('recPhone').innerText = tx.customerPhone || 'সাধারণ গ্রাহক';
     document.getElementById('recCat').innerText = `${tx.category} ${tx.subProvider ? `(${tx.subProvider})` : ''}`;
     document.getElementById('recDesc').innerText = tx.description || '-';
     document.getElementById('recAmt').innerText = `৳ ${tx.amount.toFixed(2)}`;
@@ -854,8 +930,8 @@
     if (!tx) return;
 
     let phone = tx.customerPhone ? tx.customerPhone.replace(/[^0-9]/g, '') : '';
-    if (!phone) {
-      phone = prompt("গ্রাহকের হোয়াটসঅ্যাপ নম্বরটি লিখুন (যেমন: 017........):");
+    if (!phone || phone.length < 11) {
+      phone = prompt("গ্রাহকের সঠিক মোবাইল নম্বরটি লিখুন (যেমন: 017........):");
       if (!phone) return;
       phone = phone.replace(/[^0-9]/g, '');
     }
@@ -926,7 +1002,7 @@
       'অপারেটর/সাব-প্রোভাইডার': item.subProvider || '',
       'বিবরণ': item.description,
       'কমিশন (৳)': item.commission || 0,
-      'ফোন নম্বর': item.customerPhone || '',
+      'গ্রাহক তথ্য': item.customerPhone || '',
       'টাইপ': item.type || '',
       'পরিমাণ (৳)': item.amount || 0
     }));
