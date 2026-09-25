@@ -127,12 +127,6 @@
     .receipt-table { width: 100%; font-size: 0.85rem; margin-top: 8px; border-collapse: collapse; }
     .receipt-table th, .receipt-table td { padding: 4px 2px; border-bottom: 1px dashed #ddd; }
     .receipt-total { font-size: 1.1rem; font-weight: 700; background: #f8f9fa; padding: 6px 10px; border-radius: 6px; border: 1px solid #eee; margin-top: 8px; }
-
-    @media print {
-      body * { visibility: hidden !important; }
-      #receiptModal, #receiptModal * { visibility: visible !important; }
-      #receiptModal { position: absolute !important; left: 0; top: 0; width: 100%; margin: 0; background: #fff; }
-    }
   </style>
 </head>
 <body>
@@ -543,86 +537,6 @@
   </div>
 </div>
 
-<!-- ফিল্টার করা হিসাব পিডিএফ টেমপ্লেট -->
-<div id="filteredPdfContainer" style="display:none; padding: 25px; background: #ffffff; color: #000000; font-family: 'SolaimanLipi', 'Hind Siliguri', Arial, sans-serif; width: 800px;">
-  <div style="text-align: center; margin-bottom: 15px;">
-    <h2 style="margin: 0; font-weight: 700; color: #17212b;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
-    <p style="margin: 2px 0; font-size: 14px; color: #555;">Bismillah Trade International - ফিল্টারকৃত ক্যাশ বুক রিপোর্ট</p>
-    <hr style="border: 1px solid #333; margin: 10px 0;">
-  </div>
-  <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px;">
-    <div><strong>ফিল্টার সময়সীমা/তথ্য:</strong> <span id="pdfFilterInfo">সকল লেনদেন</span></div>
-    <div><strong>রিপোর্ট তৈরির তারিখ:</strong> <span id="pdfFilterGenDate"></span></div>
-  </div>
-  <div style="margin-bottom: 15px; display: flex; gap: 15px;">
-    <div style="flex: 1; background: #f1f2f6; padding: 8px; border-radius: 6px; font-size: 13px;">
-      <strong>ফিল্টার মোট জমা:</strong> <span id="pdfFilteredTotalIn" style="color: #0d6efd;">৳0.00</span>
-    </div>
-    <div style="flex: 1; background: #f1f2f6; padding: 8px; border-radius: 6px; font-size: 13px;">
-      <strong>ফিল্টার মোট খরচ:</strong> <span id="pdfFilteredTotalOut" style="color: #dc3545;">৳0.00</span>
-    </div>
-    <div style="flex: 1; background: #f1f2f6; padding: 8px; border-radius: 6px; font-size: 13px;">
-      <strong>নিট লাভ/ব্যালেন্স:</strong> <span id="pdfFilteredNet" style="color: #198754;">৳0.00</span>
-    </div>
-  </div>
-  <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-    <thead>
-      <tr style="background: #2b5278; color: #ffffff;">
-        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">তারিখ ও সময়</th>
-        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">ক্যাটাগরি</th>
-        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">বিবরণ</th>
-        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">টাইপ</th>
-        <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">পরিমাণ (৳)</th>
-      </tr>
-    </thead>
-    <tbody id="filteredPdfTableBody"></tbody>
-  </table>
-  <div style="margin-top: 40px; display: flex; justify-content: space-between; font-size: 14px;">
-    <div>ম্যানেজারের স্বাক্ষর: ........................</div>
-    <div>দোকানের মালিকের স্বাক্ষর: ........................</div>
-  </div>
-</div>
-
-<!-- মাসিক পূর্ণাঙ্গ পিডিএফ টেমপ্লেট -->
-<div id="pdfExportContainer" style="display:none; padding: 25px; background: #ffffff; color: #000000; font-family: 'SolaimanLipi', 'Hind Siliguri', Arial, sans-serif; width: 800px;">
-  <div style="text-align: center; margin-bottom: 15px;">
-    <h2 style="margin: 0; font-weight: 700; color: #17212b;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
-    <p style="margin: 2px 0; font-size: 14px; color: #555;">Bismillah Trade International - মাসিক পূর্ণাঙ্গ আর্থিক হিসাব রিপোর্ট</p>
-    <hr style="border: 1px solid #333; margin: 10px 0;">
-  </div>
-  <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 15px;">
-    <div><strong>রিপোর্টের ধরন:</strong> মাসিক পূর্ণাঙ্গ হিসাব</div>
-    <div><strong>রিপোর্ট তৈরির তারিখ:</strong> <span id="pdfGenerationDate"></span></div>
-  </div>
-  <div style="margin-bottom: 15px; display: flex; gap: 15px;">
-    <div style="flex: 1; background: #f1f2f6; padding: 10px; border-radius: 6px;">
-      <strong>মোট জমা (Total In):</strong> <span id="pdfTotalIn" style="color: #0d6efd;">৳0.00</span>
-    </div>
-    <div style="flex: 1; background: #f1f2f6; padding: 10px; border-radius: 6px;">
-      <strong>মোট খরচ (Total Out):</strong> <span id="pdfTotalOut" style="color: #dc3545;">৳0.00</span>
-    </div>
-    <div style="flex: 1; background: #f1f2f6; padding: 10px; border-radius: 6px;">
-      <strong>নিট লাভ (Net Profit):</strong> <span id="pdfNetProfit" style="color: #198754;">৳0.00</span>
-    </div>
-  </div>
-  <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-    <thead>
-      <tr style="background: #2b5278; color: #ffffff;">
-        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">তারিখ ও সময়</th>
-        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">ক্যাটাগরি</th>
-        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">বিবরণ</th>
-        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">টাইপ</th>
-        <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">পরিমাণ (৳)</th>
-      </tr>
-    </thead>
-    <tbody id="pdfTableBody"></tbody>
-  </table>
-  <div style="margin-top: 40px; display: flex; justify-content: space-between; font-size: 14px;">
-    <div>ম্যানেজারের স্বাক্ষর: ........................</div>
-    <div>দোকানের মালিকের স্বাক্ষর: ........................</div>
-  </div>
-</div>
-
 <footer class="app-footer">
   <div class="container">
     <p class="mb-0 fw-semibold">Developed for <span>Bismillah Trade International</span></p>
@@ -1013,9 +927,10 @@
     XLSX.writeFile(wb, `Bismillah_Trade_Report.xlsx`);
   }
 
-  /* বর্তমান ফিল্টার করা হিসাব পিডিএফ আকারে ডাউনলোড - স্বয়ংক্রিয় আজকের তারিখ সহ */
+  /* দ্রুত ও নির্ভুল ফিল্টার করা হিসাব পিডিএফ ডাউনলোড */
   function downloadFilteredPDF() {
     if (_filteredCache.length === 0) { alert("পিডিএফ তৈরির জন্য ফিল্টার করা কোনো ডাটা পাওয়া যায়নি!"); return; }
+    toggleLoader(true);
 
     const sDate = document.getElementById('startDateFilter').value;
     const eDate = document.getElementById('endDateFilter').value;
@@ -1027,89 +942,152 @@
     else if (eDate) filterDescText = `${eDate} পর্যন্ত`;
     if (sQuery) filterDescText += ` | খোঁজ শব্দ: "${sQuery}"`;
 
-    document.getElementById('pdfFilterInfo').innerText = filterDescText;
-    
-    // স্বয়ংক্রিয়ভাবে ডাউনলোড করার আজকের তারিখ (DD/MM/YYYY ফরম্যাটে) বসানো হলো
     const today = new Date();
     const formattedToday = String(today.getDate()).padStart(2, '0') + '/' + String(today.getMonth() + 1).padStart(2, '0') + '/' + today.getFullYear();
-    document.getElementById('pdfFilterGenDate').innerText = formattedToday;
 
     let fTotIn = 0, fTotOut = 0;
-    const pdfTbody = document.getElementById('filteredPdfTableBody');
-    pdfTbody.innerHTML = '';
+    let rowsHtml = '';
 
     _filteredCache.forEach(item => {
       if (item.type === 'Cash In') fTotIn += item.amount || 0;
       else fTotOut += item.amount || 0;
 
-      pdfTbody.innerHTML += `
+      rowsHtml += `
         <tr>
-          <td style="padding: 6px; border: 1px solid #ddd;">${item.date}</td>
-          <td style="padding: 6px; border: 1px solid #ddd;">${item.category} ${item.subProvider ? '(' + item.subProvider + ')' : ''}</td>
-          <td style="padding: 6px; border: 1px solid #ddd;">${item.description}</td>
-          <td style="padding: 6px; border: 1px solid #ddd;">${item.type}</td>
-          <td style="padding: 6px; border: 1px solid #ddd; text-align: right;">৳${(item.amount || 0).toFixed(2)}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.date}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.category} ${item.subProvider ? '(' + item.subProvider + ')' : ''}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.description}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.type}</td>
+          <td style="padding: 5px; border: 1px solid #ddd; text-align: right;">৳${(item.amount || 0).toFixed(2)}</td>
         </tr>`;
     });
 
-    document.getElementById('pdfFilteredTotalIn').innerText = `৳${fTotIn.toFixed(2)}`;
-    document.getElementById('pdfFilteredTotalOut').innerText = `৳${fTotOut.toFixed(2)}`;
-    document.getElementById('pdfFilteredNet').innerText = `৳${(fTotIn - fTotOut).toFixed(2)}`;
-
-    const element = document.getElementById('filteredPdfContainer');
-    element.style.display = 'block';
+    // ডাইনামিক টেমপ্লেট তৈরি করে মেমোরিতে রেন্ডার করা (যা দ্রুত ডাউনলোড নিশ্চিত করে)
+    const container = document.createElement('div');
+    container.innerHTML = `
+      <div style="padding: 20px; background: #ffffff; color: #000000; font-family: 'SolaimanLipi', Arial, sans-serif; width: 750px;">
+        <div style="text-align: center; margin-bottom: 12px;">
+          <h2 style="margin: 0; font-weight: 700; color: #17212b;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
+          <p style="margin: 2px 0; font-size: 13px; color: #555;">Bismillah Trade International - ফিল্টারকৃত ক্যাশ বুক রিপোর্ট</p>
+          <hr style="border: 1px solid #333; margin: 8px 0;">
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px;">
+          <div><strong>সময়সীমা:</strong> ${filterDescText}</div>
+          <div><strong>তারিখ:</strong> ${formattedToday}</div>
+        </div>
+        <div style="margin-bottom: 12px; display: flex; gap: 10px;">
+          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>মোট জমা:</strong> <span style="color: #0d6efd;">৳${fTotIn.toFixed(2)}</span></div>
+          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>মোট খরচ:</strong> <span style="color: #dc3545;">৳${fTotOut.toFixed(2)}</span></div>
+          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>নিট লাভ:</strong> <span style="color: #198754;">৳${(fTotIn - fTotOut).toFixed(2)}</span></div>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+          <thead>
+            <tr style="background: #2b5278; color: #ffffff;">
+              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">তারিখ ও সময়</th>
+              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">ক্যাটাগরি</th>
+              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">বিবরণ</th>
+              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">টাইপ</th>
+              <th style="padding: 6px; border: 1px solid #ddd; text-align: right;">পরিমাণ (৳)</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+        <div style="margin-top: 30px; display: flex; justify-content: space-between; font-size: 12px;">
+          <div>ম্যানেজারের স্বাক্ষর: ........................</div>
+          <div>দোকানের মালিকের স্বাক্ষর: ........................</div>
+        </div>
+      </div>
+    `;
 
     const opt = {
-      margin:       10,
-      filename:     `Bismillah_Trade_Filtered_Report_${today.toISOString().split('T')[0]}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+      margin:       8,
+      filename:     `Bismillah_Trade_Filtered_${today.toISOString().split('T')[0]}.pdf`,
+      image:        { type: 'jpeg', quality: 0.95 },
+      html2canvas:  { scale: 1.5, useCORS: true, letterRendering: true },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    html2pdf().from(element).set(opt).save().then(() => {
-      element.style.display = 'none';
+    html2pdf().from(container).set(opt).save().then(() => {
+      toggleLoader(false);
+    }).catch(() => {
+      toggleLoader(false);
+      alert("পিডিএফ ডাউনলোড করতে সমস্যা হয়েছে!");
     });
   }
 
-  /* মাসিক পূর্ণাঙ্গ পিডিএফ রিপোর্ট ডাউনলোড - স্বয়ংক্রিয় আজকের তারিখ সহ */
+  /* দ্রুত ও নির্ভুল মাসিক পূর্ণাঙ্গ পিডিএফ ডাউনলোড */
   function downloadMonthlyPDF() {
     if (_cache.length === 0) { alert("রিপোর্ট তৈরি করার মতো কোনো ডাটা নেই!"); return; }
+    toggleLoader(true);
     
     const today = new Date();
     const formattedToday = String(today.getDate()).padStart(2, '0') + '/' + String(today.getMonth() + 1).padStart(2, '0') + '/' + today.getFullYear();
-    document.getElementById('pdfGenerationDate').innerText = formattedToday;
 
-    document.getElementById('pdfTotalIn').innerText = document.getElementById('totalIn').innerText;
-    document.getElementById('pdfTotalOut').innerText = document.getElementById('totalOut').innerText;
-    document.getElementById('pdfNetProfit').innerText = document.getElementById('totalProfit').innerText;
-
-    const pdfTbody = document.getElementById('pdfTableBody');
-    pdfTbody.innerHTML = '';
+    let mTotIn = 0, mTotOut = 0;
+    let rowsHtml = '';
     _cache.forEach(item => {
-      pdfTbody.innerHTML += `
+      if (item.type === 'Cash In') mTotIn += item.amount || 0;
+      else mTotOut += item.amount || 0;
+
+      rowsHtml += `
         <tr>
-          <td style="padding: 6px; border: 1px solid #ddd;">${item.date}</td>
-          <td style="padding: 6px; border: 1px solid #ddd;">${item.category} ${item.subProvider ? '(' + item.subProvider + ')' : ''}</td>
-          <td style="padding: 6px; border: 1px solid #ddd;">${item.description}</td>
-          <td style="padding: 6px; border: 1px solid #ddd;">${item.type}</td>
-          <td style="padding: 6px; border: 1px solid #ddd; text-align: right;">৳${item.amount.toFixed(2)}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.date}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.category} ${item.subProvider ? '(' + item.subProvider + ')' : ''}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.description}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.type}</td>
+          <td style="padding: 5px; border: 1px solid #ddd; text-align: right;">৳${item.amount.toFixed(2)}</td>
         </tr>`;
     });
 
-    const element = document.getElementById('pdfExportContainer');
-    element.style.display = 'block';
+    const container = document.createElement('div');
+    container.innerHTML = `
+      <div style="padding: 20px; background: #ffffff; color: #000000; font-family: 'SolaimanLipi', Arial, sans-serif; width: 750px;">
+        <div style="text-align: center; margin-bottom: 12px;">
+          <h2 style="margin: 0; font-weight: 700; color: #17212b;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
+          <p style="margin: 2px 0; font-size: 13px; color: #555;">Bismillah Trade International - মাসিক পূর্ণাঙ্গ আর্থিক হিসাব রিপোর্ট</p>
+          <hr style="border: 1px solid #333; margin: 8px 0;">
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px;">
+          <div><strong>রিপোর্টের ধরন:</strong> মাসিক পূর্ণাঙ্গ হিসাব</div>
+          <div><strong>তারিখ:</strong> ${formattedToday}</div>
+        </div>
+        <div style="margin-bottom: 12px; display: flex; gap: 10px;">
+          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>মোট জমা:</strong> <span style="color: #0d6efd;">৳${mTotIn.toFixed(2)}</span></div>
+          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>মোট খরচ:</strong> <span style="color: #dc3545;">৳${mTotOut.toFixed(2)}</span></div>
+          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>নিট লাভ:</strong> <span style="color: #198754;">৳${(mTotIn - mTotOut).toFixed(2)}</span></div>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+          <thead>
+            <tr style="background: #2b5278; color: #ffffff;">
+              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">তারিখ ও সময়</th>
+              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">ক্যাটাগরি</th>
+              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">বিবরণ</th>
+              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">টাইপ</th>
+              <th style="padding: 6px; border: 1px solid #ddd; text-align: right;">পরিমাণ (৳)</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+        <div style="margin-top: 30px; display: flex; justify-content: space-between; font-size: 12px;">
+          <div>ম্যানেজারের স্বাক্ষর: ........................</div>
+          <div>দোকানের মালিকের স্বাক্ষর: ........................</div>
+        </div>
+      </div>
+    `;
 
     const opt = {
-      margin:       10,
-      filename:     `Bismillah_Trade_Monthly_Report_${today.toISOString().split('T')[0]}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+      margin:       8,
+      filename:     `Bismillah_Trade_Monthly_${today.toISOString().split('T')[0]}.pdf`,
+      image:        { type: 'jpeg', quality: 0.95 },
+      html2canvas:  { scale: 1.5, useCORS: true, letterRendering: true },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    html2pdf().from(element).set(opt).save().then(() => {
-      element.style.display = 'none';
+    html2pdf().from(container).set(opt).save().then(() => {
+      toggleLoader(false);
+    }).catch(() => {
+      toggleLoader(false);
+      alert("পিডিএফ ডাউনলোড করতে সমস্যা হয়েছে!");
     });
   }
 </script>
