@@ -927,7 +927,7 @@
     XLSX.writeFile(wb, `Bismillah_Trade_Report.xlsx`);
   }
 
-  /* দ্রুত ও নির্ভুল ফিল্টার করা হিসাব পিডিএফ ডাউনলোড */
+  /* ফিল্টার করা হিসাব ২-৩ পেজের মধ্যে পিডিএফ ডাউনলোড (Pagination Enabled) */
   function downloadFilteredPDF() {
     if (_filteredCache.length === 0) { alert("পিডিএফ তৈরির জন্য ফিল্টার করা কোনো ডাটা পাওয়া যায়নি!"); return; }
     toggleLoader(true);
@@ -953,46 +953,45 @@
       else fTotOut += item.amount || 0;
 
       rowsHtml += `
-        <tr>
-          <td style="padding: 5px; border: 1px solid #ddd;">${item.date}</td>
-          <td style="padding: 5px; border: 1px solid #ddd;">${item.category} ${item.subProvider ? '(' + item.subProvider + ')' : ''}</td>
-          <td style="padding: 5px; border: 1px solid #ddd;">${item.description}</td>
-          <td style="padding: 5px; border: 1px solid #ddd;">${item.type}</td>
-          <td style="padding: 5px; border: 1px solid #ddd; text-align: right;">৳${(item.amount || 0).toFixed(2)}</td>
+        <tr style="page-break-inside: avoid;">
+          <td style="padding: 6px; border: 1px solid #ccc; font-size: 11px;">${item.date}</td>
+          <td style="padding: 6px; border: 1px solid #ccc; font-size: 11px;">${item.category} ${item.subProvider ? '(' + item.subProvider + ')' : ''}</td>
+          <td style="padding: 6px; border: 1px solid #ccc; font-size: 11px;">${item.description}</td>
+          <td style="padding: 6px; border: 1px solid #ccc; font-size: 11px;">${item.type}</td>
+          <td style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: right;">৳${(item.amount || 0).toFixed(2)}</td>
         </tr>`;
     });
 
-    // ডাইনামিক টেমপ্লেট তৈরি করে মেমোরিতে রেন্ডার করা (যা দ্রুত ডাউনলোড নিশ্চিত করে)
     const container = document.createElement('div');
     container.innerHTML = `
-      <div style="padding: 20px; background: #ffffff; color: #000000; font-family: 'SolaimanLipi', Arial, sans-serif; width: 750px;">
-        <div style="text-align: center; margin-bottom: 12px;">
-          <h2 style="margin: 0; font-weight: 700; color: #17212b;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
-          <p style="margin: 2px 0; font-size: 13px; color: #555;">Bismillah Trade International - ফিল্টারকৃত ক্যাশ বুক রিপোর্ট</p>
-          <hr style="border: 1px solid #333; margin: 8px 0;">
+      <div style="padding: 15px; background: #ffffff; color: #000000; font-family: 'SolaimanLipi', Arial, sans-serif; width: 750px;">
+        <div style="text-align: center; margin-bottom: 10px;">
+          <h3 style="margin: 0; font-weight: 700; color: #17212b;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h3>
+          <p style="margin: 2px 0; font-size: 12px; color: #555;">Bismillah Trade International - ফিল্টারকৃত ক্যাশ বুক রিপোর্ট</p>
+          <hr style="border: 1px solid #333; margin: 6px 0;">
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px;">
           <div><strong>সময়সীমা:</strong> ${filterDescText}</div>
           <div><strong>তারিখ:</strong> ${formattedToday}</div>
         </div>
-        <div style="margin-bottom: 12px; display: flex; gap: 10px;">
-          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>মোট জমা:</strong> <span style="color: #0d6efd;">৳${fTotIn.toFixed(2)}</span></div>
-          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>মোট খরচ:</strong> <span style="color: #dc3545;">৳${fTotOut.toFixed(2)}</span></div>
-          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>নিট লাভ:</strong> <span style="color: #198754;">৳${(fTotIn - fTotOut).toFixed(2)}</span></div>
+        <div style="margin-bottom: 10px; display: flex; gap: 8px;">
+          <div style="flex: 1; background: #f1f2f6; padding: 5px; border-radius: 4px; font-size: 11px;"><strong>মোট জমা:</strong> <span style="color: #0d6efd;">৳${fTotIn.toFixed(2)}</span></div>
+          <div style="flex: 1; background: #f1f2f6; padding: 5px; border-radius: 4px; font-size: 11px;"><strong>মোট খরচ:</strong> <span style="color: #dc3545;">৳${fTotOut.toFixed(2)}</span></div>
+          <div style="flex: 1; background: #f1f2f6; padding: 5px; border-radius: 4px; font-size: 11px;"><strong>নিট লাভ:</strong> <span style="color: #198754;">৳${(fTotIn - fTotOut).toFixed(2)}</span></div>
         </div>
-        <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+        <table style="width: 100%; border-collapse: collapse;">
           <thead>
             <tr style="background: #2b5278; color: #ffffff;">
-              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">তারিখ ও সময়</th>
-              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">ক্যাটাগরি</th>
-              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">বিবরণ</th>
-              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">টাইপ</th>
-              <th style="padding: 6px; border: 1px solid #ddd; text-align: right;">পরিমাণ (৳)</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">তারিখ ও সময়</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">ক্যাটাগরি</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">বিবরণ</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">টাইপ</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: right;">পরিমাণ (৳)</th>
             </tr>
           </thead>
           <tbody>${rowsHtml}</tbody>
         </table>
-        <div style="margin-top: 30px; display: flex; justify-content: space-between; font-size: 12px;">
+        <div style="margin-top: 25px; display: flex; justify-content: space-between; font-size: 11px; page-break-inside: avoid;">
           <div>ম্যানেজারের স্বাক্ষর: ........................</div>
           <div>দোকানের মালিকের স্বাক্ষর: ........................</div>
         </div>
@@ -1000,10 +999,10 @@
     `;
 
     const opt = {
-      margin:       8,
+      margin:       10,
       filename:     `Bismillah_Trade_Filtered_${today.toISOString().split('T')[0]}.pdf`,
-      image:        { type: 'jpeg', quality: 0.95 },
-      html2canvas:  { scale: 1.5, useCORS: true, letterRendering: true },
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
@@ -1015,7 +1014,7 @@
     });
   }
 
-  /* দ্রুত ও নির্ভুল মাসিক পূর্ণাঙ্গ পিডিএফ ডাউনলোড */
+  /* মাসিক পূর্ণাঙ্গ হিসাব ২-৩ পেজের মধ্যে পিডিএফ ডাউনলোড (Pagination Enabled) */
   function downloadMonthlyPDF() {
     if (_cache.length === 0) { alert("রিপোর্ট তৈরি করার মতো কোনো ডাটা নেই!"); return; }
     toggleLoader(true);
@@ -1030,45 +1029,45 @@
       else mTotOut += item.amount || 0;
 
       rowsHtml += `
-        <tr>
-          <td style="padding: 5px; border: 1px solid #ddd;">${item.date}</td>
-          <td style="padding: 5px; border: 1px solid #ddd;">${item.category} ${item.subProvider ? '(' + item.subProvider + ')' : ''}</td>
-          <td style="padding: 5px; border: 1px solid #ddd;">${item.description}</td>
-          <td style="padding: 5px; border: 1px solid #ddd;">${item.type}</td>
-          <td style="padding: 5px; border: 1px solid #ddd; text-align: right;">৳${item.amount.toFixed(2)}</td>
+        <tr style="page-break-inside: avoid;">
+          <td style="padding: 6px; border: 1px solid #ccc; font-size: 11px;">${item.date}</td>
+          <td style="padding: 6px; border: 1px solid #ccc; font-size: 11px;">${item.category} ${item.subProvider ? '(' + item.subProvider + ')' : ''}</td>
+          <td style="padding: 6px; border: 1px solid #ccc; font-size: 11px;">${item.description}</td>
+          <td style="padding: 6px; border: 1px solid #ccc; font-size: 11px;">${item.type}</td>
+          <td style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: right;">৳${(item.amount || 0).toFixed(2)}</td>
         </tr>`;
     });
 
     const container = document.createElement('div');
     container.innerHTML = `
-      <div style="padding: 20px; background: #ffffff; color: #000000; font-family: 'SolaimanLipi', Arial, sans-serif; width: 750px;">
-        <div style="text-align: center; margin-bottom: 12px;">
-          <h2 style="margin: 0; font-weight: 700; color: #17212b;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h2>
-          <p style="margin: 2px 0; font-size: 13px; color: #555;">Bismillah Trade International - মাসিক পূর্ণাঙ্গ আর্থিক হিসাব রিপোর্ট</p>
-          <hr style="border: 1px solid #333; margin: 8px 0;">
+      <div style="padding: 15px; background: #ffffff; color: #000000; font-family: 'SolaimanLipi', Arial, sans-serif; width: 750px;">
+        <div style="text-align: center; margin-bottom: 10px;">
+          <h3 style="margin: 0; font-weight: 700; color: #17212b;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h3>
+          <p style="margin: 2px 0; font-size: 12px; color: #555;">Bismillah Trade International - মাসিক পূর্ণাঙ্গ আর্থিক হিসাব রিপোর্ট</p>
+          <hr style="border: 1px solid #333; margin: 6px 0;">
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 8px;">
           <div><strong>রিপোর্টের ধরন:</strong> মাসিক পূর্ণাঙ্গ হিসাব</div>
           <div><strong>তারিখ:</strong> ${formattedToday}</div>
         </div>
-        <div style="margin-bottom: 12px; display: flex; gap: 10px;">
-          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>মোট জমা:</strong> <span style="color: #0d6efd;">৳${mTotIn.toFixed(2)}</span></div>
-          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>মোট খরচ:</strong> <span style="color: #dc3545;">৳${mTotOut.toFixed(2)}</span></div>
-          <div style="flex: 1; background: #f1f2f6; padding: 6px; border-radius: 4px; font-size: 12px;"><strong>নিট লাভ:</strong> <span style="color: #198754;">৳${(mTotIn - mTotOut).toFixed(2)}</span></div>
+        <div style="margin-bottom: 10px; display: flex; gap: 8px;">
+          <div style="flex: 1; background: #f1f2f6; padding: 5px; border-radius: 4px; font-size: 11px;"><strong>মোট জমা:</strong> <span style="color: #0d6efd;">৳${mTotIn.toFixed(2)}</span></div>
+          <div style="flex: 1; background: #f1f2f6; padding: 5px; border-radius: 4px; font-size: 11px;"><strong>মোট খরচ:</strong> <span style="color: #dc3545;">৳${mTotOut.toFixed(2)}</span></div>
+          <div style="flex: 1; background: #f1f2f6; padding: 5px; border-radius: 4px; font-size: 11px;"><strong>নিট লাভ:</strong> <span style="color: #198754;">৳${(mTotIn - mTotOut).toFixed(2)}</span></div>
         </div>
-        <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+        <table style="width: 100%; border-collapse: collapse;">
           <thead>
             <tr style="background: #2b5278; color: #ffffff;">
-              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">তারিখ ও সময়</th>
-              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">ক্যাটাগরি</th>
-              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">বিবরণ</th>
-              <th style="padding: 6px; border: 1px solid #ddd; text-align: left;">টাইপ</th>
-              <th style="padding: 6px; border: 1px solid #ddd; text-align: right;">পরিমাণ (৳)</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">তারিখ ও সময়</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">ক্যাটাগরি</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">বিবরণ</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">টাইপ</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: right;">পরিমাণ (৳)</th>
             </tr>
           </thead>
           <tbody>${rowsHtml}</tbody>
         </table>
-        <div style="margin-top: 30px; display: flex; justify-content: space-between; font-size: 12px;">
+        <div style="margin-top: 25px; display: flex; justify-content: space-between; font-size: 11px; page-break-inside: avoid;">
           <div>ম্যানেজারের স্বাক্ষর: ........................</div>
           <div>দোকানের মালিকের স্বাক্ষর: ........................</div>
         </div>
@@ -1076,10 +1075,10 @@
     `;
 
     const opt = {
-      margin:       8,
+      margin:       10,
       filename:     `Bismillah_Trade_Monthly_${today.toISOString().split('T')[0]}.pdf`,
-      image:        { type: 'jpeg', quality: 0.95 },
-      html2canvas:  { scale: 1.5, useCORS: true, letterRendering: true },
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
