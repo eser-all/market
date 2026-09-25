@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=SolaimanLipi&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- html2pdf for PDF report -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
@@ -68,12 +67,12 @@
     .wallet-card { 
       border-radius: 8px; 
       color: white; 
-      padding: 8px 10px; 
+      padding: 10px 12px; 
       position: relative; 
       overflow: hidden; 
     }
-    .wallet-title { font-size: 0.72rem; font-weight: 600; opacity: 0.9; white-space: nowrap; }
-    .wallet-amount { font-size: 0.95rem; font-weight: 700; margin-bottom: 0; }
+    .wallet-title { font-size: 0.78rem; font-weight: 600; opacity: 0.9; white-space: nowrap; }
+    .wallet-amount { font-size: 1rem; font-weight: 700; margin-bottom: 0; }
 
     .wallet-bkash { background: linear-gradient(135deg, #e2136e, #a00c4e); }
     .wallet-nagad { background: linear-gradient(135deg, #f7921e, #c26900); }
@@ -100,7 +99,6 @@
     }
     .app-footer span { color: #2ea6ff; }
 
-    .btn-set-bal { font-size: 0.65rem; padding: 1px 5px; line-height: 1.2; }
     .quick-amt-btn { font-size: 0.75rem; padding: 2px 8px; }
 
     .brand-logo-img {
@@ -189,82 +187,55 @@
 
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="fw-bold text-secondary small"><i class="fa-solid fa-wallet me-1"></i> ডিজিটাল ওয়ালেট ব্যালেন্স ট্র্যাকার</span>
-        <button onclick="resetInitialBalances()" class="btn btn-sm btn-light text-secondary border shadow-sm py-0 px-2" title="প্রারম্ভিক ব্যালেন্স রিসেট">
-          <i class="fa-solid fa-gear"></i>
-        </button>
       </div>
 
-      <!-- 8 Wallets Row -->
+      <!-- 8 Wallets Row (Settings icons removed) -->
       <div class="row g-2 mb-3">
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-bkash shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">bKash</span>
-              <button id="btnSetBkash" onclick="setInitialBalance('bKash')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
-            </div>
+            <div class="wallet-title">bKash</div>
             <div class="wallet-amount" id="bkashBalance">৳ 0.00</div>
           </div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-nagad shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Nagad</span>
-              <button id="btnSetNagad" onclick="setInitialBalance('Nagad')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
-            </div>
+            <div class="wallet-title">Nagad</div>
             <div class="wallet-amount" id="nagadBalance">৳ 0.00</div>
           </div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-rocket shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Rocket</span>
-              <button id="btnSetRocket" onclick="setInitialBalance('Rocket')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
-            </div>
+            <div class="wallet-title">Rocket</div>
             <div class="wallet-amount" id="rocketBalance">৳ 0.00</div>
           </div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-gp shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">GP</span>
-              <button id="btnSetGP" onclick="setInitialBalance('GP')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
-            </div>
+            <div class="wallet-title">GP</div>
             <div class="wallet-amount" id="gpBalance">৳ 0.00</div>
           </div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-bl shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Banglalink</span>
-              <button id="btnSetBanglalink" onclick="setInitialBalance('Banglalink')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
-            </div>
+            <div class="wallet-title">Banglalink</div>
             <div class="wallet-amount" id="banglalinkBalance">৳ 0.00</div>
           </div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-robi shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Robi</span>
-              <button id="btnSetRobi" onclick="setInitialBalance('Robi')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
-            </div>
+            <div class="wallet-title">Robi</div>
             <div class="wallet-amount" id="robiBalance">৳ 0.00</div>
           </div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-airtel shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Airtel</span>
-              <button id="btnSetAirtel" onclick="setInitialBalance('Airtel')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
-            </div>
+            <div class="wallet-title">Airtel</div>
             <div class="wallet-amount" id="airtelBalance">৳ 0.00</div>
           </div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-teletalk shadow-sm">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Teletalk</span>
-              <button id="btnSetTeletalk" onclick="setInitialBalance('Teletalk')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
-            </div>
+            <div class="wallet-title">Teletalk</div>
             <div class="wallet-amount" id="teletalkBalance">৳ 0.00</div>
           </div>
         </div>
@@ -571,8 +542,8 @@
   let stationeryCart = []; 
 
   let walletInitialBalances = { 
-    bKash: null, Nagad: null, Rocket: null,
-    GP: null, Banglalink: null, Robi: null, Airtel: null, Teletalk: null
+    bKash: 0, Nagad: 0, Rocket: 0,
+    GP: 0, Banglalink: 0, Robi: 0, Airtel: 0, Teletalk: 0
   };
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
@@ -686,21 +657,6 @@
   });
 
   function logout() { _auth.signOut(); }
-
-  async function setInitialBalance(provider) {
-    const val = prompt(`${provider}-এর প্রারম্ভিক ব্যালেন্স:`, walletInitialBalances[provider] || 0);
-    if (val !== null && !isNaN(val)) {
-      walletInitialBalances[provider] = parseFloat(val) || 0;
-      await _db.ref(`users/${_user.uid}/wallet_initials`).set(walletInitialBalances);
-    }
-  }
-
-  function resetInitialBalances() {
-    ['Bkash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'].forEach(p => {
-      const el = document.getElementById(`btnSet${p}`);
-      if(el) el.style.display = 'inline-block';
-    });
-  }
 
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -927,7 +883,6 @@
     XLSX.writeFile(wb, `Bismillah_Trade_Report.xlsx`);
   }
 
-  /* ফিল্টার করা হিসাব ২-৩ পেজের মধ্যে পিডিএফ ডাউনলোড (Pagination Enabled) */
   function downloadFilteredPDF() {
     if (_filteredCache.length === 0) { alert("পিডিএফ তৈরির জন্য ফিল্টার করা কোনো ডাটা পাওয়া যায়নি!"); return; }
     toggleLoader(true);
@@ -1014,7 +969,6 @@
     });
   }
 
-  /* মাসিক পূর্ণাঙ্গ হিসাব ২-৩ পেজের মধ্যে পিডিএফ ডাউনলোড (Pagination Enabled) */
   function downloadMonthlyPDF() {
     if (_cache.length === 0) { alert("রিপোর্ট তৈরি করার মতো কোনো ডাটা নেই!"); return; }
     toggleLoader(true);
