@@ -3,25 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ডিজিটাল ক্যাশ বুক - এন্টারপ্রাইজ এডিশন</title>
+  <title>বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল - ডিজিটাল ক্যাশ বুক</title>
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- html2pdf for monthly PDF report -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
     :root {
-      --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-      --accent-color: #0d6efd;
+      --primary-gradient: linear-gradient(135deg, #17212b 0%, #232e3c 100%);
+      --accent-color: #2b5278;
+      --tg-bg: #0e1621;
+      --tg-card: #17212b;
+      --tg-text: #f5f5f5;
     }
     
     [data-bs-theme="dark"] {
-      --primary-gradient: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+      --primary-gradient: linear-gradient(135deg, #0e1621 0%, #182533 100%);
+      --bs-body-bg: #0e1621;
+      --bs-body-color: #f5f5f5;
     }
 
     body { 
-      background-color: var(--bs-body-bg); 
+      background-color: var(--bs-body-bg, #f0f2f5); 
       font-family: 'Hind Siliguri', sans-serif; 
       min-height: 100vh;
       display: flex;
@@ -29,13 +36,35 @@
     }
 
     .content-wrapper { flex: 1; }
-    .header-banner { background: var(--primary-gradient); color: white; padding: 18px 0; border-radius: 0 0 20px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); }
-    .card-custom { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.25s ease-in-out; }
+    
+    /* Telegram Web Theme Styling */
+    .header-banner { 
+      background: var(--primary-gradient); 
+      color: white; 
+      padding: 15px 0; 
+      border-radius: 0 0 16px 16px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+    }
+    
+    .card-custom { 
+      border: none; 
+      border-radius: 12px; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06); 
+      transition: all 0.2s ease-in-out;
+      background-color: var(--bs-card-bg, #ffffff);
+    }
+    
+    [data-bs-theme="dark"] .card-custom {
+      background-color: #17212b;
+      color: #f5f5f5;
+      border: 1px solid #232e3c;
+    }
+
     .stat-card { border-left: 5px solid; padding: 10px !important; }
-    .stat-in { border-color: #198754; }
-    .stat-out { border-color: #dc3545; }
-    .stat-profit { border-color: #0d6efd; }
-    .stat-today { border-color: #ffc107; }
+    .stat-in { border-color: #2ea6ff; }
+    .stat-out { border-color: #e53935; }
+    .stat-profit { border-color: #4cd137; }
+    .stat-today { border-color: #fbc531; }
     
     .wallet-card { 
       border-radius: 8px; 
@@ -44,22 +73,12 @@
       position: relative; 
       overflow: hidden; 
     }
-    .wallet-title {
-      font-size: 0.72rem;
-      font-weight: 600;
-      opacity: 0.9;
-      white-space: nowrap;
-    }
-    .wallet-amount {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0;
-    }
+    .wallet-title { font-size: 0.72rem; font-weight: 600; opacity: 0.9; white-space: nowrap; }
+    .wallet-amount { font-size: 0.95rem; font-weight: 700; margin-bottom: 0; }
 
     .wallet-bkash { background: linear-gradient(135deg, #e2136e, #a00c4e); }
     .wallet-nagad { background: linear-gradient(135deg, #f7921e, #c26900); }
     .wallet-rocket { background: linear-gradient(135deg, #8c3494, #571a5d); }
-    
     .wallet-gp { background: linear-gradient(135deg, #00A3E0, #006699); }
     .wallet-bl { background: linear-gradient(135deg, #FF5000, #B33800); }
     .wallet-robi { background: linear-gradient(135deg, #E20613, #990000); }
@@ -68,13 +87,13 @@
     
     .badge-mfs { background-color: #e2136e; color: white; }
     .badge-recharge { background-color: #0dcaf0; color: #000; }
-    .badge-print { background-color: #0d6efd; color: white; }
-    .badge-stationery { background-color: #198754; color: white; }
-    .badge-expense { background-color: #dc3545; color: white; }
+    .badge-print { background-color: #2b5278; color: white; }
+    .badge-stationery { background-color: #26a69a; color: white; }
+    .badge-expense { background-color: #e53935; color: white; }
     
     .table-container { border-radius: 12px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .auth-container { max-width: 420px; margin: 70px auto; border-top: 5px solid #0d6efd; }
-    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
+    .auth-container { max-width: 420px; margin: 70px auto; border-top: 5px solid #2b5278; }
+    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; }
     
     .app-footer {
       background: var(--primary-gradient);
@@ -84,20 +103,22 @@
       font-size: 0.9rem;
       margin-top: auto;
     }
-    .app-footer span { color: #00d2ff; }
+    .app-footer span { color: #2ea6ff; }
 
-    .btn-set-bal {
-      font-size: 0.65rem;
-      padding: 1px 5px;
-      line-height: 1.2;
+    .btn-set-bal { font-size: 0.65rem; padding: 1px 5px; line-height: 1.2; }
+    .quick-amt-btn { font-size: 0.75rem; padding: 2px 8px; }
+
+    /* লোগো স্টাইল */
+    .brand-logo-img {
+      max-height: 60px;
+      width: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      background: #fff;
+      padding: 3px;
     }
 
-    .quick-amt-btn {
-      font-size: 0.75rem;
-      padding: 2px 8px;
-    }
-
-    /* --- রিসিট ডিজাইন (স্ক্রিন ভার্সন) --- */
+    /* রিসিট ডিজাইন */
     .receipt-box {
       background-color: #ffffff;
       color: #000000;
@@ -107,91 +128,17 @@
       max-width: 380px;
       margin: 0 auto;
       font-family: 'Hind Siliguri', sans-serif;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
-    .receipt-header h5 {
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 2px;
-      color: #111;
-    }
-    .receipt-divider {
-      border-top: 1px dashed #777;
-      margin: 10px 0;
-    }
-    .receipt-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.88rem;
-      margin-bottom: 4px;
-    }
-    .receipt-table {
-      width: 100%;
-      font-size: 0.85rem;
-      margin-top: 8px;
-      border-collapse: collapse;
-    }
-    .receipt-table th, .receipt-table td {
-      padding: 4px 2px;
-      border-bottom: 1px dashed #ddd;
-    }
-    .receipt-total {
-      font-size: 1.1rem;
-      font-weight: 700;
-      background: #f8f9fa;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid #eee;
-      margin-top: 8px;
-    }
+    .receipt-divider { border-top: 1px dashed #777; margin: 10px 0; }
+    .receipt-row { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 4px; }
+    .receipt-table { width: 100%; font-size: 0.85rem; margin-top: 8px; border-collapse: collapse; }
+    .receipt-table th, .receipt-table td { padding: 4px 2px; border-bottom: 1px dashed #ddd; }
+    .receipt-total { font-size: 1.1rem; font-weight: 700; background: #f8f9fa; padding: 6px 10px; border-radius: 6px; border: 1px solid #eee; margin-top: 8px; }
 
-    /* --- প্রিন্ট স্টাইলিং (পিওএস থার্মাল ও প্রিন্টার) --- */
     @media print {
-      body * {
-        visibility: hidden !important;
-      }
-      #receiptModal, #receiptModal * {
-        visibility: visible !important;
-      }
-      #receiptModal {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: #fff !important;
-      }
-      #rItemsWrapper {
-        display: block !important;
-      }
-      .modal-dialog {
-        max-width: 100% !important;
-        margin: 0 !important;
-      }
-      .modal-content {
-        border: none !important;
-        box-shadow: none !important;
-      }
-      .modal-header, .modal-footer {
-        display: none !important;
-      }
-      .receipt-box {
-        border: none !important;
-        box-shadow: none !important;
-        width: 100% !important;
-        max-width: 80mm !important;
-        margin: 0 auto !important;
-        padding: 5px !important;
-        color: #000 !important;
-      }
-      .receipt-divider {
-        border-top: 1px solid #000 !important;
-      }
-      .receipt-total {
-        background: none !important;
-        border: 1px solid #000 !important;
-      }
+      body * { visibility: hidden !important; }
+      #receiptModal, #receiptModal * { visibility: visible !important; }
+      #receiptModal { position: absolute !important; left: 0; top: 0; width: 100%; margin: 0; background: #fff; }
     }
   </style>
 </head>
@@ -206,8 +153,8 @@
   <div id="authSection" class="container">
     <div class="card card-custom p-4 auth-container">
       <div class="text-center mb-4">
-        <i class="fa-solid fa-shield-halved fa-3x text-primary mb-2"></i>
-        <h4 class="fw-bold" id="authTitle">নিরাপদ লগইন</h4>
+        <img src="1000203784.jpg" alt="Logo" class="brand-logo-img mb-3" style="max-height: 70px;">
+        <h4 class="fw-bold" id="authTitle">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h4>
         <p class="text-muted small">সিস্টেমে প্রবেশ করতে আপনার তথ্য প্রদান করুন</p>
       </div>
       <form id="authForm">
@@ -220,7 +167,7 @@
           <input type="password" id="authPassword" class="form-control" placeholder="••••••••" minlength="6" required>
         </div>
         <div id="authError" class="alert alert-danger py-2 small mb-3 text-center" style="display: none;"></div>
-        <button type="submit" id="authSubmitBtn" class="btn btn-primary w-100 fw-bold py-2 mb-3 shadow-sm">প্রবেশ করুন</button>
+        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mb-3 shadow-sm" style="background-color: #2b5278; border: none;">প্রবেশ করুন</button>
       </form>
     </div>
   </div>
@@ -229,16 +176,19 @@
   <div id="dashboardSection" style="display: none;">
     <div class="header-banner mb-3">
       <div class="container-fluid px-md-4 d-flex justify-content-between align-items-center">
-        <div>
-          <h4 class="fw-bold mb-0"><i class="fa-solid fa-vault me-2"></i>স্মার্ট ক্যাশ বুক এনভায়রনমেন্ট</h4>
-          <p class="mb-0 opacity-75 small">সুরক্ষিত ডাটাবেস ও রিয়েলটাইম ক্যাশ ট্র্যাকিং সার্ভিস</p>
+        <div class="d-flex align-items-center gap-3">
+          <img src="1000203784.jpg" alt="Logo" class="brand-logo-img">
+          <div>
+            <h4 class="fw-bold mb-0">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h4>
+            <p class="mb-0 opacity-75 small">ডিজিটাল ক্যাশ বুক ও এন্টারপ্রাইজ ম্যানেজমেন্ট</p>
+          </div>
         </div>
         <div class="d-flex align-items-center gap-2">
           <button id="themeToggleBtn" onclick="toggleDarkMode()" class="btn btn-outline-light btn-sm fw-bold">
-            <i class="fa-solid fa-moon me-1"></i> ডার্ক মোড
+            <i class="fa-solid fa-moon me-1"></i> থিম
           </button>
-          <span id="userDisplayEmail" class="badge bg-light text-dark d-none d-md-inline-block py-2 px-3"></span>
-          <button onclick="logout()" class="btn btn-outline-light btn-sm fw-bold">
+          <span id="userDisplayEmail" class="badge bg-secondary d-none d-md-inline-block py-2 px-3"></span>
+          <button onclick="logout()" class="btn btn-outline-danger btn-sm fw-bold text-white">
             <i class="fa-solid fa-power-off me-1"></i> লগআউট
           </button>
         </div>
@@ -248,12 +198,12 @@
     <div class="container-fluid px-md-4">
       
       <div id="offlineAlert" class="alert alert-warning py-1 px-3 mb-2 small" style="display:none;">
-        <i class="fa-solid fa-wifi me-1"></i> আপনি অফলাইনে আছেন। আপনার নতুন এন্ট্রিগুলো নিরাপদে জমা থাকছে এবং ইন্টারনেট এলে স্বয়ংক্রিয়ভাবে ক্লাউডে সিন্ক হবে।
+        <i class="fa-solid fa-wifi me-1"></i> আপনি অফলাইনে আছেন। ডাটা লোকালি সংরক্ষিত হচ্ছে।
       </div>
 
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="fw-bold text-secondary small"><i class="fa-solid fa-wallet me-1"></i> ডিজিটাল ওয়ালেট ব্যালেন্স ট্র্যাকার</span>
-        <button onclick="resetInitialBalances()" class="btn btn-sm btn-light text-secondary border shadow-sm py-0 px-2" title="প্রারম্ভিক ব্যালেন্স রিসেট/পরিবর্তন করুন">
+        <button onclick="resetInitialBalances()" class="btn btn-sm btn-light text-secondary border shadow-sm py-0 px-2" title="প্রারম্ভিক ব্যালেন্স রিসেট">
           <i class="fa-solid fa-gear"></i>
         </button>
       </div>
@@ -263,8 +213,8 @@
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-bkash shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">bKash (বিকাশ)</span>
-              <button id="btnSetBkash" onclick="setInitialBalance('bKash')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+              <span class="wallet-title">bKash</span>
+              <button id="btnSetBkash" onclick="setInitialBalance('bKash')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
             </div>
             <div class="wallet-amount" id="bkashBalance">৳ 0.00</div>
           </div>
@@ -272,8 +222,8 @@
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-nagad shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Nagad (নগদ)</span>
-              <button id="btnSetNagad" onclick="setInitialBalance('Nagad')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+              <span class="wallet-title">Nagad</span>
+              <button id="btnSetNagad" onclick="setInitialBalance('Nagad')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
             </div>
             <div class="wallet-amount" id="nagadBalance">৳ 0.00</div>
           </div>
@@ -281,8 +231,8 @@
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-rocket shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Rocket (রকেট)</span>
-              <button id="btnSetRocket" onclick="setInitialBalance('Rocket')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+              <span class="wallet-title">Rocket</span>
+              <button id="btnSetRocket" onclick="setInitialBalance('Rocket')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
             </div>
             <div class="wallet-amount" id="rocketBalance">৳ 0.00</div>
           </div>
@@ -290,8 +240,8 @@
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-gp shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">GP (গ্রামীণফোন)</span>
-              <button id="btnSetGP" onclick="setInitialBalance('GP')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+              <span class="wallet-title">GP</span>
+              <button id="btnSetGP" onclick="setInitialBalance('GP')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
             </div>
             <div class="wallet-amount" id="gpBalance">৳ 0.00</div>
           </div>
@@ -300,7 +250,7 @@
           <div class="wallet-card wallet-bl shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
               <span class="wallet-title">Banglalink</span>
-              <button id="btnSetBanglalink" onclick="setInitialBalance('Banglalink')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+              <button id="btnSetBanglalink" onclick="setInitialBalance('Banglalink')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
             </div>
             <div class="wallet-amount" id="banglalinkBalance">৳ 0.00</div>
           </div>
@@ -308,8 +258,8 @@
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-robi shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Robi (রবি)</span>
-              <button id="btnSetRobi" onclick="setInitialBalance('Robi')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+              <span class="wallet-title">Robi</span>
+              <button id="btnSetRobi" onclick="setInitialBalance('Robi')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
             </div>
             <div class="wallet-amount" id="robiBalance">৳ 0.00</div>
           </div>
@@ -317,8 +267,8 @@
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-airtel shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Airtel (এয়ারটেল)</span>
-              <button id="btnSetAirtel" onclick="setInitialBalance('Airtel')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+              <span class="wallet-title">Airtel</span>
+              <button id="btnSetAirtel" onclick="setInitialBalance('Airtel')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
             </div>
             <div class="wallet-amount" id="airtelBalance">৳ 0.00</div>
           </div>
@@ -326,8 +276,8 @@
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-teletalk shadow-sm">
             <div class="d-flex justify-content-between align-items-center">
-              <span class="wallet-title">Teletalk (টেলিটক)</span>
-              <button id="btnSetTeletalk" onclick="setInitialBalance('Teletalk')" class="btn btn-light btn-set-bal text-dark fw-bold" title="প্রারম্ভিক ব্যালেন্স">+ সেট</button>
+              <span class="wallet-title">Teletalk</span>
+              <button id="btnSetTeletalk" onclick="setInitialBalance('Teletalk')" class="btn btn-light btn-set-bal text-dark fw-bold">+ সেট</button>
             </div>
             <div class="wallet-amount" id="teletalkBalance">৳ 0.00</div>
           </div>
@@ -338,31 +288,31 @@
       <div class="row g-2 mb-3 text-center">
         <div class="col-6 col-lg-2">
           <div class="card card-custom stat-card stat-today">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-calendar-day text-warning me-1"></i>আজকের বিক্রি</div>
+            <div class="text-muted small fw-bold">আজকের বিক্রি</div>
             <h5 class="text-warning fw-bold mt-1 mb-0" id="todayIn">৳ 0.00</h5>
           </div>
         </div>
         <div class="col-6 col-lg-2">
           <div class="card card-custom stat-card stat-out">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-cart-shopping text-danger me-1"></i>আজকের খরচ</div>
+            <div class="text-muted small fw-bold">আজকের খরচ</div>
             <h5 class="text-danger fw-bold mt-1 mb-0" id="todayOut">৳ 0.00</h5>
           </div>
         </div>
         <div class="col-6 col-lg-2">
           <div class="card card-custom stat-card stat-in">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-down text-success me-1"></i>ফিল্টার মোট জমা</div>
-            <h6 class="text-success fw-bold mt-1 mb-0" id="totalIn">৳ 0.00</h6>
+            <div class="text-muted small fw-bold">ফিল্টার মোট জমা</div>
+            <h6 class="text-primary fw-bold mt-1 mb-0" id="totalIn">৳ 0.00</h6>
           </div>
         </div>
         <div class="col-6 col-lg-2">
           <div class="card card-custom stat-card stat-out">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-circle-arrow-up text-danger me-1"></i>ফিল্টার মোট খরচ</div>
+            <div class="text-muted small fw-bold">ফিল্টার মোট খরচ</div>
             <h6 class="text-danger fw-bold mt-1 mb-0" id="totalOut">৳ 0.00</h6>
           </div>
         </div>
         <div class="col-12 col-lg-4">
           <div class="card card-custom stat-card stat-profit">
-            <div class="text-muted small fw-bold"><i class="fa-solid fa-chart-pie text-primary me-1"></i>ফিল্টার করা নিট লাভ/ক্ষতি</div>
+            <div class="text-muted small fw-bold">নিট লাভ/ক্ষতি</div>
             <h5 class="fw-bold mt-1 mb-0" id="totalProfit">৳ 0.00</h5>
           </div>
         </div>
@@ -377,7 +327,7 @@
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">বিভাগ</label>
                 <select id="category" class="form-select form-select-sm shadow-sm" onchange="toggleCategoryFields()" required>
-                  <option value="Mobile Banking">মোবাইল ব্যাংকিং (বিকাশ/নগদ/রকেট)</option>
+                  <option value="Mobile Banking">মোবাইল ব্যাংকিং</option>
                   <option value="Mobile Recharge">মোবাইল রিচার্জ</option>
                   <option value="Print & Photo">প্রিন্ট ও ফটোকপি</option>
                   <option value="Stationery">স্টেশনারি পণ্য</option>
@@ -385,15 +335,15 @@
                 </select>
               </div>
 
-              <!-- MFS Specific Fields -->
+              <!-- MFS Fields -->
               <div id="mfsFields" class="p-2 border rounded mb-2 bg-body-tertiary">
                 <div class="row g-2">
                   <div class="col-6">
                     <label class="form-label fw-semibold small mb-1">অপারেটর</label>
                     <select id="mfsProvider" class="form-select form-select-sm shadow-sm">
-                      <option value="bKash">বিকাশ (bKash)</option>
-                      <option value="Nagad">নগদ (Nagad)</option>
-                      <option value="Rocket">রকেট (Rocket)</option>
+                      <option value="bKash">বিকাশ</option>
+                      <option value="Nagad">নগদ</option>
+                      <option value="Rocket">রকেট</option>
                     </select>
                   </div>
                   <div class="col-6">
@@ -403,31 +353,31 @@
                 </div>
               </div>
 
-              <!-- Mobile Recharge Specific Fields -->
+              <!-- Recharge Fields -->
               <div id="rechargeFields" style="display: none;" class="p-2 border rounded mb-2 bg-body-tertiary">
                 <div class="row g-2">
                   <div class="col-6">
                     <label class="form-label fw-semibold small mb-1">অপারেটর</label>
                     <select id="rechargeOperator" class="form-select form-select-sm shadow-sm">
-                      <option value="GP">গ্রামীণফোন (GP)</option>
-                      <option value="Banglalink">বাংলালিংক</option>
-                      <option value="Robi">রবি (Robi)</option>
-                      <option value="Airtel">এয়ারটেল</option>
-                      <option value="Teletalk">টেলিটক</option>
+                      <option value="GP">GP</option>
+                      <option value="Banglalink">Banglalink</option>
+                      <option value="Robi">Robi</option>
+                      <option value="Airtel">Airtel</option>
+                      <option value="Teletalk">Teletalk</option>
                     </select>
                   </div>
                   <div class="col-6">
-                    <label class="form-label fw-semibold small mb-1">কমিশন/ডিসকাউন্ট (৳)</label>
+                    <label class="form-label fw-semibold small mb-1">কমিশন (৳)</label>
                     <input type="number" id="rechargeCommission" class="form-control form-control-sm shadow-sm" placeholder="0.00" step="any" value="0">
                   </div>
                 </div>
               </div>
 
-              <!-- Multi-Item Stationery Specific Fields -->
+              <!-- Stationery Fields -->
               <div id="stationeryFields" style="display: none;" class="p-2 border rounded mb-2 bg-body-tertiary">
                 <div class="mb-2">
                   <label class="form-label fw-semibold small mb-1">পণ্যের নাম</label>
-                  <input type="text" id="productName" class="form-control form-control-sm shadow-sm" placeholder="যেমন: A4 Paper, Pen">
+                  <input type="text" id="productName" class="form-control form-control-sm shadow-sm" placeholder="যেমন: A4 Paper">
                 </div>
                 <div class="row g-2 mb-2">
                   <div class="col-6">
@@ -442,18 +392,9 @@
                 <button type="button" onclick="addStationeryItem()" class="btn btn-sm btn-outline-success w-100 fw-bold mb-2">
                   <i class="fa-solid fa-plus me-1"></i> আইটেম যোগ করুন
                 </button>
-
-                <!-- Stationery Cart Table -->
                 <div id="stationeryCartWrapper" style="display:none;">
                   <table class="table table-sm table-bordered text-center align-middle mb-1 small">
-                    <thead>
-                      <tr>
-                        <th>পণ্য</th>
-                        <th>পরিমাণ</th>
-                        <th>মোট</th>
-                        <th>#</th>
-                      </tr>
-                    </thead>
+                    <thead><tr><th>পণ্য</th><th>পরিমাণ</th><th>মোট</th><th>#</th></tr></thead>
                     <tbody id="stationeryCartBody"></tbody>
                   </table>
                 </div>
@@ -461,32 +402,29 @@
 
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">গ্রাহকের ফোন / হোয়াটসঅ্যাপ নম্বর</label>
-                <input type="text" id="customerPhone" class="form-control form-control-sm shadow-sm" placeholder="01712345678 (ঐচ্ছিক)">
+                <input type="text" id="customerPhone" class="form-control form-control-sm shadow-sm" placeholder="01712345678">
               </div>
 
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">লেনদেনের ধরন</label>
                 <select id="type" class="form-select form-select-sm shadow-sm" required>
                   <option value="Cash In">ক্যাশ-ইন / বিক্রি (জমা)</option>
-                  <option value="Cash Out">ক্যাশ-আউট / খরচ (মাল/ব্যালেন্স ক্রয়)</option>
+                  <option value="Cash Out">ক্যাশ-আউট / খরচ</option>
                 </select>
               </div>
 
               <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1">বিবরণ / নোটিং</label>
-                <input type="text" id="description" class="form-control form-control-sm shadow-sm" placeholder="যেমন: ক্যাশইন / ১০০ টাকা রিচার্জ / ফটোকপি" required>
+                <label class="form-label fw-semibold small mb-1">বিবরণ</label>
+                <input type="text" id="description" class="form-control form-control-sm shadow-sm" placeholder="বিবরণ লিখুন" required>
               </div>
 
-              <!-- Quick Amount Helper Buttons -->
               <div class="mb-2">
-                <label class="form-label fw-semibold small mb-1">দ্রুত পরিমাণ বাছাই করুন (৳):</label>
+                <label class="form-label fw-semibold small mb-1">দ্রুত পরিমাণ (৳):</label>
                 <div class="d-flex flex-wrap gap-1">
                   <button type="button" onclick="setQuickAmount(20)" class="btn btn-outline-secondary btn-sm quick-amt-btn">২০</button>
-                  <button type="button" onclick="setQuickAmount(30)" class="btn btn-outline-secondary btn-sm quick-amt-btn">৩০</button>
-                  <button type="button" onclick="setQuickAmount(40)" class="btn btn-outline-secondary btn-sm quick-amt-btn">৪০</button>
                   <button type="button" onclick="setQuickAmount(50)" class="btn btn-outline-secondary btn-sm quick-amt-btn">৫০</button>
                   <button type="button" onclick="setQuickAmount(100)" class="btn btn-outline-secondary btn-sm quick-amt-btn">১০০</button>
-                  <button type="button" onclick="setQuickAmount(200)" class="btn btn-outline-secondary btn-sm quick-amt-btn">২০০</button>
+                  <button type="button" onclick="setQuickAmount(500)" class="btn btn-outline-secondary btn-sm quick-amt-btn">৫০০</button>
                 </div>
               </div>
 
@@ -495,7 +433,7 @@
                 <input type="number" id="amount" class="form-control form-control-sm shadow-sm" placeholder="0.00" min="0" step="any" required>
               </div>
 
-              <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2 btn-sm">
+              <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2 btn-sm" style="background-color: #2b5278; border: none;">
                 <i class="fa-solid fa-cloud-arrow-up me-1"></i> এন্ট্রি সেভ করুন
               </button>
             </form>
@@ -509,22 +447,13 @@
             <h6 class="fw-bold mb-2"><i class="fa-solid fa-boxes-stacked text-success me-2"></i>স্টেশনারি বর্তমান স্টক</h6>
             <div class="table-responsive" style="max-height: 120px;">
               <table class="table table-sm table-bordered text-center align-middle mb-0 small">
-                <thead>
-                  <tr>
-                    <th>পণ্যের নাম</th>
-                    <th>বর্তমান স্টক (Pcs)</th>
-                    <th>স্ট্যাটাস</th>
-                  </tr>
-                </thead>
-                <tbody id="inventoryTableBody">
-                  <tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>
-                </tbody>
+                <thead><tr><th>পণ্যের নাম</th><th>বর্তমান স্টক (Pcs)</th><th>স্ট্যাটাস</th></tr></thead>
+                <tbody id="inventoryTableBody"><tr><td colspan="3" class="text-muted small">কোনো ডাটা নেই</td></tr></tbody>
               </table>
             </div>
           </div>
 
           <div class="card card-custom table-container mb-4">
-            <!-- Search & Range Date Filter Bar -->
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
               <div class="d-flex flex-wrap gap-2 align-items-center">
                 <input type="text" id="searchInput" onkeyup="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 170px;" placeholder="🔍 খুঁজুন...">
@@ -534,12 +463,15 @@
                   <input type="date" id="startDateFilter" onchange="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 125px;">
                   <span class="small fw-bold text-muted">পর্যন্ত:</span>
                   <input type="date" id="endDateFilter" onchange="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 125px;">
-                  <button onclick="clearDateFilter()" class="btn btn-outline-secondary btn-sm py-0" title="ফিল্টার রিসেট"><i class="fa-solid fa-rotate-left"></i></button>
+                  <button onclick="clearDateFilter()" class="btn btn-outline-secondary btn-sm py-0"><i class="fa-solid fa-rotate-left"></i></button>
                 </div>
               </div>
-              <div>
+              <div class="d-flex gap-2">
                 <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
                   <i class="fa-solid fa-file-excel me-1"></i> Excel
+                </button>
+                <button onclick="downloadMonthlyPDF()" class="btn btn-outline-danger btn-sm fw-bold">
+                  <i class="fa-solid fa-file-pdf me-1"></i> মাসিক PDF রিপোর্ট
                 </button>
               </div>
             </div>
@@ -550,7 +482,7 @@
                   <tr>
                     <th>তারিখ ও সময়</th>
                     <th>ক্যাটাগরি</th>
-                    <th>বিবরণ ও বিস্তারিত</th>
+                    <th>বিবরণ</th>
                     <th>টাইপ</th>
                     <th>পরিমাণ</th>
                     <th class="text-center">অ্যাকশন</th>
@@ -570,83 +502,96 @@
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header bg-primary text-white py-2">
-        <h6 class="modal-title fw-bold"><i class="fa-solid fa-receipt me-2"></i>গ্রাহক রিসিট নিশ্চিতকরণ</h6>
+      <div class="modal-header bg-primary text-white py-2" style="background-color: #2b5278 !important;">
+        <h6 class="modal-title fw-bold"><i class="fa-solid fa-receipt me-2"></i>ক্যাশ রিসিট</h6>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3">
-        
         <div id="printableReceipt" class="receipt-box">
           <div class="receipt-header text-center">
-            <h5 class="mb-0"><i class="fa-solid fa-store me-1"></i> ডিজিটাল ক্যাশ বুক</h5>
-            <small class="text-muted d-block mb-1">পেমেন্ট মেমো ও ক্যাশ রিসিট</small>
+            <img src="1000203784.jpg" alt="Logo" style="max-height: 45px;" class="mb-1">
+            <h5 class="mb-0 fw-bold">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h5>
+            <small class="text-muted d-block mb-1">Bismillah Trade International</small>
           </div>
-          
           <div class="receipt-divider"></div>
-
-          <div class="receipt-row">
-            <span class="text-muted">তারিখ:</span>
-            <span id="rDate" class="fw-semibold"></span>
-          </div>
-          <div class="receipt-row">
-            <span class="text-muted">ক্যাটাগরি:</span>
-            <span id="rCategory" class="fw-semibold"></span>
-          </div>
-          <div class="receipt-row">
-            <span class="text-muted">বিবরণ:</span>
-            <span id="rDesc" class="fw-semibold text-end ms-2"></span>
-          </div>
-
-          <!-- Multi-Item Table -->
+          <div class="receipt-row"><span class="text-muted">তারিখ / Date:</span><span id="rDate" class="fw-semibold"></span></div>
+          <div class="receipt-row"><span class="text-muted">ক্যাটাগরি / Category:</span><span id="rCategory" class="fw-semibold"></span></div>
+          <div class="receipt-row"><span class="text-muted">বিবরণ / Description:</span><span id="rDesc" class="fw-semibold text-end ms-2"></span></div>
+          
           <div id="rItemsWrapper" style="display:none;">
             <div class="receipt-divider"></div>
             <table class="receipt-table">
-              <thead>
-                <tr class="text-muted">
-                  <th class="text-start">পণ্য</th>
-                  <th class="text-center">পরিমাণ</th>
-                  <th class="text-end">দর</th>
-                  <th class="text-end">মোট</th>
-                </tr>
-              </thead>
+              <thead><tr class="text-muted"><th class="text-start">পণ্য</th><th class="text-center">পরিমাণ</th><th class="text-end">দর</th><th class="text-end">মোট</th></tr></thead>
               <tbody id="rItemsBody"></tbody>
             </table>
           </div>
 
           <div class="receipt-divider"></div>
-
           <div class="receipt-row receipt-total align-items-center">
-            <span>সর্বমোট পরিশোধ:</span>
+            <span>সর্বমোট / Total:</span>
             <span>৳ <span id="rAmount"></span></span>
           </div>
-
           <div class="text-center mt-3">
             <small class="fw-bold d-block">ধন্যবাদ, আবার আসবেন!</small>
-            <small class="text-muted" style="font-size: 0.7rem;">Powered by Digital Cash Book</small>
+            <small class="text-muted" style="font-size: 0.7rem;">Bismillah Trade International POS System</small>
           </div>
         </div>
-
       </div>
       <div class="modal-footer d-flex justify-content-between py-2">
         <div>
-          <button type="button" onclick="printReceipt()" class="btn btn-outline-dark btn-sm me-1">
-            <i class="fa-solid fa-print me-1"></i> প্রিন্ট
-          </button>
-          <button type="button" onclick="sendWhatsAppReceipt()" class="btn btn-success btn-sm">
-            <i class="fa-brands fa-whatsapp me-1"></i> WhatsApp
-          </button>
+          <button type="button" onclick="printReceipt()" class="btn btn-outline-dark btn-sm me-1"><i class="fa-solid fa-print me-1"></i> প্রিন্ট</button>
+          <button type="button" onclick="sendWhatsAppReceipt()" class="btn btn-success btn-sm"><i class="fa-brands fa-whatsapp me-1"></i> WhatsApp</button>
         </div>
-        <button type="button" class="btn btn-secondary btn-sm fw-semibold" data-bs-dismiss="modal">
-          এড়িয়ে যান
-        </button>
+        <button type="button" class="btn btn-secondary btn-sm fw-semibold" data-bs-dismiss="modal">বন্ধ করুন</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- গোপন পিডিএফ টেমপ্লেট (মালিককে মাসিক রিপোর্ট পাঠানোর জন্য ২ পেজের মধ্যে সেট করা) -->
+<div id="pdfExportContainer" style="display:none; padding: 20px; background: #ffffff; color: #000000; font-family: 'Hind Siliguri', sans-serif; width: 800px;">
+  <div class="text-center mb-3">
+    <img src="1000203784.jpg" alt="Logo" style="max-height: 60px;" class="mb-1">
+    <h3 style="margin: 0; font-weight: 700;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h3>
+    <p style="margin: 0; font-size: 14px; color: #555;">Bismillah Trade International - মাসিক আর্থিক হিসাব ও ক্যাশ বুক রিপোর্ট</p>
+    <hr style="border: 1px solid #333; margin: 10px 0;">
+  </div>
+  <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 15px;">
+    <div><strong>রিপোর্টের সময়কাল:</strong> <span id="pdfReportMonth">চলতি মাস</span></div>
+    <div><strong>তৈরির তারিখ:</strong> <span id="pdfGenerationDate"></span></div>
+  </div>
+  <div style="margin-bottom: 15px; display: flex; gap: 15px;">
+    <div style="flex: 1; background: #f1f2f6; padding: 10px; border-radius: 6px;">
+      <strong>মোট জমা (Total In):</strong> <span id="pdfTotalIn" style="color: #0d6efd;">৳0.00</span>
+    </div>
+    <div style="flex: 1; background: #f1f2f6; padding: 10px; border-radius: 6px;">
+      <strong>মোট খরচ (Total Out):</strong> <span id="pdfTotalOut" style="color: #dc3545;">৳0.00</span>
+    </div>
+    <div style="flex: 1; background: #f1f2f6; padding: 10px; border-radius: 6px;">
+      <strong>নিট লাভ (Net Profit):</strong> <span id="pdfNetProfit" style="color: #198754;">৳0.00</span>
+    </div>
+  </div>
+  <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+    <thead>
+      <tr style="background: #2b5278; color: #ffffff;">
+        <th style="padding: 6px; border: 1px solid #ddd;">তারিখ ও সময়</th>
+        <th style="padding: 6px; border: 1px solid #ddd;">ক্যাটাগরি</th>
+        <th style="padding: 6px; border: 1px solid #ddd;">বিবরণ</th>
+        <th style="padding: 6px; border: 1px solid #ddd;">টাইপ</th>
+        <th style="padding: 6px; border: 1px solid #ddd; text-align: right;">পরিমাণ (৳)</th>
+      </tr>
+    </thead>
+    <tbody id="pdfTableBody"></tbody>
+  </table>
+  <div style="margin-top: 30px; display: flex; justify-content: space-between; font-size: 14px;">
+    <div>ম্যানেজারের স্বাক্ষর: ........................</div>
+    <div>দোকানের মালিকের স্বাক্ষর: ........................</div>
+  </div>
+</div>
+
 <footer class="app-footer">
   <div class="container">
-    <p class="mb-0 fw-semibold">Developed by <span>Antu</span></p>
+    <p class="mb-0 fw-semibold">Developed for <span>Bismillah Trade International</span></p>
   </div>
 </footer>
 
@@ -656,7 +601,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  const encodedKeys = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXNlYXBwLmNvbQ==", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI4NmEx", "Rz1XQktKTEdNM0hE"];
+  const encodedKeys = ["QUl6YVN5Q2I0ZmtPdGRjODNaUDZmWF9wVlU1cGpXQTBXdmlUTGlJ", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhcGUuYXBw", "aHR0cHM6Ly9lc2VyLWFsbC1pc3AtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcA==", "ZXNlci1hbGwtaXNw", "ZXNlci1hbGwtaXNwLmZpcmViYXN0b3JhZ2UuYXBw", "MTA5NTMxNDk5NTQ0NA==", "MToxMDk1MzE0OTk1NDQ0OndlYjoxMmFjNDZmYzU4MjMzNTBiZmI4NmEx", "Rz1XQktKTEdNM0hE"];
   const decodeKey = (idx) => atob(encodedKeys[idx]);
 
   const firebaseConfig = {
@@ -669,10 +614,7 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
-  // ডাটা যেন না হারিয়ে যায় তাই অফলাইন পারসিস্টেন্স এনাবেল করা
-  try {
-    _db.ref().keepSynced(true);
-  } catch (e) { console.log("Persistence setup", e); }
+  try { _db.ref().keepSynced(true); } catch (e) { console.log(e); }
 
   let _user = null;
   let _cache = [];
@@ -692,77 +634,40 @@
     const currentTheme = document.documentElement.getAttribute('data-bs-theme');
     const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-bs-theme', targetTheme);
-    
-    const btn = document.getElementById('themeToggleBtn');
-    if (targetTheme === 'dark') {
-      btn.innerHTML = '<i class="fa-solid fa-sun me-1"></i> লাইট মোড';
-      localStorage.setItem('appTheme', 'dark');
-    } else {
-      btn.innerHTML = '<i class="fa-solid fa-moon me-1"></i> ডার্ক মোড';
-      localStorage.setItem('appTheme', 'light');
-    }
+    localStorage.setItem('appTheme', targetTheme);
   }
 
   window.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('appTheme') || 'light';
     document.documentElement.setAttribute('data-bs-theme', savedTheme);
-    const btn = document.getElementById('themeToggleBtn');
-    if(btn) {
-      btn.innerHTML = savedTheme === 'dark' 
-        ? '<i class="fa-solid fa-sun me-1"></i> লাইট মোড' 
-        : '<i class="fa-solid fa-moon me-1"></i> ডার্ক মোড';
-    }
-
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
     updateNetworkStatus();
   });
 
   function updateNetworkStatus() {
-    const alertBox = document.getElementById('offlineAlert');
-    if (!navigator.onLine) {
-      alertBox.style.display = 'block';
-    } else {
-      alertBox.style.display = 'none';
-      syncOfflineDrafts();
-    }
+    document.getElementById('offlineAlert').style.display = navigator.onLine ? 'none' : 'block';
   }
 
-  function setQuickAmount(amt) {
-    document.getElementById('amount').value = amt;
-  }
+  function setQuickAmount(amt) { document.getElementById('amount').value = amt; }
 
   function toggleCategoryFields() {
     const category = document.getElementById('category').value;
     document.getElementById('mfsFields').style.display = category === 'Mobile Banking' ? 'block' : 'none';
     document.getElementById('rechargeFields').style.display = category === 'Mobile Recharge' ? 'block' : 'none';
     document.getElementById('stationeryFields').style.display = category === 'Stationery' ? 'block' : 'none';
-    
-    const amountField = document.getElementById('amount');
-    if (category === 'Stationery') {
-      amountField.readOnly = stationeryCart.length > 0;
-    } else {
-      amountField.readOnly = false;
-    }
+    document.getElementById('amount').readOnly = (category === 'Stationery' && stationeryCart.length > 0);
   }
 
   function addStationeryItem() {
     const pName = document.getElementById('productName').value.trim();
     const qty = Number(document.getElementById('quantity').value) || 1;
     const unitPrice = Number(parseFloat(document.getElementById('unitPrice').value).toFixed(2)) || 0;
-
-    if (!pName) {
-      alert('অনুগ্রহ করে পণ্যের নাম লিখুন!');
-      return;
-    }
-
-    const total = Number((qty * unitPrice).toFixed(2));
-    stationeryCart.push({ productName: pName, quantity: qty, unitPrice: unitPrice, total: total });
-
+    if (!pName) { alert('পণ্যের নাম লিখুন!'); return; }
+    stationeryCart.push({ productName: pName, quantity: qty, unitPrice: unitPrice, total: qty * unitPrice });
     document.getElementById('productName').value = '';
     document.getElementById('quantity').value = '1';
     document.getElementById('unitPrice').value = '';
-
     renderStationeryCart();
   }
 
@@ -785,70 +690,41 @@
 
     cartWrapper.style.display = 'block';
     cartBody.innerHTML = '';
-
     let grandTotal = 0;
     let descNames = [];
 
     stationeryCart.forEach((item, index) => {
       grandTotal += item.total;
       descNames.push(`${item.productName} (${item.quantity}Pcs)`);
-
       const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${item.productName}</td>
-        <td>${item.quantity}</td>
-        <td>৳${item.total.toFixed(2)}</td>
-        <td><button type="button" onclick="removeStationeryItem(${index})" class="btn btn-sm text-danger p-0"><i class="fa-solid fa-xmark"></i></button></td>
-      `;
+      tr.innerHTML = `<td>${item.productName}</td><td>${item.quantity}</td><td>৳${item.total}</td><td><button type="button" onclick="removeStationeryItem(${index})" class="btn btn-sm text-danger p-0"><i class="fa-solid fa-xmark"></i></button></td>`;
       cartBody.appendChild(tr);
     });
 
     amountField.value = grandTotal.toFixed(2);
     amountField.readOnly = true;
-
-    if(!descField.value || descField.value.startsWith('স্টেশনারি ক্রয়:')) {
-      descField.value = 'স্টেশনারি ক্রয়: ' + descNames.join(', ');
-    }
+    descField.value = 'স্টেশনারি ক্রয়: ' + descNames.join(', ');
   }
 
   function safeDecode(str) {
     if (!str) return '';
-    try {
-      return decodeURIComponent(escape(atob(str)));
-    } catch (e) {
-      return str;
-    }
+    try { return decodeURIComponent(escape(atob(str))); } catch (e) { return str; }
   }
 
   _auth.onAuthStateChanged(async (u) => {
     toggleLoader(true);
     if (u) {
       _user = u;
-      const sId = 'sess_' + Date.now();
-      _sessionRef = _db.ref(`users/${_user.uid}/active_session`);
-      await _sessionRef.set(sId);
-      _sessionRef.on('value', (snap) => {
-        if (snap.val() && snap.val() !== sId) {
-          alert('অন্য একটি ডিভাইস অথবা ট্যাব থেকে লগইন করা হয়েছে!');
-          _auth.signOut();
-        }
-      });
-
       document.getElementById('authSection').style.display = 'none';
       document.getElementById('dashboardSection').style.display = 'block';
       document.getElementById('userDisplayEmail').innerText = _user.email;
       
       _db.ref(`users/${_user.uid}/wallet_initials`).on('value', (snap) => {
-        if (snap.val()) {
-          walletInitialBalances = { ...walletInitialBalances, ...snap.val() };
-        }
+        if (snap.val()) walletInitialBalances = { ...walletInitialBalances, ...snap.val() };
         renderUI();
       });
-
       fetchTransactions();
-      syncOfflineDrafts();
     } else {
-      if(_sessionRef) _sessionRef.off();
       _user = null;
       document.getElementById('authSection').style.display = 'block';
       document.getElementById('dashboardSection').style.display = 'none';
@@ -859,33 +735,20 @@
   document.getElementById('authForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     toggleLoader(true);
-    const errorEl = document.getElementById('authError');
-    errorEl.style.display = 'none';
-
     try {
-      await _auth.signInWithEmailAndPassword(
-        document.getElementById('authEmail').value,
-        document.getElementById('authPassword').value
-      );
+      await _auth.signInWithEmailAndPassword(document.getElementById('authEmail').value, document.getElementById('authPassword').value);
     } catch (e) {
-      errorEl.style.display = 'block';
-      errorEl.innerText = "পাসওয়ার্ডটি ভুল হয়েছে!";
-    } finally {
-      toggleLoader(false);
-    }
+      document.getElementById('authError').style.display = 'block';
+      document.getElementById('authError').innerText = "পাসওয়ার্ড ভুল!";
+    } finally { toggleLoader(false); }
   });
 
-  function logout() {
-    if(_user && _sessionRef) _sessionRef.remove();
-    _auth.signOut();
-  }
+  function logout() { _auth.signOut(); }
 
   async function setInitialBalance(provider) {
-    const current = walletInitialBalances[provider] !== null ? walletInitialBalances[provider] : 0;
-    const val = prompt(`${provider}-এর প্রারম্ভিক ব্যালেন্স লিখুন:`, current);
+    const val = prompt(`${provider}-এর প্রারম্ভিক ব্যালেন্স:`, walletInitialBalances[provider] || 0);
     if (val !== null && !isNaN(val)) {
-      const num = parseFloat(val) || 0;
-      walletInitialBalances[provider] = num;
+      walletInitialBalances[provider] = parseFloat(val) || 0;
       await _db.ref(`users/${_user.uid}/wallet_initials`).set(walletInitialBalances);
     }
   }
@@ -909,7 +772,7 @@
 
     let subProvider = '';
     let commission = 0;
-    let items = [];
+    let items = [...stationeryCart];
 
     if (category === 'Mobile Banking') {
       subProvider = document.getElementById('mfsProvider').value;
@@ -917,55 +780,20 @@
     } else if (category === 'Mobile Recharge') {
       subProvider = document.getElementById('rechargeOperator').value;
       commission = Number(parseFloat(document.getElementById('rechargeCommission').value).toFixed(2)) || 0;
-    } else if (category === 'Stationery') {
-      if (stationeryCart.length > 0) {
-        items = [...stationeryCart];
-      } else {
-        const pName = document.getElementById('productName').value.trim();
-        const qty = Number(document.getElementById('quantity').value) || 1;
-        if (pName) {
-          items.push({ productName: pName, quantity: qty, unitPrice: rawAmount / qty, total: rawAmount });
-        }
-      }
     }
 
     toggleLoader(true);
+    const englishDate = new Date().toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true });
 
-    const englishDate = new Date().toLocaleString('en-US', { 
-      year: 'numeric', month: '2-digit', day: '2-digit', 
-      hour: '2-digit', minute: '2-digit', hour12: true 
-    });
-
-    const newTxId = 'tx_' + Date.now();
     const payload = {
-      id: newTxId,
-      date: englishDate,
-      timestamp: Date.now(),
-      category: category,
-      subProvider: subProvider,
-      commission: commission,
-      items: items,
-      productName: items.length === 1 ? items[0].productName : '',
-      quantity: items.length === 1 ? items[0].quantity : 0,
-      customerPhone: customerPhone,
-      type: type,
-      description: rawDesc,
-      amount: rawAmount
+      date: englishDate, timestamp: Date.now(), category, subProvider, commission, items,
+      customerPhone, type, description: rawDesc, amount: rawAmount
     };
 
     try {
-      // ডাটাবেজে সেভ করার চেষ্টা
       const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
       payload.id = newTxRef.key;
-      
-      if (navigator.onLine) {
-        await newTxRef.set(payload);
-      } else {
-        // অফলাইনে থাকলে localStorage এ ড্রাই ব্যাকআপ রাখা
-        let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
-        pending.push(payload);
-        localStorage.setItem('pending_tx', JSON.stringify(pending));
-      }
+      await newTxRef.set(payload);
 
       stationeryCart = [];
       document.getElementById('transactionForm').reset();
@@ -973,42 +801,11 @@
       toggleCategoryFields();
 
       currentReceiptData = payload;
-      
-      // মোডাল পপ-আপ কিন্তু অটো প্রিন্ট হবে না
       showReceiptModal(payload);
-
     } catch (err) {
-      // কোনো কারণে নেটওয়ার্ক ফেইল করলে লোকাল ব্যাকআপে সেভ হবে
-      let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
-      pending.push(payload);
-      localStorage.setItem('pending_tx', JSON.stringify(pending));
-      
-      alert("ডাটা লোকালি নিরাপদে ব্যাকআপ করা হয়েছে! ক্লাউডে সেভ করার চেষ্টা করা হচ্ছে।");
-    } finally {
-      toggleLoader(false);
-    }
+      alert("সংরক্ষণ করতে সমস্যা হয়েছে!");
+    } finally { toggleLoader(false); }
   });
-
-  async function syncOfflineDrafts() {
-    if (!navigator.onLine || !_user) return;
-    let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
-    if (pending.length > 0) {
-      toggleLoader(true);
-      try {
-        for (let item of pending) {
-          const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
-          item.id = newTxRef.key;
-          await newTxRef.set(item);
-        }
-        localStorage.removeItem('pending_tx');
-        console.log('অফলাইন ডাটা ক্লাউডে সফলভাবে সিন্ক হয়েছে!');
-      } catch (e) {
-        console.error('ড্রাফট সিন্ক ফেইলড:', e);
-      } finally {
-        toggleLoader(false);
-      }
-    }
-  }
 
   function fetchTransactions() {
     if (!_user) return;
@@ -1016,15 +813,7 @@
       _cache = [];
       const val = snap.val();
       if (val) {
-        Object.keys(val).forEach(k => {
-          let item = val[k];
-          item.description = safeDecode(item.description);
-          item.productName = safeDecode(item.productName);
-          if(item.items) {
-            item.items = item.items.map(it => ({ ...it, productName: safeDecode(it.productName) }));
-          }
-          _cache.push(item);
-        });
+        Object.keys(val).forEach(k => _cache.push(val[k]));
         _cache.sort((a, b) => b.timestamp - a.timestamp);
       }
       filterTransactions();
@@ -1037,38 +826,15 @@
     const endDate = document.getElementById('endDateFilter').value;
 
     _filteredCache = _cache.filter(item => {
-      let matchSearch = true;
-      if (q) {
-        const desc = (item.description || '').toLowerCase();
-        const cat = (item.category || '').toLowerCase();
-        const sub = (item.subProvider || '').toLowerCase();
-        const prod = (item.productName || '').toLowerCase();
-        const phone = (item.customerPhone || '');
-        const amt = (item.amount || '').toString();
-        const typeRaw = (item.type || '').toLowerCase();
-        
-        let itemNamesMatch = false;
-        if(item.items && item.items.length > 0) {
-          itemNamesMatch = item.items.some(i => (i.productName || '').toLowerCase().includes(q));
-        }
-
-        let typeBangla = typeRaw === 'cash in' ? 'ক্যাশ ইন' : (typeRaw === 'cash out' ? 'ক্যাশ আউট' : '');
-
-        matchSearch = desc.includes(q) || cat.includes(q) || sub.includes(q) || prod.includes(q) || itemNamesMatch || phone.includes(q) || amt.includes(q) || typeRaw.includes(q) || typeBangla.includes(q);
-      }
-
+      let matchSearch = q ? (item.description || '').toLowerCase().includes(q) || (item.category || '').toLowerCase().includes(q) : true;
       let matchDate = true;
       if (startDate || endDate) {
-        const itemDateObj = new Date(item.timestamp);
-        const itemYMD = itemDateObj.getFullYear() + '-' + String(itemDateObj.getMonth() + 1).padStart(2, '0') + '-' + String(itemDateObj.getDate()).padStart(2, '0');
-
+        const itemYMD = new Date(item.timestamp).toISOString().split('T')[0];
         if (startDate && itemYMD < startDate) matchDate = false;
         if (endDate && itemYMD > endDate) matchDate = false;
       }
-
       return matchSearch && matchDate;
     });
-
     renderUI();
   }
 
@@ -1079,168 +845,72 @@
   }
 
   function renderUI() {
-    let totIn = 0;
-    let totOut = 0;
-    let tInToday = 0;
-    let tOutToday = 0;
-
-    let walletBalances = {
-      bKash: walletInitialBalances.bKash || 0,
-      Nagad: walletInitialBalances.Nagad || 0,
-      Rocket: walletInitialBalances.Rocket || 0,
-      GP: walletInitialBalances.GP || 0,
-      Banglalink: walletInitialBalances.Banglalink || 0,
-      Robi: walletInitialBalances.Robi || 0,
-      Airtel: walletInitialBalances.Airtel || 0,
-      Teletalk: walletInitialBalances.Teletalk || 0
-    };
-
-    const providers = ['Bkash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'];
-    const pKeys = ['bKash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'];
-    
-    pKeys.forEach((key, idx) => {
-      const btn = document.getElementById(`btnSet${providers[idx]}`);
-      if(btn) btn.style.display = walletInitialBalances[key] !== null ? 'none' : 'inline-block';
-    });
+    let totIn = 0, totOut = 0, tInToday = 0, tOutToday = 0;
+    let walletBalances = { ...walletInitialBalances };
 
     const now = new Date();
-    const todayY = now.getFullYear();
-    const todayM = now.getMonth();
-    const todayD = now.getDate();
-
+    const todayY = now.getFullYear(), todayM = now.getMonth(), todayD = now.getDate();
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
-
     const inventoryMap = {};
 
     _cache.forEach(item => {
-      const itemDate = new Date(item.timestamp || item.date);
-      const amt = item.amount || 0;
-      const comm = item.commission || 0;
+      const itemDate = new Date(item.timestamp);
+      const amt = item.amount || 0, comm = item.commission || 0;
 
       if ((item.category === 'Mobile Banking' || item.category === 'Mobile Recharge') && item.subProvider) {
-        if (item.type === 'Cash In') {
-          walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) - amt + comm;
-        } else if (item.type === 'Cash Out') {
-          walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) + amt + comm;
-        }
+        if (item.type === 'Cash In') walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) - amt + comm;
+        else walletBalances[item.subProvider] = (walletBalances[item.subProvider] || 0) + amt + comm;
       }
 
-      if (
-        itemDate.getFullYear() === todayY &&
-        itemDate.getMonth() === todayM &&
-        itemDate.getDate() === todayD
-      ) {
-        if (item.type === 'Cash In') tInToday += amt;
-        else tOutToday += amt;
+      if (itemDate.getFullYear() === todayY && itemDate.getMonth() === todayM && itemDate.getDate() === todayD) {
+        if (item.type === 'Cash In') tInToday += amt; else tOutToday += amt;
       }
 
-      if (item.category === 'Stationery') {
-        if (item.items && item.items.length > 0) {
-          item.items.forEach(stItem => {
-            const pName = stItem.productName;
-            if (pName) {
-              if (!inventoryMap[pName]) inventoryMap[pName] = 0;
-              if (item.type === 'Cash Out') {
-                inventoryMap[pName] += (stItem.quantity || 0);
-              } else if (item.type === 'Cash In') {
-                inventoryMap[pName] -= (stItem.quantity || 0);
-              }
-            }
-          });
-        } else if (item.productName) {
-          const pName = item.productName;
-          if (!inventoryMap[pName]) inventoryMap[pName] = 0;
-          if (item.type === 'Cash Out') {
-            inventoryMap[pName] += (item.quantity || 0);
-          } else if (item.type === 'Cash In') {
-            inventoryMap[pName] -= (item.quantity || 0);
-          }
-        }
+      if (item.category === 'Stationery' && item.items) {
+        item.items.forEach(st => {
+          if (!inventoryMap[st.productName]) inventoryMap[st.productName] = 0;
+          if (item.type === 'Cash Out') inventoryMap[st.productName] += st.quantity;
+          else inventoryMap[st.productName] -= st.quantity;
+        });
       }
     });
 
-    document.getElementById('bkashBalance').innerText = `৳ ${(walletBalances.bKash || 0).toFixed(2)}`;
-    document.getElementById('nagadBalance').innerText = `৳ ${(walletBalances.Nagad || 0).toFixed(2)}`;
-    document.getElementById('rocketBalance').innerText = `৳ ${(walletBalances.Rocket || 0).toFixed(2)}`;
-    document.getElementById('gpBalance').innerText = `৳ ${(walletBalances.GP || 0).toFixed(2)}`;
-    document.getElementById('banglalinkBalance').innerText = `৳ ${(walletBalances.Banglalink || 0).toFixed(2)}`;
-    document.getElementById('robiBalance').innerText = `৳ ${(walletBalances.Robi || 0).toFixed(2)}`;
-    document.getElementById('airtelBalance').innerText = `৳ ${(walletBalances.Airtel || 0).toFixed(2)}`;
-    document.getElementById('teletalkBalance').innerText = `৳ ${(walletBalances.Teletalk || 0).toFixed(2)}`;
+    ['bKash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'].forEach(p => {
+      const el = document.getElementById(`${p.toLowerCase()}Balance`);
+      if(el) el.innerText = `৳ ${(walletBalances[p] || 0).toFixed(2)}`;
+    });
 
     _filteredCache.forEach(item => {
-      const amt = item.amount || 0;
-      if (item.type === 'Cash In') {
-        totIn += amt;
-      } else {
-        totOut += amt;
-      }
+      if (item.type === 'Cash In') totIn += item.amount || 0; else totOut += item.amount || 0;
     });
-
-    const netProfitLoss = totIn - totOut;
 
     document.getElementById('todayIn').innerText = `৳ ${tInToday.toFixed(2)}`;
     document.getElementById('todayOut').innerText = `৳ ${tOutToday.toFixed(2)}`;
     document.getElementById('totalIn').innerText = `৳ ${totIn.toFixed(2)}`;
     document.getElementById('totalOut').innerText = `৳ ${totOut.toFixed(2)}`;
-
-    const totalProfitEl = document.getElementById('totalProfit');
-    totalProfitEl.innerText = `৳ ${netProfitLoss.toFixed(2)}`;
-    if (netProfitLoss < 0) {
-      totalProfitEl.className = "fw-bold mt-1 mb-0 text-danger";
-    } else {
-      totalProfitEl.className = "fw-bold mt-1 mb-0 text-primary";
-    }
+    document.getElementById('totalProfit').innerText = `৳ ${(totIn - totOut).toFixed(2)}`;
 
     renderInventoryTable(inventoryMap);
 
     if (_filteredCache.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">কোনো তথ্য পাওয়া যায়নি</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">কোনো তথ্য নেই</td></tr>`;
       return;
     }
 
     _filteredCache.forEach(item => {
-      let badgeClass = 'badge-mfs';
-      if(item.category === 'Mobile Recharge') badgeClass = 'badge-recharge';
-      else if(item.category === 'Print & Photo') badgeClass = 'badge-print';
-      else if(item.category === 'Stationery') badgeClass = 'badge-stationery';
-      else if(item.category === 'Expense') badgeClass = 'badge-expense';
-
-      const typeBadge = item.type === 'Cash In' 
-        ? `<span class="badge bg-success-subtle text-success border border-success">ক্যাশ ইন</span>`
-        : `<span class="badge bg-danger-subtle text-danger border border-danger">ক্যাশ আউট</span>`;
-
-      const displayDesc = safeDecode(item.description);
-      
-      let itemDetailsHTML = '';
-      if (item.items && item.items.length > 0) {
-        let itemListStr = item.items.map(i => `${safeDecode(i.productName)} (${i.quantity}Pcs)`).join(', ');
-        itemDetailsHTML = `<small class="text-muted">আইটেম: ${itemListStr}</small><br>`;
-      } else if (item.productName) {
-        itemDetailsHTML = `<small class="text-muted">পণ্য: ${safeDecode(item.productName)} (${item.quantity || 0} Pcs)</small><br>`;
-      }
-
+      const typeBadge = item.type === 'Cash In' ? `<span class="badge bg-success-subtle text-success">ক্যাশ ইন</span>` : `<span class="badge bg-danger-subtle text-danger">ক্যাশ আউট</span>`;
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td class="small">${item.date || ''}</td>
-        <td>
-          <span class="badge ${badgeClass}">${item.category}</span>
-          ${item.subProvider ? `<br><small class="fw-bold">${item.subProvider}</small>` : ''}
-        </td>
-        <td>
-          <div class="fw-bold">${displayDesc}</div>
-          ${item.commission ? `<small class="text-success fw-bold">কমিশন: ৳${item.commission}</small><br>` : ''}
-          ${itemDetailsHTML}
-          ${item.customerPhone ? `<small class="text-primary"><i class="fa-brands fa-whatsapp"></i> ${item.customerPhone}</small>` : ''}
-        </td>
+        <td class="small">${item.date}</td>
+        <td><span class="badge badge-mfs">${item.category}</span> ${item.subProvider ? `<br><small>${item.subProvider}</small>` : ''}</td>
+        <td><div>${item.description}</div>${item.customerPhone ? `<small class="text-primary"><i class="fa-brands fa-whatsapp"></i> ${item.customerPhone}</small>` : ''}</td>
         <td>${typeBadge}</td>
-        <td class="fw-bold">৳ ${(item.amount || 0).toFixed(2)}</td>
+        <td class="fw-bold">৳ ${item.amount.toFixed(2)}</td>
         <td class="text-center">
-          <button onclick="reprintReceipt('${item.id}')" class="btn btn-sm btn-outline-primary me-1" title="রিসিট প্রিন্ট"><i class="fa-solid fa-print"></i></button>
-          <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger" title="ডিলিট"><i class="fa-solid fa-trash"></i></button>
-        </td>
-      `;
+          <button onclick="reprintReceipt('${item.id}')" class="btn btn-sm btn-outline-primary me-1"><i class="fa-solid fa-print"></i></button>
+          <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+        </td>`;
       tbody.appendChild(tr);
     });
   }
@@ -1249,47 +919,28 @@
     const invTbody = document.getElementById('inventoryTableBody');
     invTbody.innerHTML = '';
     const keys = Object.keys(invMap);
-
     if (keys.length === 0) {
-      invTbody.innerHTML = `<tr><td colspan="3" class="text-muted small">কোনো স্টেশনারি ডাটা পাওয়া যায়নি</td></tr>`;
+      invTbody.innerHTML = `<tr><td colspan="3" class="text-muted small">স্টেশনারি স্টক খালি</td></tr>`;
       return;
     }
-
     keys.forEach(pName => {
       const stock = invMap[pName];
-      let statusBadge = stock <= 2 
-        ? `<span class="badge bg-danger">লো স্টক</span>` 
-        : `<span class="badge bg-success">স্টক ওকে</span>`;
-
       const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="text-capitalize">${safeDecode(pName)}</td>
-        <td class="fw-bold">${stock}</td>
-        <td>${statusBadge}</td>
-      `;
+      tr.innerHTML = `<td>${pName}</td><td class="fw-bold">${stock}</td><td>${stock <= 2 ? '<span class="badge bg-danger">কম</span>' : '<span class="badge bg-success">ঠিক আছে</span>'}</td>`;
       invTbody.appendChild(tr);
     });
   }
 
   async function deleteTx(id) {
-    if (!confirm('আপনি কি নিশ্চিত যে এই এন্ট্রিটি মুছে ফেলতে চান?')) return;
-    if (!_user) return;
-    toggleLoader(true);
-    try {
-      await _db.ref(`users/${_user.uid}/transactions/${id}`).remove();
-    } catch (e) {
-      alert("ডিলিট করতে ব্যর্থ হয়েছে: " + e.message);
-    } finally {
-      toggleLoader(false);
-    }
+    if (!confirm('মুছে ফেলতে চান?')) return;
+    await _db.ref(`users/${_user.uid}/transactions/${id}`).remove();
   }
 
-  /* --- সাধারণ ম্যানুয়াল রিসিট মোডাল (অটো প্রিন্ট বন্ধ) --- */
   function showReceiptModal(data) {
     document.getElementById('rDate').innerText = data.date;
     document.getElementById('rCategory').innerText = data.category + (data.subProvider ? ` (${data.subProvider})` : '');
-    document.getElementById('rDesc').innerText = safeDecode(data.description);
-    document.getElementById('rAmount').innerText = (data.amount || 0).toFixed(2);
+    document.getElementById('rDesc').innerText = data.description;
+    document.getElementById('rAmount').innerText = data.amount.toFixed(2);
 
     const itemsWrapper = document.getElementById('rItemsWrapper');
     const itemsBody = document.getElementById('rItemsBody');
@@ -1298,100 +949,77 @@
       itemsWrapper.style.display = 'block';
       itemsBody.innerHTML = '';
       data.items.forEach(it => {
-        const uPrice = it.unitPrice || (it.total / it.quantity);
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="text-start">${safeDecode(it.productName)}</td>
-          <td class="text-center">${it.quantity}</td>
-          <td class="text-end">৳${uPrice.toFixed(2)}</td>
-          <td class="text-end">৳${(it.total || 0).toFixed(2)}</td>
-        `;
-        itemsBody.appendChild(tr);
+        itemsBody.innerHTML += `<tr><td>${it.productName}</td><td class="text-center">${it.quantity}</td><td class="text-end">৳${it.unitPrice}</td><td class="text-end">৳${it.total}</td></tr>`;
       });
-    } else {
-      itemsWrapper.style.display = 'none';
-    }
+    } else { itemsWrapper.style.display = 'none'; }
 
-    const modal = new bootstrap.Modal(document.getElementById('receiptModal'));
-    modal.show();
+    new bootstrap.Modal(document.getElementById('receiptModal')).show();
   }
 
   function reprintReceipt(id) {
     const item = _cache.find(x => x.id === id);
-    if (item) {
-      currentReceiptData = item;
-      showReceiptModal(item);
-    }
+    if (item) showReceiptModal(item);
   }
 
-  function printReceipt() {
-    window.print();
-  }
+  function printReceipt() { window.print(); }
 
   function sendWhatsAppReceipt() {
     if (!currentReceiptData || !currentReceiptData.customerPhone) {
-      alert("গ্রাহকের কোনো হোয়াটসঅ্যাপ নম্বর পাওয়া যায়নি!");
-      return;
+      alert("গ্রাহকের ফোন নম্বর নেই!"); return;
     }
-
     let phone = currentReceiptData.customerPhone.replace(/[^0-9]/g, '');
-    if (phone.startsWith('0')) {
-      phone = '88' + phone;
-    }
-
-    let itemsListTxt = '';
-    if (currentReceiptData.items && currentReceiptData.items.length > 0) {
-      itemsListTxt = `\n*পণ্যসমূহ:*\n` + currentReceiptData.items.map((it, idx) => 
-        `${idx + 1}. ${safeDecode(it.productName)} - ${it.quantity} Pcs x ৳${(it.unitPrice || (it.total/it.quantity)).toFixed(2)} = ৳${(it.total || 0).toFixed(2)}`
-      ).join('\n') + '\n';
-    }
-
-    const msg = `*ডিজিটাল ক্যাশ বুক - পেমেন্ট স্লিপ*\n` +
-                `তারিখ: ${currentReceiptData.date}\n` +
-                `বিভাগ: ${currentReceiptData.category} ${currentReceiptData.subProvider ? '('+currentReceiptData.subProvider+')' : ''}\n` +
-                `বিবরণ: ${safeDecode(currentReceiptData.description)}\n` +
-                itemsListTxt +
-                `--------------------------\n` +
-                `*সর্বমোট: ৳${(currentReceiptData.amount || 0).toFixed(2)}*\n\n` +
-                `ধন্যবাদ, আবার আসবেন!`;
-
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank');
+    if (phone.startsWith('0')) phone = '88' + phone;
+    const msg = `*বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল*\nতারিখ: ${currentReceiptData.date}\nবিবরণ: ${currentReceiptData.description}\n*সর্বমোট: ৳${currentReceiptData.amount}*\nধন্যবাদ!`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function exportToExcel() {
-    if (_filteredCache.length === 0) {
-      alert("এক্সপোর্ট করার জন্য কোনো ডাটা নেই!");
-      return;
-    }
+    if (_filteredCache.length === 0) { alert("ডাটা নেই!"); return; }
+    const exportData = _filteredCache.map(i => ({
+      'তারিখ': i.date, 'ক্যাটাগরি': i.category, 'বিবরণ': i.description, 'টাইপ': i.type, 'পরিমাণ (৳)': i.amount
+    }));
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Report");
+    XLSX.writeFile(wb, `Bismillah_Trade_Report.xlsx`);
+  }
 
-    const exportData = _filteredCache.map(item => {
-      let itemNames = safeDecode(item.productName);
-      let itemQtys = item.quantity || 0;
+  /* মাসিক পিডিএফ রিপোর্ট ডাউনলোড ফাংশন (বাংলা ও ইংরেজি সাপোর্টসহ ২ পেজের মধ্যে সেট করা) */
+  function downloadMonthlyPDF() {
+    if (_cache.length === 0) { alert("রিপোর্ট তৈরি করার মতো কোনো ডাটা নেই!"); return; }
+    
+    document.getElementById('pdfGenerationDate').innerText = new Date().toLocaleDateString('en-GB');
+    document.getElementById('pdfTotalIn').innerText = document.getElementById('totalIn').innerText;
+    document.getElementById('pdfTotalOut').innerText = document.getElementById('totalOut').innerText;
+    document.getElementById('pdfNetProfit').innerText = document.getElementById('totalProfit').innerText;
 
-      if(item.items && item.items.length > 0) {
-        itemNames = item.items.map(i => safeDecode(i.productName)).join(', ');
-        itemQtys = item.items.reduce((acc, i) => acc + (i.quantity || 0), 0);
-      }
-
-      return {
-        'তারিখ ও সময়': item.date || '',
-        'ক্যাটাগরি': item.category || '',
-        'অপারেটর/সাব-প্রোভাইডার': item.subProvider || '',
-        'বিবরণ': safeDecode(item.description),
-        'কমিশন (৳)': item.commission || 0,
-        'পণ্যের নাম': itemNames,
-        'পরিমাণ (Pcs)': itemQtys,
-        'ফোন নম্বর': item.customerPhone || '',
-        'টাইপ': item.type || '',
-        'পরিমাণ (৳)': item.amount || 0
-      };
+    const pdfTbody = document.getElementById('pdfTableBody');
+    pdfTbody.innerHTML = '';
+    _cache.forEach(item => {
+      pdfTbody.innerHTML += `
+        <tr>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.date}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.category}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.description}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.type}</td>
+          <td style="padding: 5px; border: 1px solid #ddd; text-align: right;">৳${item.amount.toFixed(2)}</td>
+        </tr>`;
     });
 
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "CashBook");
-    XLSX.writeFile(workbook, `CashBook_Report_${Date.now()}.xlsx`);
+    const element = document.getElementById('pdfExportContainer');
+    element.style.display = 'block';
+
+    const opt = {
+      margin:       10,
+      filename:     'Bismillah_Trade_Monthly_Report.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().from(element).set(opt).save().then(() => {
+      element.style.display = 'none';
+    });
   }
 </script>
 
