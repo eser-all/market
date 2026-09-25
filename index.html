@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- html2pdf for monthly PDF report -->
+  <!-- html2pdf for PDF report -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
@@ -37,7 +37,6 @@
 
     .content-wrapper { flex: 1; }
     
-    /* Telegram Web Theme Styling */
     .header-banner { 
       background: var(--primary-gradient); 
       color: white; 
@@ -86,10 +85,6 @@
     .wallet-teletalk { background: linear-gradient(135deg, #7CB042, #496E22); }
     
     .badge-mfs { background-color: #e2136e; color: white; }
-    .badge-recharge { background-color: #0dcaf0; color: #000; }
-    .badge-print { background-color: #2b5278; color: white; }
-    .badge-stationery { background-color: #26a69a; color: white; }
-    .badge-expense { background-color: #e53935; color: white; }
     
     .table-container { border-radius: 12px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
     .auth-container { max-width: 420px; margin: 70px auto; border-top: 5px solid #2b5278; }
@@ -108,7 +103,6 @@
     .btn-set-bal { font-size: 0.65rem; padding: 1px 5px; line-height: 1.2; }
     .quick-amt-btn { font-size: 0.75rem; padding: 2px 8px; }
 
-    /* লোগো স্টাইল */
     .brand-logo-img {
       max-height: 60px;
       width: auto;
@@ -118,7 +112,6 @@
       padding: 3px;
     }
 
-    /* রিসিট ডিজাইন */
     .receipt-box {
       background-color: #ffffff;
       color: #000000;
@@ -149,12 +142,12 @@
 </div>
 
 <div class="content-wrapper">
-  <!-- Auth Container -->
+  <!-- Auth Section -->
   <div id="authSection" class="container">
     <div class="card card-custom p-4 auth-container">
       <div class="text-center mb-4">
         <img src="1000203784.jpg" alt="Logo" class="brand-logo-img mb-3" style="max-height: 70px;">
-        <h4 class="fw-bold" id="authTitle">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h4>
+        <h4 class="fw-bold">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h4>
         <p class="text-muted small">সিস্টেমে প্রবেশ করতে আপনার তথ্য প্রদান করুন</p>
       </div>
       <form id="authForm">
@@ -184,7 +177,7 @@
           </div>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <button id="themeToggleBtn" onclick="toggleDarkMode()" class="btn btn-outline-light btn-sm fw-bold">
+          <button onclick="toggleDarkMode()" class="btn btn-outline-light btn-sm fw-bold">
             <i class="fa-solid fa-moon me-1"></i> থিম
           </button>
           <span id="userDisplayEmail" class="badge bg-secondary d-none d-md-inline-block py-2 px-3"></span>
@@ -196,7 +189,6 @@
     </div>
 
     <div class="container-fluid px-md-4">
-      
       <div id="offlineAlert" class="alert alert-warning py-1 px-3 mb-2 small" style="display:none;">
         <i class="fa-solid fa-wifi me-1"></i> আপনি অফলাইনে আছেন। ডাটা লোকালি সংরক্ষিত হচ্ছে।
       </div>
@@ -208,7 +200,7 @@
         </button>
       </div>
 
-      <!-- Compact 8 Wallets Row -->
+      <!-- 8 Wallets Row -->
       <div class="row g-2 mb-3">
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
           <div class="wallet-card wallet-bkash shadow-sm">
@@ -284,7 +276,7 @@
         </div>
       </div>
 
-      <!-- Main Summary Cards -->
+      <!-- Summary Cards -->
       <div class="row g-2 mb-3 text-center">
         <div class="col-6 col-lg-2">
           <div class="card card-custom stat-card stat-today">
@@ -456,22 +448,25 @@
           <div class="card card-custom table-container mb-4">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
               <div class="d-flex flex-wrap gap-2 align-items-center">
-                <input type="text" id="searchInput" onkeyup="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 170px;" placeholder="🔍 খুঁজুন...">
+                <input type="text" id="searchInput" onkeyup="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 160px;" placeholder="🔍 খুঁজুন...">
                 
                 <div class="d-flex align-items-center gap-1 border p-1 rounded bg-body-tertiary">
                   <span class="small fw-bold text-muted">হতে:</span>
-                  <input type="date" id="startDateFilter" onchange="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 125px;">
+                  <input type="date" id="startDateFilter" onchange="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 115px;">
                   <span class="small fw-bold text-muted">পর্যন্ত:</span>
-                  <input type="date" id="endDateFilter" onchange="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 125px;">
+                  <input type="date" id="endDateFilter" onchange="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 115px;">
                   <button onclick="clearDateFilter()" class="btn btn-outline-secondary btn-sm py-0"><i class="fa-solid fa-rotate-left"></i></button>
                 </div>
               </div>
-              <div class="d-flex gap-2">
+              <div class="d-flex gap-1 flex-wrap">
                 <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
                   <i class="fa-solid fa-file-excel me-1"></i> Excel
                 </button>
-                <button onclick="downloadMonthlyPDF()" class="btn btn-outline-danger btn-sm fw-bold">
-                  <i class="fa-solid fa-file-pdf me-1"></i> মাসিক PDF রিপোর্ট
+                <button onclick="downloadFilteredPDF()" class="btn btn-outline-primary btn-sm fw-bold" title="বর্তমান ফিল্টার করা হিসাব পিডিএফ করুন">
+                  <i class="fa-solid fa-file-pdf me-1"></i> ফিল্টার PDF
+                </button>
+                <button onclick="downloadMonthlyPDF()" class="btn btn-outline-danger btn-sm fw-bold" title="সকল ডাটা সহ মাসিক রিপোর্ট">
+                  <i class="fa-solid fa-file-lines me-1"></i> মাসিক PDF
                 </button>
               </div>
             </div>
@@ -498,7 +493,7 @@
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Receipt Modal -->
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -548,16 +543,57 @@
   </div>
 </div>
 
-<!-- গোপন পিডিএফ টেমপ্লেট (মালিককে মাসিক রিপোর্ট পাঠানোর জন্য ২ পেজের মধ্যে সেট করা) -->
+<!-- ফিল্টার করা হিসাব পিডিএফ টেমপ্লেট -->
+<div id="filteredPdfContainer" style="display:none; padding: 20px; background: #ffffff; color: #000000; font-family: 'Hind Siliguri', sans-serif; width: 800px;">
+  <div class="text-center mb-3">
+    <img src="1000203784.jpg" alt="Logo" style="max-height: 60px;" class="mb-1">
+    <h3 style="margin: 0; font-weight: 700;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h3>
+    <p style="margin: 0; font-size: 14px; color: #555;">Bismillah Trade International - ফিল্টারকৃত ক্যাশ বুক রিপোর্ট</p>
+    <hr style="border: 1px solid #333; margin: 10px 0;">
+  </div>
+  <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 12px;">
+    <div><strong>ফিল্টার সময়সীমা/তথ্য:</strong> <span id="pdfFilterInfo">সকল লেনদেন</span></div>
+    <div><strong>তৈরির তারিখ:</strong> <span id="pdfFilterGenDate"></span></div>
+  </div>
+  <div style="margin-bottom: 15px; display: flex; gap: 15px;">
+    <div style="flex: 1; background: #f1f2f6; padding: 8px; border-radius: 6px; font-size: 13px;">
+      <strong>ফিল্টার মোট জমা:</strong> <span id="pdfFilteredTotalIn" style="color: #0d6efd;">৳0.00</span>
+    </div>
+    <div style="flex: 1; background: #f1f2f6; padding: 8px; border-radius: 6px; font-size: 13px;">
+      <strong>ফিল্টার মোট খরচ:</strong> <span id="pdfFilteredTotalOut" style="color: #dc3545;">৳0.00</span>
+    </div>
+    <div style="flex: 1; background: #f1f2f6; padding: 8px; border-radius: 6px; font-size: 13px;">
+      <strong>নিট লাভ/ব্যালেন্স:</strong> <span id="pdfFilteredNet" style="color: #198754;">৳0.00</span>
+    </div>
+  </div>
+  <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+    <thead>
+      <tr style="background: #2b5278; color: #ffffff;">
+        <th style="padding: 6px; border: 1px solid #ddd;">তারিখ ও সময়</th>
+        <th style="padding: 6px; border: 1px solid #ddd;">ক্যাটাগরি</th>
+        <th style="padding: 6px; border: 1px solid #ddd;">বিবরণ</th>
+        <th style="padding: 6px; border: 1px solid #ddd;">টাইপ</th>
+        <th style="padding: 6px; border: 1px solid #ddd; text-align: right;">পরিমাণ (৳)</th>
+      </tr>
+    </thead>
+    <tbody id="filteredPdfTableBody"></tbody>
+  </table>
+  <div style="margin-top: 30px; display: flex; justify-content: space-between; font-size: 14px;">
+    <div>ম্যানেজারের স্বাক্ষর: ........................</div>
+    <div>দোকানের মালিকের স্বাক্ষর: ........................</div>
+  </div>
+</div>
+
+<!-- মাসিক পূর্ণাঙ্গ পিডিএফ টেমপ্লেট -->
 <div id="pdfExportContainer" style="display:none; padding: 20px; background: #ffffff; color: #000000; font-family: 'Hind Siliguri', sans-serif; width: 800px;">
   <div class="text-center mb-3">
     <img src="1000203784.jpg" alt="Logo" style="max-height: 60px;" class="mb-1">
     <h3 style="margin: 0; font-weight: 700;">বিসমিল্লাহ ট্রেড ইন্টারন্যাশনাল</h3>
-    <p style="margin: 0; font-size: 14px; color: #555;">Bismillah Trade International - মাসিক আর্থিক হিসাব ও ক্যাশ বুক রিপোর্ট</p>
+    <p style="margin: 0; font-size: 14px; color: #555;">Bismillah Trade International - মাসিক পূর্ণাঙ্গ আর্থিক হিসাব রিপোর্ট</p>
     <hr style="border: 1px solid #333; margin: 10px 0;">
   </div>
   <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 15px;">
-    <div><strong>রিপোর্টের সময়কাল:</strong> <span id="pdfReportMonth">চলতি মাস</span></div>
+    <div><strong>রিপোর্টের ধরন:</strong> মাসিক পূর্ণাঙ্গ হিসাব</div>
     <div><strong>তৈরির তারিখ:</strong> <span id="pdfGenerationDate"></span></div>
   </div>
   <div style="margin-bottom: 15px; display: flex; gap: 15px;">
@@ -619,7 +655,6 @@
   let _user = null;
   let _cache = [];
   let _filteredCache = [];
-  let _sessionRef = null;
   let currentReceiptData = null;
   let stationeryCart = []; 
 
@@ -704,11 +739,6 @@
     amountField.value = grandTotal.toFixed(2);
     amountField.readOnly = true;
     descField.value = 'স্টেশনারি ক্রয়: ' + descNames.join(', ');
-  }
-
-  function safeDecode(str) {
-    if (!str) return '';
-    try { return decodeURIComponent(escape(atob(str))); } catch (e) { return str; }
   }
 
   _auth.onAuthStateChanged(async (u) => {
@@ -841,6 +871,7 @@
   function clearDateFilter() {
     document.getElementById('startDateFilter').value = '';
     document.getElementById('endDateFilter').value = '';
+    document.getElementById('searchInput').value = '';
     filterTransactions();
   }
 
@@ -984,7 +1015,62 @@
     XLSX.writeFile(wb, `Bismillah_Trade_Report.xlsx`);
   }
 
-  /* মাসিক পিডিএফ রিপোর্ট ডাউনলোড ফাংশন (বাংলা ও ইংরেজি সাপোর্টসহ ২ পেজের মধ্যে সেট করা) */
+  /* বর্তমান ফিল্টার করা হিসাব পিডিএফ আকারে ডাউনলোড/মালিককে দেখানোর ফাংশন */
+  function downloadFilteredPDF() {
+    if (_filteredCache.length === 0) { alert("পিডিএফ তৈরির জন্য ফিল্টার করা কোনো ডাটা পাওয়া যায়নি!"); return; }
+
+    const sDate = document.getElementById('startDateFilter').value;
+    const eDate = document.getElementById('endDateFilter').value;
+    const sQuery = document.getElementById('searchInput').value.trim();
+
+    let filterDescText = "সকল লেনদেন";
+    if (sDate && eDate) filterDescText = `তারিখ: ${sDate} হতে ${eDate}`;
+    else if (sDate) filterDescText = `তারিখ: ${sDate} থেকে পরবর্তী`;
+    else if (eDate) filterDescText = `${eDate} পর্যন্ত`;
+    if (sQuery) filterDescText += ` | খোঁজ শব্দ: "${sQuery}"`;
+
+    document.getElementById('pdfFilterInfo').innerText = filterDescText;
+    document.getElementById('pdfFilterGenDate').innerText = new Date().toLocaleDateString('en-GB');
+
+    let fTotIn = 0, fTotOut = 0;
+    const pdfTbody = document.getElementById('filteredPdfTableBody');
+    pdfTbody.innerHTML = '';
+
+    _filteredCache.forEach(item => {
+      if (item.type === 'Cash In') fTotIn += item.amount || 0;
+      else fTotOut += item.amount || 0;
+
+      pdfTbody.innerHTML += `
+        <tr>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.date}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.category}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.description}</td>
+          <td style="padding: 5px; border: 1px solid #ddd;">${item.type}</td>
+          <td style="padding: 5px; border: 1px solid #ddd; text-align: right;">৳${(item.amount || 0).toFixed(2)}</td>
+        </tr>`;
+    });
+
+    document.getElementById('pdfFilteredTotalIn').innerText = `৳${fTotIn.toFixed(2)}`;
+    document.getElementById('pdfFilteredTotalOut').innerText = `৳${fTotOut.toFixed(2)}`;
+    document.getElementById('pdfFilteredNet').innerText = `৳${(fTotIn - fTotOut).toFixed(2)}`;
+
+    const element = document.getElementById('filteredPdfContainer');
+    element.style.display = 'block';
+
+    const opt = {
+      margin:       10,
+      filename:     'Bismillah_Trade_Filtered_Report.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().from(element).set(opt).save().then(() => {
+      element.style.display = 'none';
+    });
+  }
+
+  /* মাসিক পূর্ণাঙ্গ পিডিএফ রিপোর্ট ডাউনলোড */
   function downloadMonthlyPDF() {
     if (_cache.length === 0) { alert("রিপোর্ট তৈরি করার মতো কোনো ডাটা নেই!"); return; }
     
