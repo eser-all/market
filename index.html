@@ -13,25 +13,24 @@
 
   <style>
     :root {
-      --primary-gradient: linear-gradient(135deg, #17212b 0%, #232e3c 100%);
-      --accent-color: #2b5278;
-      --tg-bg: #0e1621;
-      --tg-card: #17212b;
-      --tg-text: #f5f5f5;
+      --primary-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --accent-color: #3b82f6;
     }
     
     [data-bs-theme="dark"] {
-      --primary-gradient: linear-gradient(135deg, #0e1621 0%, #182533 100%);
-      --bs-body-bg: #0e1621;
-      --bs-body-color: #f5f5f5;
+      --primary-gradient: linear-gradient(135deg, #090d16 0%, #111827 100%);
+      --bs-body-bg: #0b0f19;
+      --bs-body-color: #f1f5f9;
+      --bs-card-bg: #131b2e;
     }
 
     body { 
-      background-color: var(--bs-body-bg, #f0f2f5); 
+      background-color: var(--bs-body-bg, #f8fafc); 
       font-family: 'SolaimanLipi', 'Hind Siliguri', sans-serif; 
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
 
     .content-wrapper { flex: 1; }
@@ -39,76 +38,75 @@
     .header-banner { 
       background: var(--primary-gradient); 
       color: white; 
-      padding: 15px 0; 
-      border-radius: 0 0 16px 16px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+      padding: 18px 0; 
+      border-radius: 0 0 20px 20px; 
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.25); 
     }
     
     .card-custom { 
       border: none; 
-      border-radius: 12px; 
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06); 
-      transition: all 0.2s ease-in-out;
+      border-radius: 16px; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       background-color: var(--bs-card-bg, #ffffff);
     }
     
-    [data-bs-theme="dark"] .card-custom {
-      background-color: #17212b;
-      color: #f5f5f5;
-      border: 1px solid #232e3c;
+    .card-custom:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     }
 
-    .stat-card { border-left: 5px solid; padding: 10px !important; }
-    .stat-in { border-color: #2ea6ff; }
-    .stat-out { border-color: #e53935; }
-    .stat-profit { border-color: #4cd137; }
-    .stat-today { border-color: #fbc531; }
+    [data-bs-theme="dark"] .card-custom {
+      background-color: #131b2e;
+      color: #f1f5f9;
+      border: 1px solid #1e293b;
+    }
+
+    .stat-card { border-left: 6px solid; padding: 12px !important; }
+    .stat-in { border-color: #0ea5e9; }
+    .stat-out { border-color: #ef4444; }
+    .stat-profit { border-color: #10b981; }
+    .stat-today { border-color: #f59e0b; }
     
     .wallet-card { 
-      border-radius: 8px; 
+      border-radius: 12px; 
       color: white; 
-      padding: 10px 12px; 
+      padding: 12px 14px; 
       position: relative; 
       overflow: hidden; 
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .wallet-title { font-size: 0.78rem; font-weight: 600; opacity: 0.9; white-space: nowrap; }
-    .wallet-amount { font-size: 1rem; font-weight: 700; margin-bottom: 0; }
+    .wallet-card:hover { transform: translateY(-3px); }
+    .wallet-title { font-size: 0.8rem; font-weight: 600; opacity: 0.9; white-space: nowrap; }
+    .wallet-amount { font-size: 1.05rem; font-weight: 700; margin-bottom: 0; }
 
-    .wallet-bkash { background: linear-gradient(135deg, #e2136e, #a00c4e); }
-    .wallet-nagad { background: linear-gradient(135deg, #f7921e, #c26900); }
-    .wallet-rocket { background: linear-gradient(135deg, #8c3494, #571a5d); }
-    .wallet-gp { background: linear-gradient(135deg, #00A3E0, #006699); }
-    .wallet-bl { background: linear-gradient(135deg, #FF5000, #B33800); }
-    .wallet-robi { background: linear-gradient(135deg, #E20613, #990000); }
-    .wallet-airtel { background: linear-gradient(135deg, #ED1C24, #990000); }
-    .wallet-teletalk { background: linear-gradient(135deg, #7CB042, #496E22); }
+    .wallet-bkash { background: linear-gradient(135deg, #e2136e, #9c0c4e); }
+    .wallet-nagad { background: linear-gradient(135deg, #f7921e, #b36100); }
+    .wallet-rocket { background: linear-gradient(135deg, #8c3494, #48124d); }
+    .wallet-gp { background: linear-gradient(135deg, #00A3E0, #00567d); }
+    .wallet-bl { background: linear-gradient(135deg, #FF5000, #993000); }
+    .wallet-robi { background: linear-gradient(135deg, #E20613, #800000); }
+    .wallet-airtel { background: linear-gradient(135deg, #ED1C24, #800000); }
+    .wallet-teletalk { background: linear-gradient(135deg, #7CB042, #3c5b1b); }
     
     .badge-mfs { background-color: #e2136e; color: white; }
-    
-    .table-container { border-radius: 12px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .auth-container { max-width: 420px; margin: 70px auto; border-top: 5px solid #2b5278; }
-    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; }
+    .table-container { border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .auth-container { max-width: 420px; margin: 70px auto; border-top: 6px solid #3b82f6; }
+    .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(11, 15, 25, 0.7); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; }
     
     .app-footer {
       background: var(--primary-gradient);
       color: #ffffff;
       text-align: center;
-      padding: 12px 0;
+      padding: 15px 0;
       font-size: 0.9rem;
       margin-top: auto;
     }
-    .app-footer span { color: #2ea6ff; }
+    .app-footer span { color: #38bdf8; }
 
-    .quick-amt-btn { font-size: 0.75rem; padding: 2px 8px; }
-
-    .brand-logo-img {
-      max-height: 60px;
-      width: auto;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      background: #fff;
-      padding: 3px;
-    }
+    .quick-amt-btn { font-size: 0.75rem; padding: 3px 10px; border-radius: 6px; }
+    .brand-logo-img { max-height: 55px; width: auto; border-radius: 10px; background: #fff; padding: 3px; }
 
     .receipt-box {
       background-color: #ffffff;
@@ -145,14 +143,14 @@
       <form id="authForm">
         <div class="mb-3">
           <label class="form-label fw-semibold">ইমেইল এড্রেস</label>
-          <input type="email" id="authEmail" class="form-control" autocomplete="off" placeholder="name@domain.com" required>
+          <input type="email" id="authEmail" class="form-control shadow-sm" autocomplete="off" placeholder="name@domain.com" required>
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold">পাসওয়ার্ড</label>
-          <input type="password" id="authPassword" class="form-control" placeholder="••••••••" minlength="6" required>
+          <input type="password" id="authPassword" class="form-control shadow-sm" placeholder="••••••••" minlength="6" required>
         </div>
         <div id="authError" class="alert alert-danger py-2 small mb-3 text-center" style="display: none;"></div>
-        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mb-3 shadow-sm" style="background-color: #2b5278; border: none;">প্রবেশ করুন</button>
+        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mb-3 shadow-sm" style="background-color: #3b82f6; border: none;">প্রবেশ করুন</button>
       </form>
     </div>
   </div>
@@ -169,11 +167,11 @@
           </div>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <button onclick="toggleDarkMode()" class="btn btn-outline-light btn-sm fw-bold">
+          <button onclick="toggleDarkMode()" class="btn btn-outline-light btn-sm fw-bold px-3 shadow-sm">
             <i class="fa-solid fa-moon me-1"></i> থিম
           </button>
           <span id="userDisplayEmail" class="badge bg-secondary d-none d-md-inline-block py-2 px-3"></span>
-          <button onclick="logout()" class="btn btn-outline-danger btn-sm fw-bold text-white">
+          <button onclick="logout()" class="btn btn-outline-danger btn-sm fw-bold text-white shadow-sm">
             <i class="fa-solid fa-power-off me-1"></i> লগআউট
           </button>
         </div>
@@ -181,63 +179,35 @@
     </div>
 
     <div class="container-fluid px-md-4">
-      <div id="offlineAlert" class="alert alert-warning py-1 px-3 mb-2 small" style="display:none;">
-        <i class="fa-solid fa-wifi me-1"></i> আপনি অফলাইনে আছেন। ডাটা লোকালি সংরক্ষিত হচ্ছে।
+      <div id="offlineAlert" class="alert alert-warning py-1 px-3 mb-2 small shadow-sm" style="display:none;">
+        <i class="fa-solid fa-wifi me-1"></i> আপনি অফলাইনে আছেন। ডাটা লোকালি সংরক্ষিত হচ্ছে ও নেট পেলেই ফায়ারবেসে সিঙ্ক হবে।
       </div>
 
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <span class="fw-bold text-secondary small"><i class="fa-solid fa-wallet me-1"></i> ডিজিটাল ওয়ালেট ব্যালেন্স ট্র্যাকার</span>
-      </div>
-
-      <!-- 8 Wallets Row (Settings icons removed) -->
+      <!-- 8 Wallets Row -->
       <div class="row g-2 mb-3">
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-bkash shadow-sm">
-            <div class="wallet-title">bKash</div>
-            <div class="wallet-amount" id="bkashBalance">৳ 0.00</div>
-          </div>
+          <div class="wallet-card wallet-bkash"><div class="wallet-title">bKash</div><div class="wallet-amount" id="bkashBalance">৳ 0.00</div></div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-nagad shadow-sm">
-            <div class="wallet-title">Nagad</div>
-            <div class="wallet-amount" id="nagadBalance">৳ 0.00</div>
-          </div>
+          <div class="wallet-card wallet-nagad"><div class="wallet-title">Nagad</div><div class="wallet-amount" id="nagadBalance">৳ 0.00</div></div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-rocket shadow-sm">
-            <div class="wallet-title">Rocket</div>
-            <div class="wallet-amount" id="rocketBalance">৳ 0.00</div>
-          </div>
+          <div class="wallet-card wallet-rocket"><div class="wallet-title">Rocket</div><div class="wallet-amount" id="rocketBalance">৳ 0.00</div></div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-gp shadow-sm">
-            <div class="wallet-title">GP</div>
-            <div class="wallet-amount" id="gpBalance">৳ 0.00</div>
-          </div>
+          <div class="wallet-card wallet-gp"><div class="wallet-title">GP</div><div class="wallet-amount" id="gpBalance">৳ 0.00</div></div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-bl shadow-sm">
-            <div class="wallet-title">Banglalink</div>
-            <div class="wallet-amount" id="banglalinkBalance">৳ 0.00</div>
-          </div>
+          <div class="wallet-card wallet-bl"><div class="wallet-title">Banglalink</div><div class="wallet-amount" id="banglalinkBalance">৳ 0.00</div></div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-robi shadow-sm">
-            <div class="wallet-title">Robi</div>
-            <div class="wallet-amount" id="robiBalance">৳ 0.00</div>
-          </div>
+          <div class="wallet-card wallet-robi"><div class="wallet-title">Robi</div><div class="wallet-amount" id="robiBalance">৳ 0.00</div></div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-airtel shadow-sm">
-            <div class="wallet-title">Airtel</div>
-            <div class="wallet-amount" id="airtelBalance">৳ 0.00</div>
-          </div>
+          <div class="wallet-card wallet-airtel"><div class="wallet-title">Airtel</div><div class="wallet-amount" id="airtelBalance">৳ 0.00</div></div>
         </div>
         <div class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl">
-          <div class="wallet-card wallet-teletalk shadow-sm">
-            <div class="wallet-title">Teletalk</div>
-            <div class="wallet-amount" id="teletalkBalance">৳ 0.00</div>
-          </div>
+          <div class="wallet-card wallet-teletalk"><div class="wallet-title">Teletalk</div><div class="wallet-amount" id="teletalkBalance">৳ 0.00</div></div>
         </div>
       </div>
 
@@ -346,7 +316,7 @@
                     <input type="number" id="unitPrice" class="form-control form-control-sm shadow-sm" placeholder="0.00" min="0" step="any">
                   </div>
                 </div>
-                <button type="button" onclick="addStationeryItem()" class="btn btn-sm btn-outline-success w-100 fw-bold mb-2">
+                <button type="button" onclick="addStationeryItem()" class="btn btn-sm btn-outline-success w-100 fw-bold mb-2 shadow-sm">
                   <i class="fa-solid fa-plus me-1"></i> আইটেম যোগ করুন
                 </button>
                 <div id="stationeryCartWrapper" style="display:none;">
@@ -390,7 +360,7 @@
                 <input type="number" id="amount" class="form-control form-control-sm shadow-sm" placeholder="0.00" min="0" step="any" required>
               </div>
 
-              <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2 btn-sm" style="background-color: #2b5278; border: none;">
+              <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2 btn-sm" style="background-color: #3b82f6; border: none;">
                 <i class="fa-solid fa-cloud-arrow-up me-1"></i> এন্ট্রি সেভ করুন
               </button>
             </form>
@@ -399,7 +369,6 @@
 
         <!-- Table & Inventory Panel -->
         <div class="col-lg-8">
-          <!-- Live Stock Summary -->
           <div class="card card-custom p-3 mb-3">
             <h6 class="fw-bold mb-2"><i class="fa-solid fa-boxes-stacked text-success me-2"></i>স্টেশনারি বর্তমান স্টক</h6>
             <div class="table-responsive" style="max-height: 120px;">
@@ -412,27 +381,27 @@
 
           <div class="card card-custom table-container mb-4">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-              <div class="d-flex flex-wrap gap-2 align-items-center">
-                <input type="text" id="searchInput" onkeyup="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 160px;" placeholder="🔍 খুঁজুন...">
+              <!-- Smart Search Bar Enhanced -->
+              <div class="d-flex flex-wrap gap-2 align-items-center flex-grow-1">
+                <div class="input-group input-group-sm shadow-sm" style="max-width: 260px;">
+                  <span class="input-group-text bg-primary text-white border-0"><i class="fa-solid fa-magnifying-glass"></i></span>
+                  <input type="text" id="searchInput" oninput="filterTransactions()" class="form-control" placeholder="স্মার্ট সার্চ (বিবরণ, ক্যাটাগরি)...">
+                  <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('searchInput').value=''; filterTransactions();"><i class="fa-solid fa-xmark"></i></button>
+                </div>
                 
                 <div class="d-flex align-items-center gap-1 border p-1 rounded bg-body-tertiary">
                   <span class="small fw-bold text-muted">হতে:</span>
-                  <input type="date" id="startDateFilter" onchange="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 115px;">
+                  <input type="date" id="startDateFilter" onchange="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 110px;">
                   <span class="small fw-bold text-muted">পর্যন্ত:</span>
-                  <input type="date" id="endDateFilter" onchange="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 115px;">
-                  <button onclick="clearDateFilter()" class="btn btn-outline-secondary btn-sm py-0"><i class="fa-solid fa-rotate-left"></i></button>
+                  <input type="date" id="endDateFilter" onchange="filterTransactions()" class="form-control form-control-sm shadow-sm" style="width: 110px;">
+                  <button onclick="clearDateFilter()" class="btn btn-outline-secondary btn-sm py-0" title="ফিল্টার রিসেট"><i class="fa-solid fa-rotate-left"></i></button>
                 </div>
               </div>
+
               <div class="d-flex gap-1 flex-wrap">
-                <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
-                  <i class="fa-solid fa-file-excel me-1"></i> Excel
-                </button>
-                <button onclick="downloadFilteredPDF()" class="btn btn-outline-primary btn-sm fw-bold" title="বর্তমান ফিল্টার করা হিসাব পিডিএফ করুন">
-                  <i class="fa-solid fa-file-pdf me-1"></i> ফিল্টার PDF
-                </button>
-                <button onclick="downloadMonthlyPDF()" class="btn btn-outline-danger btn-sm fw-bold" title="সকল ডাটা সহ মাসিক রিপোর্ট">
-                  <i class="fa-solid fa-file-lines me-1"></i> মাসিক PDF
-                </button>
+                <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold shadow-sm"><i class="fa-solid fa-file-excel me-1"></i> Excel</button>
+                <button onclick="downloadFilteredPDF()" class="btn btn-outline-primary btn-sm fw-bold shadow-sm"><i class="fa-solid fa-file-pdf me-1"></i> PDF</button>
+                <button onclick="downloadMonthlyPDF()" class="btn btn-outline-danger btn-sm fw-bold shadow-sm"><i class="fa-solid fa-file-lines me-1"></i> মাসিক PDF</button>
               </div>
             </div>
 
@@ -458,12 +427,24 @@
   </div>
 </div>
 
+<!-- Success Toast Notification -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11000">
+  <div id="successToast" class="toast align-items-center text-bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body fw-bold">
+        <i class="fa-solid fa-circle-check me-2"></i> সফলভাবে এন্ট্রি সেভ হয়েছে!
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
 <!-- Receipt Modal -->
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white py-2" style="background-color: #2b5278 !important;">
-        <h6 class="modal-title fw-bold"><i class="fa-solid fa-receipt me-2"></i>ক্যাশ রিসিট</h6>
+    <div class="modal-content card-custom">
+      <div class="modal-header bg-primary text-white py-2" style="background-color: #3b82f6 !important;">
+        <h6 class="modal-title fw-bold"><i class="fa-solid fa-receipt me-2"></i>ক্যাশ রিসিট ও পপ-আপ</h6>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3">
@@ -533,6 +514,7 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
+  // Ensuring data persistence and offline synchronization
   try { _db.ref().keepSynced(true); } catch (e) { console.log(e); }
 
   let _user = null;
@@ -699,6 +681,13 @@
       toggleCategoryFields();
 
       currentReceiptData = payload;
+      
+      // Success Toast Popup
+      const toastEl = document.getElementById('successToast');
+      const toast = new bootstrap.Toast(toastEl);
+      toast.show();
+
+      // Receipt Modal Popup
       showReceiptModal(payload);
     } catch (err) {
       alert("সংরক্ষণ করতে সমস্যা হয়েছে!");
@@ -718,13 +707,20 @@
     });
   }
 
+  // Smart Search Bar Filter Implementation
   function filterTransactions() {
     const q = document.getElementById('searchInput').value.toLowerCase().trim();
     const startDate = document.getElementById('startDateFilter').value;
     const endDate = document.getElementById('endDateFilter').value;
 
     _filteredCache = _cache.filter(item => {
-      let matchSearch = q ? (item.description || '').toLowerCase().includes(q) || (item.category || '').toLowerCase().includes(q) : true;
+      let matchSearch = q ? (
+        (item.description || '').toLowerCase().includes(q) || 
+        (item.category || '').toLowerCase().includes(q) || 
+        (item.subProvider || '').toLowerCase().includes(q) ||
+        (item.customerPhone || '').toLowerCase().includes(q)
+      ) : true;
+      
       let matchDate = true;
       if (startDate || endDate) {
         const itemYMD = new Date(item.timestamp).toISOString().split('T')[0];
@@ -793,7 +789,7 @@
     renderInventoryTable(inventoryMap);
 
     if (_filteredCache.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">কোনো তথ্য নেই</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">কোনো তথ্য খুঁজে পাওয়া যায়নি</td></tr>`;
       return;
     }
 
@@ -807,8 +803,8 @@
         <td>${typeBadge}</td>
         <td class="fw-bold">৳ ${item.amount.toFixed(2)}</td>
         <td class="text-center">
-          <button onclick="reprintReceipt('${item.id}')" class="btn btn-sm btn-outline-primary me-1"><i class="fa-solid fa-print"></i></button>
-          <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+          <button onclick="reprintReceipt('${item.id}')" class="btn btn-sm btn-outline-primary me-1" title="রিসিট প্রিন্ট"><i class="fa-solid fa-print"></i></button>
+          <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger" title="মুছে ফেলুন"><i class="fa-solid fa-trash"></i></button>
         </td>`;
       tbody.appendChild(tr);
     });
@@ -831,8 +827,12 @@
   }
 
   async function deleteTx(id) {
-    if (!confirm('মুছে ফেলতে চান?')) return;
-    await _db.ref(`users/${_user.uid}/transactions/${id}`).remove();
+    if (!confirm('আপনি কি নিশ্চিতভাবে এই এন্ট্রিটি মুছে ফেলতে চান?')) return;
+    try {
+      await _db.ref(`users/${_user.uid}/transactions/${id}`).remove();
+    } catch(err) {
+      alert("ডাটা ডিলিট করতে সমস্যা হয়েছে!");
+    }
   }
 
   function showReceiptModal(data) {
@@ -864,7 +864,7 @@
 
   function sendWhatsAppReceipt() {
     if (!currentReceiptData || !currentReceiptData.customerPhone) {
-      alert("গ্রাহকের ফোন নম্বর নেই!"); return;
+      alert("গ্রাহকের হোয়াটসঅ্যাপ নম্বর পাওয়া যায়নি!"); return;
     }
     let phone = currentReceiptData.customerPhone.replace(/[^0-9]/g, '');
     if (phone.startsWith('0')) phone = '88' + phone;
@@ -873,7 +873,7 @@
   }
 
   function exportToExcel() {
-    if (_filteredCache.length === 0) { alert("ডাটা নেই!"); return; }
+    if (_filteredCache.length === 0) { alert("এক্সপোর্ট করার মতো কোনো ডাটা নেই!"); return; }
     const exportData = _filteredCache.map(i => ({
       'তারিখ': i.date, 'ক্যাটাগরি': i.category, 'বিবরণ': i.description, 'টাইপ': i.type, 'পরিমাণ (৳)': i.amount
     }));
@@ -884,7 +884,7 @@
   }
 
   function downloadFilteredPDF() {
-    if (_filteredCache.length === 0) { alert("পিডিএফ তৈরির জন্য ফিল্টার করা কোনো ডাটা পাওয়া যায়নি!"); return; }
+    if (_filteredCache.length === 0) { alert("পিডিএফ তৈরির জন্য কোনো ডাটা পাওয়া যায়নি!"); return; }
     toggleLoader(true);
 
     const sDate = document.getElementById('startDateFilter').value;
@@ -895,7 +895,7 @@
     if (sDate && eDate) filterDescText = `তারিখ: ${sDate} হতে ${eDate}`;
     else if (sDate) filterDescText = `তারিখ: ${sDate} থেকে পরবর্তী`;
     else if (eDate) filterDescText = `${eDate} পর্যন্ত`;
-    if (sQuery) filterDescText += ` | খোঁজ শব্দ: "${sQuery}"`;
+    if (sQuery) filterDescText += ` | সার্চ শব্দ: "${sQuery}"`;
 
     const today = new Date();
     const formattedToday = String(today.getDate()).padStart(2, '0') + '/' + String(today.getMonth() + 1).padStart(2, '0') + '/' + today.getFullYear();
@@ -936,7 +936,7 @@
         </div>
         <table style="width: 100%; border-collapse: collapse;">
           <thead>
-            <tr style="background: #2b5278; color: #ffffff;">
+            <tr style="background: #3b82f6; color: #ffffff;">
               <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">তারিখ ও সময়</th>
               <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">ক্যাটাগরি</th>
               <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">বিবরণ</th>
@@ -1011,11 +1011,11 @@
         </div>
         <table style="width: 100%; border-collapse: collapse;">
           <thead>
-            <tr style="background: #2b5278; color: #ffffff;">
+            <tr style="background: #3b82f6; color: #ffffff;">
               <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">তারিখ ও সময়</th>
               <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">ক্যাটাগরি</th>
               <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">বিবরণ</th>
-              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: left;">টাইপ</th>
+              <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; font-size: 11px; text-align: left;">টাইপ</th>
               <th style="padding: 6px; border: 1px solid #ccc; font-size: 11px; text-align: right;">পরিমাণ (৳)</th>
             </tr>
           </thead>
