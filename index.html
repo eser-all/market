@@ -372,8 +372,14 @@
         <!-- Input Panel -->
         <div class="col-lg-4 mb-4">
           <div class="card card-custom p-3">
-            <h6 class="fw-bold mb-3"><i class="fa-solid fa-square-plus me-2 text-primary"></i>নতুন ডাটা এন্ট্রি</h6>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold mb-0" id="formHeaderTitle"><i class="fa-solid fa-square-plus me-2 text-primary"></i>নতুন ডাটা এন্ট্রি</h6>
+              <button type="button" id="cancelEditBtn" onclick="cancelEditMode()" class="btn btn-sm btn-outline-secondary py-0" style="display:none;">বাতিল</button>
+            </div>
+            
             <form id="transactionForm">
+              <input type="hidden" id="editingTxId" value="">
+              
               <div class="mb-2">
                 <label class="form-label fw-semibold small mb-1">বিভাগ</label>
                 <select id="category" class="form-select form-select-sm shadow-sm" onchange="toggleCategoryFields()" required>
@@ -495,7 +501,7 @@
                 <input type="number" id="amount" class="form-control form-control-sm shadow-sm" placeholder="0.00" min="0" step="any" required>
               </div>
 
-              <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2 btn-sm">
+              <button type="submit" id="submitFormBtn" class="btn btn-primary w-100 fw-bold shadow-sm py-2 btn-sm">
                 <i class="fa-solid fa-cloud-arrow-up me-1"></i> এন্ট্রি সেভ করুন
               </button>
             </form>
@@ -537,7 +543,11 @@
                   <button onclick="clearDateFilter()" class="btn btn-outline-secondary btn-sm py-0" title="ফিল্টার রিসেট"><i class="fa-solid fa-rotate-left"></i></button>
                 </div>
               </div>
-              <div>
+              <div class="d-flex gap-1">
+                <!-- নতুন লাইফটাইম হিস্ট্রি বাটন -->
+                <button onclick="showLifetimeHistory()" class="btn btn-outline-primary btn-sm fw-bold">
+                  <i class="fa-solid fa-clock-rotate-left me-1"></i> লাইফটাইম হিস্ট্রি
+                </button>
                 <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm fw-bold">
                   <i class="fa-solid fa-file-excel me-1"></i> Excel
                 </button>
@@ -669,7 +679,6 @@
   const _auth = firebase.auth();
   const _db = firebase.database();
 
-  // ডাটা যেন না হারিয়ে যায় তাই অফলাইন পারসিস্টেন্স এনাবেল করা
   try {
     _db.ref().keepSynced(true);
   } catch (e) { console.log("Persistence setup", e); }
@@ -901,6 +910,7 @@
     e.preventDefault();
     if (!_user) return;
     
+    const editingTxId = document.getElementById('editingTxId').value;
     const category = document.getElementById('category').value;
     const type = document.getElementById('type').value;
     const customerPhone = document.getElementById('customerPhone').value.trim();
@@ -931,16 +941,25 @@
 
     toggleLoader(true);
 
-    const englishDate = new Date().toLocaleString('en-US', { 
+    let englishDate = new Date().toLocaleString('en-US', { 
       year: 'numeric', month: '2-digit', day: '2-digit', 
       hour: '2-digit', minute: '2-digit', hour12: true 
     });
+    let timestamp = Date.now();
 
-    const newTxId = 'tx_' + Date.now();
+    // এডিট মোডে থাকলে পূর্বের তারিখ অপরিবর্তিত রাখা
+    if(editingTxId) {
+      const exist = _cache.find(x => x.id === editingTxId);
+      if(exist) {
+        englishDate = exist.date;
+        timestamp = exist.timestamp;
+      }
+    }
+
     const payload = {
-      id: newTxId,
+      id: editingTxId || ('tx_' + Date.now()),
       date: englishDate,
-      timestamp: Date.now(),
+      timestamp: timestamp,
       category: category,
       subProvider: subProvider,
       commission: commission,
@@ -954,40 +973,101 @@
     };
 
     try {
-      // ডাটাবেজে সেভ করার চেষ্টা
-      const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
-      payload.id = newTxRef.key;
-      
-      if (navigator.onLine) {
-        await newTxRef.set(payload);
+      if (editingTxId) {
+        // এডিট ডাটা আপডেট
+        await _db.ref(`users/${_user.uid}/transactions/${editingTxId}`).update(payload);
+        alert("এন্ট্রি সফলভাবে আপডেট করা হয়েছে!");
+        cancelEditMode();
       } else {
-        // অফলাইনে থাকলে localStorage এ ড্রাই ব্যাকআপ রাখা
+        // নতুন ডাটা সেভ
+        const newTxRef = _db.ref(`users/${_user.uid}/transactions`).push();
+        payload.id = newTxRef.key;
+        
+        if (navigator.onLine) {
+          await newTxRef.set(payload);
+        } else {
+          let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
+          pending.push(payload);
+          localStorage.setItem('pending_tx', JSON.stringify(pending));
+        }
+
+        stationeryCart = [];
+        document.getElementById('transactionForm').reset();
+        renderStationeryCart();
+        toggleCategoryFields();
+
+        currentReceiptData = payload;
+        showReceiptModal(payload);
+      }
+
+    } catch (err) {
+      if(!editingTxId) {
         let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
         pending.push(payload);
         localStorage.setItem('pending_tx', JSON.stringify(pending));
+        alert("ডাটা লোকালি নিরাপদে ব্যাকআপ করা হয়েছে! ক্লাউডে সেভ করার চেষ্টা করা হচ্ছে।");
+      } else {
+        alert("ডাটা আপডেট করতে সমস্যা হয়েছে: " + err.message);
       }
-
-      stationeryCart = [];
-      document.getElementById('transactionForm').reset();
-      renderStationeryCart();
-      toggleCategoryFields();
-
-      currentReceiptData = payload;
-      
-      // মোডাল পপ-আপ কিন্তু অটো প্রিন্ট হবে না
-      showReceiptModal(payload);
-
-    } catch (err) {
-      // কোনো কারণে নেটওয়ার্ক ফেইল করলে লোকাল ব্যাকআপে সেভ হবে
-      let pending = JSON.parse(localStorage.getItem('pending_tx') || '[]');
-      pending.push(payload);
-      localStorage.setItem('pending_tx', JSON.stringify(pending));
-      
-      alert("ডাটা লোকালি নিরাপদে ব্যাকআপ করা হয়েছে! ক্লাউডে সেভ করার চেষ্টা করা হচ্ছে।");
     } finally {
       toggleLoader(false);
     }
   });
+
+  /* --- এডিটিং ফাংশনসমুহ --- */
+  function editTx(id) {
+    const item = _cache.find(x => x.id === id);
+    if (!item) return;
+
+    document.getElementById('editingTxId').value = item.id;
+    document.getElementById('formHeaderTitle').innerHTML = `<i class="fa-solid fa-pen-to-square me-2 text-warning"></i>এন্ট্রি এডিট করুন`;
+    document.getElementById('submitFormBtn').innerHTML = `<i class="fa-solid fa-check me-1"></i> আপডেট করুন`;
+    document.getElementById('cancelEditBtn').style.display = 'inline-block';
+
+    document.getElementById('category').value = item.category;
+    toggleCategoryFields();
+
+    if (item.category === 'Mobile Banking') {
+      document.getElementById('mfsProvider').value = item.subProvider || 'bKash';
+      document.getElementById('mfsCommission').value = item.commission || 0;
+    } else if (item.category === 'Mobile Recharge') {
+      document.getElementById('rechargeOperator').value = item.subProvider || 'GP';
+      document.getElementById('rechargeCommission').value = item.commission || 0;
+    } else if (item.category === 'Stationery') {
+      if (item.items && item.items.length > 0) {
+        stationeryCart = [...item.items];
+      } else if (item.productName) {
+        stationeryCart = [{
+          productName: item.productName,
+          quantity: item.quantity || 1,
+          unitPrice: (item.amount || 0) / (item.quantity || 1),
+          total: item.amount || 0
+        }];
+      } else {
+        stationeryCart = [];
+      }
+      renderStationeryCart();
+    }
+
+    document.getElementById('customerPhone').value = item.customerPhone || '';
+    document.getElementById('type').value = item.type || 'Cash In';
+    document.getElementById('description').value = item.description || '';
+    document.getElementById('amount').value = item.amount || '';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function cancelEditMode() {
+    document.getElementById('editingTxId').value = '';
+    document.getElementById('formHeaderTitle').innerHTML = `<i class="fa-solid fa-square-plus me-2 text-primary"></i>নতুন ডাটা এন্ট্রি`;
+    document.getElementById('submitFormBtn').innerHTML = `<i class="fa-solid fa-cloud-arrow-up me-1"></i> এন্ট্রি সেভ করুন`;
+    document.getElementById('cancelEditBtn').style.display = 'none';
+
+    stationeryCart = [];
+    document.getElementById('transactionForm').reset();
+    renderStationeryCart();
+    toggleCategoryFields();
+  }
 
   async function syncOfflineDrafts() {
     if (!navigator.onLine || !_user) return;
@@ -1076,6 +1156,15 @@
     document.getElementById('startDateFilter').value = '';
     document.getElementById('endDateFilter').value = '';
     filterTransactions();
+  }
+
+  /* --- লাইফটাইম হিস্ট্রি ফাংশন --- */
+  function showLifetimeHistory() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('startDateFilter').value = '';
+    document.getElementById('endDateFilter').value = '';
+    filterTransactions();
+    alert(`লাইফটাইম হিস্ট্রি: সর্বমোট ${_cache.length} টি লেনদেন প্রদর্শিত হচ্ছে।`);
   }
 
   function renderUI() {
@@ -1237,6 +1326,7 @@
         <td>${typeBadge}</td>
         <td class="fw-bold">৳ ${(item.amount || 0).toFixed(2)}</td>
         <td class="text-center">
+          <button onclick="editTx('${item.id}')" class="btn btn-sm btn-outline-warning me-1" title="এডিট করুন"><i class="fa-solid fa-pen-to-square"></i></button>
           <button onclick="reprintReceipt('${item.id}')" class="btn btn-sm btn-outline-primary me-1" title="রিসিট প্রিন্ট"><i class="fa-solid fa-print"></i></button>
           <button onclick="deleteTx('${item.id}')" class="btn btn-sm btn-outline-danger" title="ডিলিট"><i class="fa-solid fa-trash"></i></button>
         </td>
@@ -1284,7 +1374,6 @@
     }
   }
 
-  /* --- সাধারণ ম্যানুয়াল রিসিট মোডাল (অটো প্রিন্ট বন্ধ) --- */
   function showReceiptModal(data) {
     document.getElementById('rDate').innerText = data.date;
     document.getElementById('rCategory').innerText = data.category + (data.subProvider ? ` (${data.subProvider})` : '');
