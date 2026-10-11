@@ -253,14 +253,6 @@
 
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="fw-bold text-secondary small"><i class="fa-solid fa-wallet me-1"></i> ডিজিটাল ওয়ালেট ব্যালেন্স ট্র্যাকার</span>
-        <div class="d-flex gap-1">
-          <button onclick="showWalletAuditLog()" class="btn btn-sm btn-light text-primary border shadow-sm py-0 px-2" title="ওয়ালেট ব্যালেন্স পরিবর্তনের ইতিহাস দেখুন">
-            <i class="fa-solid fa-clock-rotate-left"></i> ব্যালেন্স হিস্ট্রি
-          </button>
-          <button onclick="resetInitialBalances()" class="btn btn-sm btn-light text-secondary border shadow-sm py-0 px-2" title="প্রারম্ভিক ব্যালেন্স রিসেট/পরিবর্তন করুন">
-            <i class="fa-solid fa-gear"></i>
-          </button>
-        </div>
       </div>
 
       <!-- Compact 8 Wallets Row -->
@@ -549,6 +541,7 @@
                 </div>
               </div>
               <div class="d-flex gap-1">
+                <!-- নতুন লাইফটাইম হিস্ট্রি বাটন -->
                 <button onclick="showLifetimeHistory()" class="btn btn-outline-primary btn-sm fw-bold">
                   <i class="fa-solid fa-clock-rotate-left me-1"></i> লাইফটাইম হিস্ট্রি
                 </button>
@@ -580,7 +573,7 @@
   </div>
 </div>
 
-<!-- Receipt Modal -->
+<!-- Modal -->
 <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -658,38 +651,6 @@
   </div>
 </div>
 
-<!-- Wallet Audit Log Modal -->
-<div class="modal fade" id="auditLogModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header bg-secondary text-white py-2">
-        <h6 class="modal-title fw-bold"><i class="fa-solid fa-clock-rotate-left me-2"></i>ওয়ালেট ব্যালেন্স পরিবর্তনের ইতিহাস (অডিট লগ)</h6>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body p-3">
-        <div class="table-responsive" style="max-height: 350px;">
-          <table class="table table-sm table-bordered align-middle small text-center">
-            <thead>
-              <tr>
-                <th>সময় ও তারিখ</th>
-                <th>ওয়ালেট / অপারেটর</th>
-                <th>পূর্বের ব্যালেন্স</th>
-                <th>নতুন ব্যালেন্স</th>
-              </tr>
-            </thead>
-            <tbody id="auditLogTableBody">
-              <tr><td colspan="4" class="text-muted">কোনো ইতিহাস পাওয়া যায়নি।</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="modal-footer py-2">
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">বন্ধ করুন</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <footer class="app-footer">
   <div class="container">
     <p class="mb-0 fw-semibold">Developed by <span>Antu</span></p>
@@ -730,8 +691,6 @@
     bKash: null, Nagad: null, Rocket: null,
     GP: null, Banglalink: null, Robi: null, Airtel: null, Teletalk: null
   };
-
-  let walletAuditLogs = [];
 
   const toggleLoader = (val) => document.getElementById('loader').style.display = val ? 'flex' : 'none';
 
@@ -892,17 +851,6 @@
         renderUI();
       });
 
-      _db.ref(`users/${_user.uid}/wallet_audit_logs`).on('value', (snap) => {
-        walletAuditLogs = [];
-        const val = snap.val();
-        if (val) {
-          Object.keys(val).forEach(k => {
-            walletAuditLogs.push(val[k]);
-          });
-          walletAuditLogs.sort((a, b) => b.timestamp - a.timestamp);
-        }
-      });
-
       fetchTransactions();
       syncOfflineDrafts();
     } else {
@@ -939,53 +887,13 @@
   }
 
   async function setInitialBalance(provider) {
-    const oldVal = walletInitialBalances[provider] !== null ? walletInitialBalances[provider] : 0;
-    const val = prompt(`${provider}-এর প্রারম্ভিক ব্যালেন্স লিখুন:`, oldVal);
+    const current = walletInitialBalances[provider] !== null ? walletInitialBalances[provider] : 0;
+    const val = prompt(`${provider}-এর প্রারম্ভিক ব্যালেন্স লিখুন:`, current);
     if (val !== null && !isNaN(val)) {
       const num = parseFloat(val) || 0;
       walletInitialBalances[provider] = num;
       await _db.ref(`users/${_user.uid}/wallet_initials`).set(walletInitialBalances);
-
-      // Save History/Log to Firebase
-      const logEntry = {
-        provider: provider,
-        oldBalance: oldVal,
-        newBalance: num,
-        date: new Date().toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true }),
-        timestamp: Date.now()
-      };
-      await _db.ref(`users/${_user.uid}/wallet_audit_logs`).push(logEntry);
     }
-  }
-
-  function showWalletAuditLog() {
-    const tbody = document.getElementById('auditLogTableBody');
-    tbody.innerHTML = '';
-
-    if (walletAuditLogs.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" class="text-muted">কোনো পরিবর্তন বা ইতিহাস পাওয়া যায়নি।</td></tr>`;
-    } else {
-      walletAuditLogs.forEach(log => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${log.date}</td>
-          <td class="fw-bold">${log.provider}</td>
-          <td>৳${(log.oldBalance || 0).toFixed(2)}</td>
-          <td class="text-success fw-bold">৳${(log.newBalance || 0).toFixed(2)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    const modal = new bootstrap.Modal(document.getElementById('auditLogModal'));
-    modal.show();
-  }
-
-  function resetInitialBalances() {
-    ['Bkash', 'Nagad', 'Rocket', 'GP', 'Banglalink', 'Robi', 'Airtel', 'Teletalk'].forEach(p => {
-      const el = document.getElementById(`btnSet${p}`);
-      if(el) el.style.display = 'inline-block';
-    });
   }
 
   document.getElementById('transactionForm').addEventListener('submit', async (e) => {
