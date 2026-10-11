@@ -255,7 +255,7 @@
         <span class="fw-bold text-secondary small"><i class="fa-solid fa-wallet me-1"></i> ডিজিটাল ওয়ালেট ব্যালেন্স ট্র্যাকার</span>
         <div class="d-flex gap-1">
           <button onclick="showWalletAuditLog()" class="btn btn-sm btn-light text-primary border shadow-sm py-0 px-2" title="ওয়ালেট ব্যালেন্স পরিবর্তনের ইতিহাস দেখুন">
-            <i class="fa-solid fa-clock-rotate-left"></i> হিস্ট্রি
+            <i class="fa-solid fa-clock-rotate-left"></i> ব্যালেন্স হিস্ট্রি
           </button>
           <button onclick="resetInitialBalances()" class="btn btn-sm btn-light text-secondary border shadow-sm py-0 px-2" title="প্রারম্ভিক ব্যালেন্স রিসেট/পরিবর্তন করুন">
             <i class="fa-solid fa-gear"></i>
@@ -946,7 +946,7 @@
       walletInitialBalances[provider] = num;
       await _db.ref(`users/${_user.uid}/wallet_initials`).set(walletInitialBalances);
 
-      // Log entry
+      // Save History/Log to Firebase
       const logEntry = {
         provider: provider,
         oldBalance: oldVal,
@@ -963,7 +963,7 @@
     tbody.innerHTML = '';
 
     if (walletAuditLogs.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="4" class="text-muted">কোনো ইতিহাস পাওয়া যায়নি।</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" class="text-muted">কোনো পরিবর্তন বা ইতিহাস পাওয়া যায়নি।</td></tr>`;
     } else {
       walletAuditLogs.forEach(log => {
         const tr = document.createElement('tr');
